@@ -47,14 +47,28 @@ class UserController {
         });
         model.token = token
         res.send({
-            error_code: true,
+            error: true,
             message: 'User info',
             data: model
         });
     };
+    byName = async (req, res, next) => {
+        const model = await UserModel.findAll({
+                    attributes: ['id','user_name']
+        })
+        res.send({
+            error: true,
+            message: "byName",
+            data: model
+        })
+    }
     getAll = async (req, res, next) =>{
         const model = await UserModel.scope('withoutPassword').findAll(); 
-        res.send(model); 
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
        }
     getOne = async (req, res, next) =>{
         const model = await UserModel.findOne({
@@ -62,7 +76,11 @@ class UserController {
                 id: req.params.id
             }
         })
-        res.send(model)
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
     create = async(req, res, next) => {
         this.checkValidation(req);
@@ -73,7 +91,11 @@ class UserController {
         }
         const modell = await UserModel.create(req.body);
         delete req.body['password']
-        res.send(modell);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: modell
+        });
     }
     update = async (req, res, next) =>{
         const bcrypt = require('bcrypt');
@@ -94,7 +116,11 @@ class UserController {
         model.pay_type = req.body.pay_type;
         model.salary = req.body.salary;
         model.save();
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
     delete = async (req, res, next) =>{
         const model = await UserModel.destroy(req.body);

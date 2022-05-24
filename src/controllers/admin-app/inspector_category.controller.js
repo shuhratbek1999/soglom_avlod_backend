@@ -10,7 +10,11 @@ const { validationResult } = require('express-validator');
 class DoctorController {
     getAll = async (req, res, next) => {
         const model = await inspector_categoryModel.findAll();
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
 
     getOne = async (req, res, next) => {
@@ -20,12 +24,20 @@ class DoctorController {
                 id: req.params.id
             }
         });
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await inspector_categoryModel.create(req.body);
-       res.send(model)
+       res.send({
+        error: true,
+        message: 'User info',
+        data: model
+    });
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
@@ -36,7 +48,11 @@ class DoctorController {
     });
     model.name = req.body.name;
     model.save();
-    res.send(model);
+    res.send({
+        error: true,
+        message: 'User info',
+        data: model
+    });
 }
 delete = async (req, res, next) => {
     await inspector_categoryModel.destroy({
@@ -44,7 +60,11 @@ delete = async (req, res, next) => {
           id: req.params.id
         }
     });
-    res.send('ochirildii')
+    res.send({
+        error: true,
+        message: 'inspection delete',
+        data: model
+    });
 }
     checkValidation = (req) => {
         const errors = validationResult(req)

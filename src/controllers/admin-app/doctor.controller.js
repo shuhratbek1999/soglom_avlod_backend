@@ -15,7 +15,11 @@ class DoctorController {
             //     {model: InspectionModel, as: 'inspection', attributes: ['name']}
             // ]
         });
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
 
     getOne = async (req, res, next) => {
@@ -25,12 +29,20 @@ class DoctorController {
                 id: req.params.id
             }
         });
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await DoctorModel.create(req.body);
-       res.send(model)
+       res.send({
+        error: true,
+        message: 'User info',
+        data: model
+    });
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
@@ -42,7 +54,11 @@ class DoctorController {
     model.name = req.body.name;
     model.category_id = req.body.category_id
     model.save();
-    res.send(model);
+    res.send({
+        error: true,
+        message: 'User info',
+        data: model
+    });
 }
 delete = async (req, res, next) => {
     await DoctorModel.destroy({
@@ -50,7 +66,11 @@ delete = async (req, res, next) => {
           id: req.params.id
         }
     });
-    res.send('ochirildii')
+    res.send({
+        error: true,
+        message: 'doctor delete',
+        data: model
+    });
 }
     checkValidation = (req) => {
         const errors = validationResult(req)

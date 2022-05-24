@@ -8,7 +8,7 @@ class PillModel extends Model {
     }
 }
 
-PillModel.init({
+PillModel.init({ 
   id: {
     autoIncrement: true,
     type: DataTypes.INTEGER,

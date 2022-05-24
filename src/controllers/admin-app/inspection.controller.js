@@ -9,7 +9,11 @@ const inspectionChildModel = require('../../models/inspectionChild.model');
 class InspectionController {
     getAll = async (req, res, next) => {
         const model = await inspectionModel.findAll();
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
 
     getOne = async (req, res, next) => {
@@ -19,7 +23,11 @@ class InspectionController {
                 id: req.params.id
             }
         });
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
   
     create = async (req, res, next) => {
@@ -30,7 +38,11 @@ class InspectionController {
            inspectionChild[i].parent_id = model.id;
            await inspectionChildModel.create(inspectionChild[i])
        }
-        res.send(model)
+       res.send({
+        error: true,
+        message: 'User info',
+        data: model
+    });
     }
     update = async (req, res, next) => {
         const { inspectionChild, ...inspection } = req.body;
@@ -39,7 +51,7 @@ class InspectionController {
                id: req.params.id
             }
         })
-        if(model === null){
+        if(model === null){ 
             res.status(404).send("model mavjud emas")
         }
         await inspectionChildModel.destroy({
@@ -62,7 +74,11 @@ class InspectionController {
             inspectionChild[i].parent_id = model.id;
             await inspectionChildModel.create(inspectionChild[i])
         }
-        res.send(model);
+        res.send({
+            error: true,
+            message: 'User info',
+            data: model
+        });
     }
 
 delete = async (req, res, next) => {
@@ -71,7 +87,11 @@ delete = async (req, res, next) => {
           id: req.params.id
         }
     });
-    res.send('ochirildii')
+    res.send({
+        error: true,
+        message: 'inspection delete',
+        data: model
+    });
 }
     checkValidation = (req) => {
         const errors = validationResult(req)

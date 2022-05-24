@@ -15,7 +15,7 @@ PatientModel.init({
     autoIncrement: true, 
     allowNull: false
 },
-fullname:{
+fullname:{ 
     type:DataTypes.STRING(100)
 },
 name: {

@@ -4,8 +4,14 @@ const path = require("path");
 const errorMiddleware = require('../middleware/error.middleware');
 const userRouter = require('../routes/admin-app/user.route');
 const roomRouter = require('../routes/admin-app/room.route');
+const districtRouter = require('../routes/admin-app/district.route')
 const doctorRouter = require('../routes/admin-app/doctor.route');
+const patientRouter = require('../routes/admin-app/patient.route');
+const pillRouter = require('../routes/admin-app/pill.route');
+const queueRouter = require('../routes/admin-app/queue.route');
+const regionRouter = require('../routes/admin-app/region.route');
 const inspectionRouter = require('../routes/admin-app/inspection.route');
+const Doctor_templateRouter = require('../routes/admin-app/doctor_template.route');
 const doctor_categoryRouter = require('../routes/admin-app/doctor_category.route');
 const inspector_categoryRouter = require('../routes/admin-app/inspector_category.route');
 const HttpException = require('../utils/HttpException.utils');
@@ -22,6 +28,12 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/room`, roomRouter);
         app.use(`/api/v1/admin-app/doctor`, doctorRouter);
         app.use(`/api/v1/admin-app/inspection`, inspectionRouter);
+        app.use(`/api/v1/admin-app/district`, districtRouter);
+        app.use(`/api/v1/admin-app/patient`, patientRouter);
+        app.use(`/api/v1/admin-app/pill`, pillRouter);
+        app.use(`/api/v1/admin-app/queue`, queueRouter);
+        app.use(`/api/v1/admin-app/region`, regionRouter);
+        app.use(`/api/v1/admin-app/doctor_template`, Doctor_templateRouter);
         app.use(`/api/v1/admin-app/doctor_category`, doctor_categoryRouter);
         app.use(`/api/v1/admin-app/inspector_category`, inspector_categoryRouter);
 

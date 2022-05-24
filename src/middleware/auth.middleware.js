@@ -8,20 +8,15 @@ const auth = (...roles) => {
         try {
             const authHeader = req.headers.authorization;
             const bearer = 'Bearer ';
-
-            if (!authHeader || !authHeader.startsWith(bearer)) {
-                throw new HttpException(401, 'Access denied. No credentials sent!');
-            }
-
             const token = authHeader.replace(bearer, '');
 
             // Verify Token
             const decoded = jwt.verify(token, secret_jwt);
             const user = await UserModel.findOne({where:{ id: decoded.user_id }});
-
-            if (!user) {
-                throw new HttpException(401, 'Authentication failed!');
+            if (!authHeader || !authHeader.startsWith(bearer) || !user) {
+                throw new HttpException(201, 'Access denied. No credentials sent!');
             }
+
 
             // check if the current user is the owner user
             const ownerAuthorized = req.params.id == user.id;
@@ -30,7 +25,7 @@ const auth = (...roles) => {
             // if the user role don't have the permission to do this action.
             // the user will get this error
             if (!ownerAuthorized && roles.length && !roles.includes(user.role)) {
-                throw new HttpException(401, 'Unauthorized');
+                throw new HttpException(201, 'Unauthorized');
             }
 
             // if the user has permissions
@@ -38,7 +33,7 @@ const auth = (...roles) => {
             next();
 
         } catch (e) {
-            e.status = 401;
+            e.status = 201;
             next(e);
         }
     }

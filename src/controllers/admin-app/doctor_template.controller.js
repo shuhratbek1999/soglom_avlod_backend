@@ -1,15 +1,15 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const Doctor_categoryModel = require('../../models/doctor_category.model')
+const Doctor_templateModel = require('../../models/doctor_template.model')
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class DoctorController {
+class Doctor_templateController {
     getAll = async (req, res, next) => {
-        const model = await Doctor_categoryModel.findAll();
+        const model = await Doctor_templateModel.findAll();
         res.send({
             error: true,
             message: 'User info',
@@ -19,7 +19,7 @@ class DoctorController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await Doctor_categoryModel.findOne({
+        const model = await Doctor_templateModel.findOne({
             where:{
                 id: req.params.id
             }
@@ -32,7 +32,7 @@ class DoctorController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await Doctor_categoryModel.create(req.body);
+       const model = await Doctor_templateModel.create(req.body);
        res.send({
         error: true,
         message: 'User info',
@@ -41,13 +41,21 @@ class DoctorController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await Doctor_categoryModel.findOne({
+    const model = await Doctor_templateModel.findOne({
         where:{
             id: req.params.id
         }
     });
+    model.complaint = req.body.complaint;
+    model.doctor_id = req.body.doctor_id;
     model.name = req.body.name;
-    model.price = req.body.price
+    model.medical_history = req.body.medical_history;
+    model.objective_vision = req.body.objective_vision;
+    model.instrumental = req.body.instrumental;
+    model.diagnos = req.body.diagnos;
+    model.procedure = req.body.procedure;
+    model.recommended = req.body.recommended;
+    model.concomitant = req.body.concomitant;
     model.save();
     res.send({
         error: true,
@@ -56,14 +64,14 @@ class DoctorController {
     });
 }
 delete = async (req, res, next) => {
-    await Doctor_categoryModel.destroy({
+    await Doctor_templateModel.destroy({
         where:{
           id: req.params.id
         }
     });
     res.send({
         error: true,
-        message: 'Doctor_category delete',
+        message: 'doctor_template delete',
         data: model
     });
 }
@@ -82,4 +90,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new DoctorController;
+module.exports = new Doctor_templateController;

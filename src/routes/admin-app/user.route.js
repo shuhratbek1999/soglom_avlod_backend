@@ -7,8 +7,9 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 
 const  {validateLogin}  = require('../../middleware/validators/admin-app/userValidator.middleware');
 const  {loginValidate}  = require('../../middleware/validators/admin-app/loginValidator.middleware');
-router.post('/login', loginValidate, awaitHandlerFactory(userController.userLogin));
+router.post('/login',loginValidate, awaitHandlerFactory(userController.userLogin));
 router.get('/all', awaitHandlerFactory(userController.getAll));
+router.get('/byName', awaitHandlerFactory(userController.byName));
 router.get('/one/:id',   auth(), awaitHandlerFactory(userController.getOne));
 router.post('/create', validateLogin, awaitHandlerFactory(userController.create));
 router.patch('/update/:id', validateLogin, auth(), awaitHandlerFactory(userController.update));

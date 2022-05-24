@@ -1,15 +1,15 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const Doctor_categoryModel = require('../../models/doctor_category.model')
+const QueueModel = require('../../models/queue.model')
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class DoctorController {
+class QueueController {
     getAll = async (req, res, next) => {
-        const model = await Doctor_categoryModel.findAll();
+        const model = await QueueModel.findAll();
         res.send({
             error: true,
             message: 'User info',
@@ -19,7 +19,7 @@ class DoctorController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await Doctor_categoryModel.findOne({
+        const model = await QueueModel.findOne({
             where:{
                 id: req.params.id
             }
@@ -32,7 +32,7 @@ class DoctorController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await Doctor_categoryModel.create(req.body);
+       const model = await QueueModel.create(req.body);
        res.send({
         error: true,
         message: 'User info',
@@ -41,13 +41,16 @@ class DoctorController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await Doctor_categoryModel.findOne({
+    const model = await QueueModel.findOne({
         where:{
             id: req.params.id
         }
     });
-    model.name = req.body.name;
-    model.price = req.body.price
+    model.room_id = req.body.room_id;
+    model.patient_id = req.body.patient_id;
+    model.number = req.body.number;
+    model.datetime = req.body.datetime;
+    model.status = req.body.status;
     model.save();
     res.send({
         error: true,
@@ -56,14 +59,14 @@ class DoctorController {
     });
 }
 delete = async (req, res, next) => {
-    await Doctor_categoryModel.destroy({
+    await QueueModel.destroy({
         where:{
           id: req.params.id
         }
     });
     res.send({
         error: true,
-        message: 'Doctor_category delete',
+        message: 'queue delete',
         data: model
     });
 }
@@ -82,4 +85,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new DoctorController;
+module.exports = new QueueController;
