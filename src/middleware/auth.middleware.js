@@ -14,7 +14,12 @@ const auth = (...roles) => {
             const decoded = jwt.verify(token, secret_jwt);
             const user = await UserModel.findOne({where:{ id: decoded.user_id }});
             if (!authHeader || !authHeader.startsWith(bearer) || !user) {
-                throw new HttpException(201, 'Access denied. No credentials sent!');
+                throw new HttpException(401, {
+                    error: true,
+                    error_code: 401,
+                    message: 'authorization false',
+                    data: ""
+                });
             }
 
 
