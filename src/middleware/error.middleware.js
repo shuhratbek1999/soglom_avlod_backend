@@ -11,7 +11,7 @@ function errorMiddleware(error, req, res, next) {
     status = 200;
     error = {
         error_code,
-        success: false,
+        error: false,
         message,
         ...(data) && data
     }
@@ -25,6 +25,6 @@ module.exports = errorMiddleware;
     type: 'error',
     status: 404,
     message: 'Not Found'
-    data: {...} // optional
+    data: {...} // optional 
 }
 */
