@@ -3,13 +3,20 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const PatientModel = require('../../models/patient.model')
 const { validationResult } = require('express-validator');
+const RegionModel = require('../../models/region.model');
+const districtModel = require('../../models/district.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class PatientController {
     getAll = async (req, res, next) => {
-        const model = await PatientModel.findAll();
+        const model = await PatientModel.findAll({
+            include:[
+                {model: RegionModel, as: 'region', attributes: ['id', 'name']},
+                {model: districtModel, as: 'district', attributes: ['id', 'name']}
+            ]
+        });
         res.send({
             error: true,
             message: 'User info',
@@ -53,9 +60,9 @@ class PatientController {
     model.region_id = req.body.region_id;
     model.district_id = req.body.district_id;
     model.phone = req.body.phone;
-    model.password = req.body.password;
+    model.passport = req.body.passport;
     model.gender = req.body.gender;
-    model.address = req.body.address;
+    model.addres = req.body.addres;
     model.birthday = req.body.birthday;
     model.save();
     res.send({

@@ -24,7 +24,8 @@ exports.up = function(db) {
     },
     name:{
       type: 'string',
-      length: 60
+      length: 60,
+      notNull: true
     }
   })
 };

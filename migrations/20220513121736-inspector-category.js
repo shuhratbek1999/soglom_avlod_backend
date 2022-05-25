@@ -24,7 +24,8 @@ exports.up = function(db) {
     },
     name:{
       type:'string',
-      length:100
+      length:100,
+      notNull: true
     }
   });
 };

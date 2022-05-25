@@ -24,20 +24,25 @@ exports.up = function(db) {
     },
     norm:{
       type: 'string',
-      length: 20
+      length: 20,
+      notNull: true
     },
     parent_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     price:{
       type: 'decimal(17,2)',
+      notNull: true
     },
     name:{
       type: 'string',
-      length: 100
+      length: 100,
+      notNull: true
     },
     file:{
        type: 'string',
+       notNull: true
     }
   });
 };

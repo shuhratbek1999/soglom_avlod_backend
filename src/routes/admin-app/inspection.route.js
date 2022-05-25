@@ -5,7 +5,7 @@ const auth = require('../../middleware/auth.middleware');
 const Role = require('../../utils/roles.utils');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
 
-// const  {roomValidate}  = require('../../middleware/validators/admin-app/roomValidator.middleware');
+const  {inspectionValidate}  = require('../../middleware/validators/admin-app/roomValidator.middleware');
 
 router.get('/all', auth(), awaitHandlerFactory(inspectionController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(inspectionController.getOne));

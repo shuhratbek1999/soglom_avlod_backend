@@ -2,6 +2,7 @@
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const DistrictModel = require('../../models/district.model')
+const RegionModel = require('../../models/region.model')
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
@@ -9,7 +10,11 @@ const { validationResult } = require('express-validator');
  ******************************************************************************/
 class DistrictController {
     getAll = async (req, res, next) => {
-        const model = await DistrictModel.findAll();
+        const model = await DistrictModel.findAll({
+            include:[
+                {model: RegionModel, as: 'region', attributes: ['id', 'name']}
+            ]
+        });
         res.send({
             error: true,
             message: 'User info',
@@ -22,7 +27,10 @@ class DistrictController {
         const model = await DistrictModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: RegionModel, as: 'region', attributes: ['id', 'name']}
+            ]
         });
         res.send({
             error: true,

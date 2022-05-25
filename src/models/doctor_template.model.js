@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const DoctorModel = require('../models/doctor.model')
 const sequelize = require('../db/db-sequelize');
 class Doctor_templateModel extends Model {
     toJSON () {//Api da ishladi
@@ -64,5 +65,5 @@ Doctor_templateModel.init({
   //findOne da yoki findAll da chaqirish kerak
  
 });
-
+Doctor_templateModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 module.exports = Doctor_templateModel;

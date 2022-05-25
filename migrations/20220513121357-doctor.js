@@ -28,7 +28,8 @@ exports.up = function(db) {
     notNull: true
   }, 
   category_id:{
-    type: 'int'
+    type: 'int',
+    notNull: true
   }
 })
 };

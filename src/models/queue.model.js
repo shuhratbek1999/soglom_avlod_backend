@@ -1,5 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const PatientModel = require('./patient.model');
+const RoomModel = require('../models/room.model')
 class QueueModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -24,7 +26,7 @@ patient_id : {
 number : {
     type: DataTypes.INTEGER,
 },
-datetime: {
+date_time: {
     type: DataTypes.INTEGER,
 },
 status: {
@@ -49,5 +51,6 @@ status: {
   //findOne da yoki findAll da chaqirish kerak
   
 });
-
+QueueModel.belongsTo(RoomModel, {as: 'room', foreignKey: 'room_id'})
+QueueModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 module.exports = QueueModel;

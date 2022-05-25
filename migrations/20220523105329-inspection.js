@@ -24,25 +24,32 @@ exports.up = function(db) {
     },
     name:{
       type: 'string',
-      length: 100
+      length: 100,
+      notNull: true
     },
     parent_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     price:{
-      type: 'decimal(17,2)'
+      type: 'decimal(17,2)',
+      notNull: true
     },
     type:{
-      type: 'boolean'
+      type: 'boolean',
+      notNull: true
     },
     user_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     category_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     percent_bonus:{
-      type: 'decimal(5, 2)'
+      type: 'decimal(5, 2)',
+      notNull: true
     }
   });
 };

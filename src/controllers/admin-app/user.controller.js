@@ -36,8 +36,10 @@ class UserController {
         if(!isMatch){
             throw new HttpException(200, 
                 {
-                    "error": false,
-                    "message": "password error"
+                    "error": true,
+                    "error_code": 401,
+                    "message": "password error",
+                    "data": ""
                   }
                 )
         }
@@ -47,7 +49,8 @@ class UserController {
         });
         model.token = token
         res.send({
-            error: true,
+            error: false,
+            error_code: 200,
             message: 'User info',
             data: model
         });
@@ -57,15 +60,16 @@ class UserController {
                     attributes: ['id','user_name']
         })
         res.send({
-            error: true,
-            message: "byName",
+            error: false,
+            error_code: 201,
+            message: 'User info',
             data: model
-        })
+        });
     }
     getAll = async (req, res, next) =>{
         const model = await UserModel.scope('withoutPassword').findAll(); 
         res.send({
-            error: true,
+            error: false,
             message: 'User info',
             data: model
         });
@@ -77,7 +81,7 @@ class UserController {
             }
         })
         res.send({
-            error: true,
+            error: false,
             message: 'User info',
             data: model
         });

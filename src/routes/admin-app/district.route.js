@@ -5,11 +5,11 @@ const auth = require('../../middleware/auth.middleware');
 // const Role = require('../../utils/roles.utils');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
 
-// const  {doctorValidate}  = require('../../middleware/validators/admin-app/doctorValidator.middleware');
+const  {districtValidate}  = require('../../middleware/validators/admin-app/districtValidator.middleware');
 
-router.get('/all', auth(), awaitHandlerFactory(districtController.getAll));
+router.get('/all', auth(),  awaitHandlerFactory(districtController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(districtController.getOne));
-router.post('/create',auth(), awaitHandlerFactory(districtController.create));
-router.patch('/update/:id', auth(), awaitHandlerFactory(districtController.update));
+router.post('/create',auth(), districtValidate, awaitHandlerFactory(districtController.create));
+router.patch('/update/:id', auth(), districtValidate, awaitHandlerFactory(districtController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(districtController.delete));
 module.exports = router;

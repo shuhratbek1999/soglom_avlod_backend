@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const RegionModel = require('../models/region.model')
 const sequelize = require('../db/db-sequelize');
 class districtModel extends Model {
     toJSON () {//Api da ishladi
@@ -44,5 +45,5 @@ name: {
     }
   }
 });
-
+districtModel.belongsTo(RegionModel, {as: 'region', foreignKey: 'region_id'})
 module.exports = districtModel;

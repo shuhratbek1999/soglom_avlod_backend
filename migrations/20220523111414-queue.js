@@ -23,20 +23,25 @@ exports.up = function(db) {
       notNull: true
     },
     room_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     patient_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     number:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     date_time:{
-      type: 'date'
+      type: 'string',
+      notNull: true
     },
     status:{
       type: 'string',
-      length: 20
+      length: 20,
+      notNull: true
     }
   })
 };

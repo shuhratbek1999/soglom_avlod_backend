@@ -3,12 +3,18 @@ const HttpException = require('../../utils/HttpException.utils');
 const { validationResult } = require('express-validator');
 const inspectionModel = require('../../models/inspection.model');
 const inspectionChildModel = require('../../models/inspectionChild.model');
+const UserModel = require('../../models/user.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class InspectionController {
     getAll = async (req, res, next) => {
-        const model = await inspectionModel.findAll();
+        const model = await inspectionModel.findAll({
+            include:[
+                {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
+                {model: inspectionChildModel, as: 'InspectionChild', attributes: ['id', 'name']}
+            ]
+        });
         res.send({
             error: true,
             message: 'User info',

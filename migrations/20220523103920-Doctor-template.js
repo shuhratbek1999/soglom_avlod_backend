@@ -23,34 +23,44 @@ exports.up = function(db) {
       notNull: true
     },
     doctor_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     complaint:{
-      type: 'string'
+      type: 'string',
+      notNull: true
     },
      name:{
-       type: 'string'
+       type: 'string',
+       notNull: true
      },
      medical_history:{
-       type: 'string'
+       type: 'string',
+       notNull: true
      },
      objective_vision:{
-       type: 'string'
+       type: 'string',
+       notNull: true
      },
      instrumental:{
-       type: 'string'
+       type: 'string',
+       notNull: true
      },
      diagnos:{
-       type: 'string'
+       type: 'string',
+       notNull: true
      },
      procedure:{
-       type: 'string'
+       type: 'string',
+       notNull: true
      },
     recommended:{
-      type: 'string'
+      type: 'string',
+      notNull: true
     },
     concomitant:{
-      type: 'string'
+      type: 'string',
+      notNull: true
     }
   });
 };

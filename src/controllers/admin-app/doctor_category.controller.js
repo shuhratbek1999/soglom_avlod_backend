@@ -8,7 +8,7 @@ const { validationResult } = require('express-validator');
  *                              Employer Controller
  ******************************************************************************/
 class DoctorController {
-    getAll = async (req, res, next) => {
+    getAll = async (req, res, next) => { 
         const model = await Doctor_categoryModel.findAll();
         res.send({
             error: true,

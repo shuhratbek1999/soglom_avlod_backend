@@ -1,5 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
+const UserModel = require('../models/user.model')
 const sequelize = require('../db/db-sequelize');
+const inspectionChildModel = require('./inspectionChild.model');
 class inspectionModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -55,5 +57,6 @@ percent_bonus:{
   //findOne da yoki findAll da chaqirish kerak
   
 });
-
+inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
+inspectionModel.belongsTo(inspectionChildModel, {as: 'InspectionChild', foreignKey: 'parent_id'})
 module.exports = inspectionModel;

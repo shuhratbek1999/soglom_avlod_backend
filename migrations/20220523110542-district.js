@@ -23,11 +23,13 @@ exports.up = function(db) {
       notNull: true
     },
     region_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     name: {
       type: 'string',
-      length: 60
+      length: 60,
+      notNull: true
     }
   })
 };

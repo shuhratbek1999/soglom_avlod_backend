@@ -3,15 +3,20 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const Doctor_templateModel = require('../../models/doctor_template.model')
 const { validationResult } = require('express-validator');
+const DoctorModel = require('../../models/doctor.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class Doctor_templateController {
     getAll = async (req, res, next) => {
-        const model = await Doctor_templateModel.findAll();
+        const model = await Doctor_templateModel.findAll({
+            include:[
+                {model: DoctorModel, as: 'doctor', attributes: ['name']}
+            ]
+        });
         res.send({
-            error: true,
+            error: true, 
             message: 'User info',
             data: model
         });
@@ -22,7 +27,10 @@ class Doctor_templateController {
         const model = await Doctor_templateModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: DoctorModel, as: 'doctor', attributes: ['name']}
+            ]
         });
         res.send({
             error: true,

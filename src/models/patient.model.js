@@ -1,5 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const RegionModel = require('../models/region.model')
+const districtModel = require('../models/district.model')
 class PatientModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -39,7 +41,7 @@ phone:{
 passport:{
     type:DataTypes.STRING(9)
 },
-address:{
+addres:{
     type:DataTypes.STRING
 },
 gender:{
@@ -66,5 +68,6 @@ birthday:{
   ],
  
 });
-
+PatientModel.belongsTo(districtModel, {as: 'district', foreignKey: 'district_id'})
+PatientModel.belongsTo(RegionModel, {as: 'region', foreignKey: 'region_id'})
 module.exports = PatientModel;

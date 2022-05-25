@@ -24,10 +24,12 @@ exports.up = function(db) {
     },
     name : {
       type: 'string',
-      length: 30
+      length: 30,
+      notNull: true
     },
     price : {
       type: 'decimal(15,2)',
+      notNull: true
     }
   });
 };

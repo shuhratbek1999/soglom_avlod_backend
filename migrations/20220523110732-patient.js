@@ -24,43 +24,54 @@ exports.up = function(db) {
     },
     fullname:{
       type: 'string',
-      length: 100
+      length: 100,
+      notNull: true
     },
     name: {
       type: 'string',
-      length: 30
+      length: 30,
+      notNull: true
     },
     lastname: {
       type: 'string',
-      length: 30
+      length: 30,
+      notNull: true
     },
     patronymic: {
       type: 'string',
-      length: 40
+      length: 40,
+      notNull: true
     },
     region_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     district_id:{
-      type: 'int'
+      type: 'int',
+      notNull: true
     },
     phone:{
       type: 'string',
-      length: 20
+      length: 20,
+      notNull: true
     },
     passport:{
       type: 'string',
-      length: 9
+      length: 9,
+      notNull: true
     },
     addres:{
-      type: 'string'
+      type: 'string',
+      notNull: true
     },
     gender:{
       type: 'string',
-      length: 10
+      length: 10,
+      notNull: true
     },
     birthday:{
-      type: 'int'
+      type: 'string',
+      notNull: true
     }
   })
 };
