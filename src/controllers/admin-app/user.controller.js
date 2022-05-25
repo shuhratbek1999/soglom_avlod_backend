@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const {secret_jwt} = require('../../startup/config');
 const DoctorModel = require('../../models/doctor.model');
 const InspectionModel = require('../../models/inspector_category.model');
+const { error } = require('winston');
 
 /******************************************************************************
  *                              User Controller
@@ -34,13 +35,13 @@ class UserController {
         delete model['password'];
         console.log(isMatch);
         if(!isMatch){
-            throw new HttpException(200, 
-                {
-                    "error": true,
-                    "error_code": 401,
-                    "message": "password error",
-                    "data": ""
-                  }
+            throw new HttpException(401, "password xato"
+                // {
+                //     "error": true,
+                //     "error_code": 401,
+                //     "message": "password error",
+                //     "data": error
+                //   }
                 )
         }
 
@@ -51,7 +52,7 @@ class UserController {
         res.send({
             error: false,
             error_code: 200,
-            message: 'User info',
+            message: 'Ro\'yhatdan o\'tdingiz',
             data: model
         });
     };
@@ -61,8 +62,8 @@ class UserController {
         })
         res.send({
             error: false,
-            error_code: 201,
-            message: 'User info',
+            error_code: 20,
+            message: 'Malumot keldi',
             data: model
         });
     }
@@ -70,7 +71,8 @@ class UserController {
         const model = await UserModel.scope('withoutPassword').findAll(); 
         res.send({
             error: false,
-            message: 'User info',
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
             data: model
         });
        }
@@ -80,9 +82,13 @@ class UserController {
                 id: req.params.id
             }
         })
+        if(!model){
+            throw new HttpException(404, "bu id da malumot yo\'q")
+        }
         res.send({
             error: false,
-            message: 'User info',
+            error_code: 200,
+            message: 'Malumot chiqdi',
             data: model
         });
     }
@@ -94,10 +100,12 @@ class UserController {
             console.log(req.body.password);
         }
         const modell = await UserModel.create(req.body);
+        // console.log(req.body.length)
         delete req.body['password']
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar qo\'shildi',
             data: modell
         });
     }
@@ -121,14 +129,25 @@ class UserController {
         model.salary = req.body.salary;
         model.save();
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar tahrirlandi',
             data: model
         });
     }
     delete = async (req, res, next) =>{
         const model = await UserModel.destroy(req.body);
-        res.send(model);
+        if(!model){
+            throw new HttpException(404, "bunday id yoq")
+        }
+        else{
+        res.send({
+            error: false,
+            error_code: 200,
+            message: 'Malumot ochirildi',
+            data: model
+        });
+    }
     }
     checkValidation = (req) => { 
         const errors = validationResult(req)

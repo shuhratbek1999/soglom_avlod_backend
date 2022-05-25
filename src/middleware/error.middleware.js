@@ -1,19 +1,19 @@
 const winston = require('winston');
 function errorMiddleware(error, req, res, next) {
-    let { status = 401, message, data } = error;
+    let { status = 500, message, data } = error;
 
     console.log(`[Error] ${error}`);
-    winston.error(error.message, error); 
+    winston.error(error.message, error);
 
     // If status code is 500 - change the message to Intrnal server error
-    message = status === 401 || !message ? 'Internal server error' : message;
-    let error_code = 201;
+    message = status === 500 || !message ? 'Serverdagi xatolik' : message;
+    let error_code = status;
+    status = 200;
     error = {
         error_code,
         error: false,
         message,
-        data
-        // ...(data) && data
+        ...(data) && data
     }
 
     res.status(status).send(error);
@@ -25,6 +25,6 @@ module.exports = errorMiddleware;
     type: 'error',
     status: 404,
     message: 'Not Found'
-    data: {...} // optional 
+    data: {...} // optional
 }
 */

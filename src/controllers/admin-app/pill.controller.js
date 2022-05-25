@@ -11,8 +11,9 @@ class PillController {
     getAll = async (req, res, next) => {
         const model = await PillModel.findAll();
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'malumotlar chiqdi',
             data: model
         });
     }
@@ -25,8 +26,9 @@ class PillController {
             }
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar topildi',
             data: model
         });
     }
@@ -34,8 +36,9 @@ class PillController {
        this.checkValidation(req);
        const model = await PillModel.create(req.body);
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
    }
@@ -49,8 +52,9 @@ class PillController {
     model.name = req.body.name;
     model.save();
     res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'malumotlar tahrirlandi',
         data: model
     });
 }
@@ -61,8 +65,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'pill delete',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar o\'chirildi',
         data: model
     });
 }

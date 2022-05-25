@@ -11,8 +11,9 @@ class RoomController {
     getAll = async (req, res, next) => {
         const model = await RoomModel.findAll();
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
             data: model
         });
     }
@@ -24,9 +25,13 @@ class RoomController {
                 id: req.params.id
             }
         });
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumot chiqdi',
             data: model
         });
     }
@@ -34,8 +39,9 @@ class RoomController {
        this.checkValidation(req);
        const model = await RoomModel.create(req.body);
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
    }
@@ -49,8 +55,9 @@ class RoomController {
     model.name = req.body.name;
     model.save();
     res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar tahrirlandi',
         data: model
     });
 }
@@ -61,8 +68,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'data delete',
+        error: false,
+        error_code: 200,
+        message: 'Malumot o\'chirildi',
         data: model
     });
 }

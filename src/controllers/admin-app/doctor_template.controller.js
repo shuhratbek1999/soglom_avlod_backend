@@ -16,8 +16,9 @@ class Doctor_templateController {
             ]
         });
         res.send({
-            error: true, 
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
             data: model
         });
     }
@@ -33,8 +34,9 @@ class Doctor_templateController {
             ]
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'malumot chiqdi',
             data: model
         });
     }
@@ -42,8 +44,9 @@ class Doctor_templateController {
        this.checkValidation(req);
        const model = await Doctor_templateModel.create(req.body);
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumot qoshildi',
         data: model
     });
    }
@@ -66,8 +69,9 @@ class Doctor_templateController {
     model.concomitant = req.body.concomitant;
     model.save();
     res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar tahrirlandi',
         data: model
     });
 }
@@ -78,8 +82,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'doctor_template delete',
+        error: false,
+        error_code: 200,
+        message: 'Malumot ochirildi',
         data: model
     });
 }

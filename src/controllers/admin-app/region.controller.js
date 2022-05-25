@@ -11,7 +11,8 @@ class RegionController {
     getAll = async (req, res, next) => {
         const model = await RegionModel.findAll();
         res.send({
-            error: true,
+            error: false,
+            error_code: 200,
             message: 'User info',
             data: model
         });
@@ -25,7 +26,8 @@ class RegionController {
             }
         });
         res.send({
-            error: true,
+            error: false,
+            error_code: 200,
             message: 'User info',
             data: model
         });
@@ -34,7 +36,8 @@ class RegionController {
        this.checkValidation(req);
        const model = await RegionModel.create(req.body);
        res.send({
-        error: true,
+        error: false,
+        error_code: 200,
         message: 'User info',
         data: model
     });
@@ -49,7 +52,8 @@ class RegionController {
     model.name = req.body.name;
     model.save();
     res.send({
-        error: true,
+        error: false,
+        error_code: 200,
         message: 'User info',
         data: model
     });
@@ -61,8 +65,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'ochirildi',
+        error: false,
+        error_code: 200,
+        message: 'User info',
         data: model
     });
 }

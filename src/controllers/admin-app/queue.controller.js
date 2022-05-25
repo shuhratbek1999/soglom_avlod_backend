@@ -18,8 +18,9 @@ class QueueController {
             ]
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'malumotlar chiqdi',
             data: model
         });
     }
@@ -36,8 +37,9 @@ class QueueController {
             ]
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'malumot chiqdi',
             data: model
         });
     }
@@ -45,8 +47,9 @@ class QueueController {
        this.checkValidation(req);
        const model = await QueueModel.create(req.body);
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'malumotlar qoshildi',
         data: model
     });
    }
@@ -64,8 +67,9 @@ class QueueController {
     model.status = req.body.status;
     model.save();
     res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'malumotlar tahrirlandi',
         data: model
     });
 }
@@ -76,8 +80,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'queue delete',
+        error: false,
+        error_code: 200,
+        message: 'ochirildi',
         data: model
     });
 }

@@ -11,8 +11,9 @@ class DoctorController {
     getAll = async (req, res, next) => { 
         const model = await Doctor_categoryModel.findAll();
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
             data: model
         });
     }
@@ -25,8 +26,9 @@ class DoctorController {
             }
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumot chiqdi',
             data: model
         });
     }
@@ -34,8 +36,9 @@ class DoctorController {
        this.checkValidation(req);
        const model = await Doctor_categoryModel.create(req.body);
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
    }
@@ -50,8 +53,9 @@ class DoctorController {
     model.price = req.body.price
     model.save();
     res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar tahrirlandi',
         data: model
     });
 }
@@ -62,8 +66,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'Doctor_category delete',
+        error: false,
+        error_code: 200,
+        message: 'malumot ochirildi',
         data: model
     });
 }

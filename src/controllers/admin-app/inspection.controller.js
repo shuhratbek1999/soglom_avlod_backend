@@ -16,8 +16,9 @@ class InspectionController {
             ]
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
             data: model
         });
     }
@@ -30,8 +31,9 @@ class InspectionController {
             }
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'malumot chiqdi',
             data: model
         });
     }
@@ -45,8 +47,9 @@ class InspectionController {
            await inspectionChildModel.create(inspectionChild[i])
        }
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
     }
@@ -81,8 +84,9 @@ class InspectionController {
             await inspectionChildModel.create(inspectionChild[i])
         }
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar tahrirlandi',
             data: model
         });
     }
@@ -94,8 +98,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'inspection delete',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar o\'chirildi',
         data: model
     });
 }

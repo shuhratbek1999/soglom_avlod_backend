@@ -8,20 +8,20 @@ const auth = (...roles) => {
         try {
             const authHeader = req.headers.authorization;
             const bearer = 'Bearer ';
+
+            if (!authHeader || !authHeader.startsWith(bearer)) {
+                throw new HttpException(401, 'ro\'yhatdan o\'tmagansiz!');
+            }
+
             const token = authHeader.replace(bearer, '');
 
             // Verify Token
             const decoded = jwt.verify(token, secret_jwt);
             const user = await UserModel.findOne({where:{ id: decoded.user_id }});
-            if (!authHeader || !authHeader.startsWith(bearer) || !user) {
-                throw new HttpException(401, {
-                    error: true,
-                    error_code: 401,
-                    message: 'authorization false',
-                    data: ""
-                });
-            }
 
+            if (!user) {
+                throw new HttpException(401, 'Autentifikatsiya amalga oshmadi!');
+            }
 
             // check if the current user is the owner user
             const ownerAuthorized = req.params.id == user.id;
@@ -30,7 +30,7 @@ const auth = (...roles) => {
             // if the user role don't have the permission to do this action.
             // the user will get this error
             if (!ownerAuthorized && roles.length && !roles.includes(user.role)) {
-                throw new HttpException(201, 'Unauthorized');
+                throw new HttpException(401, 'Unauthorized');
             }
 
             // if the user has permissions
@@ -38,7 +38,7 @@ const auth = (...roles) => {
             next();
 
         } catch (e) {
-            e.status = 201;
+            e.status = 401;
             next(e);
         }
     }

@@ -16,8 +16,9 @@ class DistrictController {
             ]
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
             data: model
         });
     }
@@ -33,8 +34,9 @@ class DistrictController {
             ]
         });
         res.send({
-            error: true,
-            message: 'User info',
+            error: false,
+            error_code: 200,
+            message: 'Malumot chiqdi',
             data: model
         });
     }
@@ -42,8 +44,9 @@ class DistrictController {
        this.checkValidation(req);
        const model = await DistrictModel.create(req.body);
        res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
    }
@@ -58,8 +61,9 @@ class DistrictController {
     model.region_id = req.body.region_id;
     model.save();
     res.send({
-        error: true,
-        message: 'User info',
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar tahrirlandi',
         data: model
     });
 }
@@ -70,8 +74,9 @@ delete = async (req, res, next) => {
         }
     });
     res.send({
-        error: true,
-        message: 'district delete',
+        error: false,
+        error_code: 200,
+        message: 'Malumot o\'chirildi',
         data: model
     });
 }
