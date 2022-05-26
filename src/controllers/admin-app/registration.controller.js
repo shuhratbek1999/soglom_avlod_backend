@@ -1,15 +1,12 @@
-
 const HttpException = require('../../utils/HttpException.utils');
-// const status = require('../../utils/status.utils')
-const inspector_categoryModel = require('../../models/inspector_category.model')
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class DoctorController {
+class RegistrationController {
     getAll = async (req, res, next) => {
-        const model = await inspector_categoryModel.findAll();
+        const model = await RoomModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -20,24 +17,24 @@ class DoctorController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await inspector_categoryModel.findOne({
+        const model = await RoomModel.findOne({
             where:{
                 id: req.params.id
             }
-        });
+        }); 
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
         res.status(200).send({
             error: false,
             error_code: 200,
-            message: 'malumot chiqdi',
+            message: 'Malumot chiqdi',
             data: model
         });
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await inspector_categoryModel.create(req.body);
+       const model = await RoomModel.create(req.body);
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -47,7 +44,7 @@ class DoctorController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await inspector_categoryModel.findOne({
+    const model = await RoomModel.findOne({
         where:{
             id: req.params.id
         }
@@ -57,12 +54,12 @@ class DoctorController {
     res.status(200).send({
         error: false,
         error_code: 200,
-        message: 'Malumot tahrirlandi',
+        message: 'Malumotlar tahrirlandi',
         data: model
     });
 }
 delete = async (req, res, next) => {
- const model =   await inspector_categoryModel.destroy({
+  const model =  await RoomModel.destroy({
         where:{
           id: req.params.id
         }
@@ -92,4 +89,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new DoctorController;
+module.exports = new RegistrationController;

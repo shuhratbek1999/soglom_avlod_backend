@@ -10,7 +10,7 @@ const { validationResult } = require('express-validator');
 class PillController {
     getAll = async (req, res, next) => {
         const model = await PillModel.findAll();
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumotlar chiqdi',
@@ -25,7 +25,10 @@ class PillController {
                 id: req.params.id
             }
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar topildi',
@@ -35,7 +38,7 @@ class PillController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await PillModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qo\'shildi',
@@ -51,7 +54,7 @@ class PillController {
     });
     model.name = req.body.name;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'malumotlar tahrirlandi',
@@ -59,12 +62,15 @@ class PillController {
     });
 }
 delete = async (req, res, next) => {
-    await PillModel.destroy({
+  const model =   await PillModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar o\'chirildi',

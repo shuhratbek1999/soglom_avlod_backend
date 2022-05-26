@@ -15,7 +15,7 @@ class DistrictController {
                 {model: RegionModel, as: 'region', attributes: ['id', 'name']}
             ]
         });
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -33,7 +33,10 @@ class DistrictController {
                 {model: RegionModel, as: 'region', attributes: ['id', 'name']}
             ]
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumot chiqdi',
@@ -43,7 +46,7 @@ class DistrictController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await DistrictModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qo\'shildi',
@@ -60,7 +63,7 @@ class DistrictController {
     model.name = req.body.name;
     model.region_id = req.body.region_id;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar tahrirlandi',
@@ -68,12 +71,15 @@ class DistrictController {
     });
 }
 delete = async (req, res, next) => {
-    await DistrictModel.destroy({
+  const model = await DistrictModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumot o\'chirildi',

@@ -10,7 +10,7 @@ const { validationResult } = require('express-validator');
 class DoctorController {
     getAll = async (req, res, next) => { 
         const model = await Doctor_categoryModel.findAll();
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -25,7 +25,10 @@ class DoctorController {
                 id: req.params.id
             }
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumot chiqdi',
@@ -35,7 +38,7 @@ class DoctorController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await Doctor_categoryModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qo\'shildi',
@@ -52,7 +55,7 @@ class DoctorController {
     model.name = req.body.name;
     model.price = req.body.price
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar tahrirlandi',
@@ -60,12 +63,15 @@ class DoctorController {
     });
 }
 delete = async (req, res, next) => {
-    await Doctor_categoryModel.destroy({
+  const model =  await Doctor_categoryModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'malumot ochirildi',

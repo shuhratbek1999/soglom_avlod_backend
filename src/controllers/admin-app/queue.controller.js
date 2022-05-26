@@ -17,7 +17,7 @@ class QueueController {
                 {model: PatientModel, as: 'patient', attributes: ['id', 'name']}
             ]
         });
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumotlar chiqdi',
@@ -36,7 +36,10 @@ class QueueController {
                 {model: PatientModel, as: 'patient', attributes: ['id', 'name']}
             ]
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumot chiqdi',
@@ -46,7 +49,7 @@ class QueueController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await QueueModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'malumotlar qoshildi',
@@ -66,7 +69,7 @@ class QueueController {
     model.date_time = req.body.date_time;
     model.status = req.body.status;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'malumotlar tahrirlandi',
@@ -74,12 +77,15 @@ class QueueController {
     });
 }
 delete = async (req, res, next) => {
-    await QueueModel.destroy({
+ const model =   await QueueModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'ochirildi',

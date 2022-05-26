@@ -10,10 +10,10 @@ const { validationResult } = require('express-validator');
 class RegionController {
     getAll = async (req, res, next) => {
         const model = await RegionModel.findAll();
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
-            message: 'User info',
+            message: 'Malumotlar chiqdi',
             data: model
         });
     }
@@ -25,20 +25,23 @@ class RegionController {
                 id: req.params.id
             }
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
-            message: 'User info',
+            message: 'Malumot chiqdi',
             data: model
         });
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await RegionModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
-        message: 'User info',
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
    }
@@ -51,23 +54,26 @@ class RegionController {
     });
     model.name = req.body.name;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
-        message: 'User info',
+        message: 'Malumot tahrirlandi',
         data: model
     });
 }
 delete = async (req, res, next) => {
-    await RegionModel.destroy({
+ const model =   await RegionModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
-        message: 'User info',
+        message: 'malumot o\'chirildi',
         data: model
     });
 }

@@ -11,7 +11,7 @@ function errorMiddleware(error, req, res, next) {
     status = 200;
     error = {
         error_code,
-        error: false,
+        error: true,
         message,
         ...(data) && data
     }

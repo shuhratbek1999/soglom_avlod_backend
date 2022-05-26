@@ -35,21 +35,19 @@ class UserController {
         delete model['password'];
         console.log(isMatch);
         if(!isMatch){
-            throw new HttpException(401, "password xato"
-                // {
-                //     "error": true,
-                //     "error_code": 401,
-                //     "message": "password error",
-                //     "data": error
-                //   }
-                )
+            // throw new HttpException(401, "password xato")
+            res.status(200).send({
+                error_code: 401,
+                error: true,
+                message: 'password xato'
+            })
         }
 
         const token = jwt.sign({ user_id: model.id.toString() }, secret_jwt, {
             expiresIn: '24h'
         });
         model.token = token
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Ro\'yhatdan o\'tdingiz',
@@ -60,7 +58,7 @@ class UserController {
         const model = await UserModel.findAll({
                     attributes: ['id','user_name']
         })
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 20,
             message: 'Malumot keldi',
@@ -68,8 +66,19 @@ class UserController {
         });
     }
     getAll = async (req, res, next) =>{
-        const model = await UserModel.scope('withoutPassword').findAll(); 
-        res.send({
+        const model = await UserModel.scope('withoutPassword').findAll({
+            include:[
+                {model: DoctorModel, as: 'doctor',
+            
+            attributes: ['id', 'name']
+        },
+        {
+            model: InspectionModel, as: 'inspecton',
+            attributes: ['id', 'name']
+        }
+            ],
+        }); 
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -80,12 +89,22 @@ class UserController {
         const model = await UserModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: DoctorModel, as: 'doctor',
+            
+            attributes: ['id', 'name']
+        },
+        {
+            model: InspectionModel, as: 'inspecton',
+            attributes: ['id', 'name']
+        }
+            ],
         })
         if(!model){
             throw new HttpException(404, "bu id da malumot yo\'q")
         }
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumot chiqdi',
@@ -102,7 +121,7 @@ class UserController {
         const modell = await UserModel.create(req.body);
         // console.log(req.body.length)
         delete req.body['password']
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar qo\'shildi',
@@ -128,7 +147,7 @@ class UserController {
         model.pay_type = req.body.pay_type;
         model.salary = req.body.salary;
         model.save();
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar tahrirlandi',
@@ -141,7 +160,7 @@ class UserController {
             throw new HttpException(404, "bunday id yoq")
         }
         else{
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumot ochirildi',

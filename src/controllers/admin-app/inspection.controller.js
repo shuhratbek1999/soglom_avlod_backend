@@ -12,10 +12,10 @@ class InspectionController {
         const model = await inspectionModel.findAll({
             include:[
                 {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
-                {model: inspectionChildModel, as: 'InspectionChild', attributes: ['id', 'name']}
+                {model: inspectionChildModel, as: 'InspectionChild'}
             ]
         });
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -28,9 +28,15 @@ class InspectionController {
         const model = await inspectionModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: inspectionChildModel, as: 'InspectionChild'}
+            ]
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumot chiqdi',
@@ -46,7 +52,7 @@ class InspectionController {
            inspectionChild[i].parent_id = model.id;
            await inspectionChildModel.create(inspectionChild[i])
        }
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qo\'shildi',
@@ -83,7 +89,7 @@ class InspectionController {
             inspectionChild[i].parent_id = model.id;
             await inspectionChildModel.create(inspectionChild[i])
         }
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar tahrirlandi',
@@ -92,12 +98,20 @@ class InspectionController {
     }
 
 delete = async (req, res, next) => {
-    await inspectionModel.destroy({
+  const model = await inspectionModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+ const modell = await inspectionChildModel.destroy({
+     where:{
+         id: req.params.id
+     }
+ })
+    if(!model || !modell){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar o\'chirildi',

@@ -15,7 +15,7 @@ class DoctorController {
             //     {model: InspectionModel, as: 'inspection', attributes: ['name']}
             // ]
         });
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -30,7 +30,10 @@ class DoctorController {
                 id: req.params.id
             }
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumot chiqdi',
@@ -40,7 +43,7 @@ class DoctorController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await DoctorModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qoshildi',
@@ -57,7 +60,7 @@ class DoctorController {
     model.name = req.body.name;
     model.category_id = req.body.category_id
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar tahrirlandi',
@@ -65,12 +68,15 @@ class DoctorController {
     });
 }
 delete = async (req, res, next) => {
-    await DoctorModel.destroy({
+ const model =   await DoctorModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumot o\'chirildi',

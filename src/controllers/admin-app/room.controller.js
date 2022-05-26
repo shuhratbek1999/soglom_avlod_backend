@@ -10,7 +10,7 @@ const { validationResult } = require('express-validator');
 class RoomController {
     getAll = async (req, res, next) => {
         const model = await RoomModel.findAll();
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -28,7 +28,7 @@ class RoomController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumot chiqdi',
@@ -38,7 +38,7 @@ class RoomController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await RoomModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qo\'shildi',
@@ -54,7 +54,7 @@ class RoomController {
     });
     model.name = req.body.name;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar tahrirlandi',
@@ -62,12 +62,15 @@ class RoomController {
     });
 }
 delete = async (req, res, next) => {
-    await RoomModel.destroy({
+  const model =  await RoomModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumot o\'chirildi',

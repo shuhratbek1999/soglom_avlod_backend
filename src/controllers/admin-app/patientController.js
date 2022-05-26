@@ -17,7 +17,7 @@ class PatientController {
                 {model: districtModel, as: 'district', attributes: ['id', 'name']}
             ]
         });
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -32,7 +32,10 @@ class PatientController {
                 id: req.params.id
             }
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumot chiqdi',
@@ -42,7 +45,7 @@ class PatientController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await PatientModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar qo\'shildi',
@@ -68,7 +71,7 @@ class PatientController {
     model.addres = req.body.addres;
     model.birthday = req.body.birthday;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar tahrirlandi',
@@ -76,12 +79,15 @@ class PatientController {
     });
 }
 delete = async (req, res, next) => {
-    await PatientModel.destroy({
+const model =    await PatientModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar o\'chirildi',

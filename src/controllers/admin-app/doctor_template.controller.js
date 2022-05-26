@@ -15,7 +15,7 @@ class Doctor_templateController {
                 {model: DoctorModel, as: 'doctor', attributes: ['name']}
             ]
         });
-        res.send({
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -33,7 +33,10 @@ class Doctor_templateController {
                 {model: DoctorModel, as: 'doctor', attributes: ['name']}
             ]
         });
-        res.send({
+        if(!model){
+            throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumot chiqdi',
@@ -43,7 +46,7 @@ class Doctor_templateController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await Doctor_templateModel.create(req.body);
-       res.send({
+       res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumot qoshildi',
@@ -68,7 +71,7 @@ class Doctor_templateController {
     model.recommended = req.body.recommended;
     model.concomitant = req.body.concomitant;
     model.save();
-    res.send({
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumotlar tahrirlandi',
@@ -76,12 +79,15 @@ class Doctor_templateController {
     });
 }
 delete = async (req, res, next) => {
-    await Doctor_templateModel.destroy({
+ const model =  await Doctor_templateModel.destroy({
         where:{
           id: req.params.id
         }
     });
-    res.send({
+    if(!model){
+        throw new HttpException(404, "bunday id yoq")
+    }
+    res.status(200).send({
         error: false,
         error_code: 200,
         message: 'Malumot ochirildi',
