@@ -36,12 +36,7 @@ class UserController {
         delete model['password'];
         console.log(isMatch);
         if(!isMatch){
-            // throw new HttpException(401, "password xato")
-            res.status(200).send({
-                error_code: 401,
-                error: true,
-                message: 'password xato'
-            })
+            throw new HttpException(401, "password xato")
         }
 
         const token = jwt.sign({ user_id: model.id.toString() }, secret_jwt, {
@@ -73,7 +68,7 @@ class UserController {
             attributes: ['id', 'name']
         },
         {
-            model: InspectionModel, as: 'inspecton',
+            model: InspectionModel, as: 'inspection',
             attributes: ['id', 'name']
         },
         {
@@ -100,7 +95,7 @@ class UserController {
             attributes: ['id', 'name']
         },
         {
-            model: InspectionModel, as: 'inspecton',
+            model: InspectionModel, as: 'inspection',
             attributes: ['id', 'name']
         },
         {
