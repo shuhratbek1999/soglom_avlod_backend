@@ -8,6 +8,7 @@ const {secret_jwt} = require('../../startup/config');
 const DoctorModel = require('../../models/doctor.model');
 const InspectionModel = require('../../models/inspector_category.model');
 const { error } = require('winston');
+const RoomModel = require('../../models/room.model');
 
 /******************************************************************************
  *                              User Controller
@@ -69,11 +70,14 @@ class UserController {
         const model = await UserModel.scope('withoutPassword').findAll({
             include:[
                 {model: DoctorModel, as: 'doctor',
-            
             attributes: ['id', 'name']
         },
         {
             model: InspectionModel, as: 'inspecton',
+            attributes: ['id', 'name']
+        },
+        {
+            model: RoomModel, as: 'Room',
             attributes: ['id', 'name']
         }
             ],
@@ -97,6 +101,10 @@ class UserController {
         },
         {
             model: InspectionModel, as: 'inspecton',
+            attributes: ['id', 'name']
+        },
+        {
+            model: RoomModel, as: 'Room',
             attributes: ['id', 'name']
         }
             ],

@@ -84,7 +84,7 @@ UserModel.init({
 });
 
 UserModel.belongsTo(RoomModel, { as: 'Room', foreignKey: 'room_id'})
-// RoomModel.belongsTo(UserModel, { as: 'User', foreignKey: 'id' })
+// UserModel.belongsTo(UserModel, { as: 'User', foreignKey: 'id' })
 UserModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 UserModel.belongsTo(InspectionModel, {as: 'inspecton', foreignKey: 'inspection_category_id'})
 // UserModel.hasOne(UserModel, {as: 'byName', foreignKey: 'id'})
