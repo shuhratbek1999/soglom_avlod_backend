@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const Registration_doctorModel = require('./registration_doctor.model');
 class RegistrationModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -82,5 +83,5 @@ discount : {
     }
   }
 });
-
+RegistrationModel.belongsTo(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 module.exports = RegistrationModel;
