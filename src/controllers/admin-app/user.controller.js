@@ -68,7 +68,7 @@ class UserController {
             attributes: ['id', 'name']
         },
         {
-            model: InspectionModel, as: 'inspection',
+            model: InspectionModel, as: 'inspecton',
             attributes: ['id', 'name']
         },
         {
@@ -95,7 +95,7 @@ class UserController {
             attributes: ['id', 'name']
         },
         {
-            model: InspectionModel, as: 'inspection',
+            model: InspectionModel, as: 'inspecton',
             attributes: ['id', 'name']
         },
         {
@@ -122,10 +122,9 @@ class UserController {
             console.log(req.body.password);
         }
         const modell = await UserModel.create(req.body);
-        // console.log(req.body.length)
-        delete req.body['password']
+        // delete req.body['password']
         res.status(200).send({
-            error: false,
+            error: false,  
             error_code: 200,
             message: 'Malumotlar qo\'shildi',
             data: modell

@@ -1,5 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const Inspection_categoryModel = require('./inspector_category.model')
+const Registration_inspection_childModel = require('./registration_inspection_child.model');
 class Registration_inspectionModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -62,5 +64,7 @@ Registration_inspectionModel.init({
     }
   }
 });
-
+// Registration_inspection_childModel.belongsTo(Registration_inspectionModel, {as: 'registration_inspection_child', foreignKey: 'parent_id'})
+// Registration_inspectionModel.belongsTo(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'inspection_id'})
+// Registration_inspectionModel.belongsTo(Inspection_categoryModel, {as: 'inspection_category', foreignKey: 'category_id'})
 module.exports = Registration_inspectionModel;

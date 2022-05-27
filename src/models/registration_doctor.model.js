@@ -1,5 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const DoctorModel = require('./doctor.model');
+const Registration_recipeModel = require('./registration_recipe.model');
 class Registration_doctorModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -31,8 +33,8 @@ Registration_doctorModel.init({
       allowNull: false
   },
   text:{
-type:DataTypes.STRING,
-allowNull: false
+      type:DataTypes.STRING,
+      allowNull: false
 }
 }, {
   sequelize,
@@ -56,5 +58,6 @@ allowNull: false
     }
   }
 });
-
+Registration_recipeModel.belongsTo(Registration_doctorModel, {as: 'registration_recipe', foreignKey: 'registration_doctor_id'})
+Registration_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 module.exports = Registration_doctorModel;

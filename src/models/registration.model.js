@@ -1,6 +1,13 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const Registration_doctorModel = require('./registration_doctor.model');
+const Registration_filesModel = require('../models/registration_files.model')
+const Registration_inspectionModel = require('../models/registration_inspection.model')
+const Registration_inspection_childModel = require('../models/registration_inspection_child.model')
+const Registration_payModel = require('../models/registration_pay.model')
+const Registration_recipeModel = require('../models/registration_recipe.model');
+const UserModel = require('./user.model');
+const patientModel = require('./patient.model')
 class RegistrationModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -83,5 +90,12 @@ discount : {
     }
   }
 });
-RegistrationModel.belongsTo(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Registration_filesModel, {as: 'registration_files', foreignKey: 'registration_id'} )
+RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Registration_inspection_childModel, {as: 'registration_inspection_child', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Registration_payModel, {as: 'registration_pay', foreignKey:'registration_id'})
+RegistrationModel.hasMany(Registration_recipeModel, {as: 'registration_recipe', foreignKey: 'registration_id'})
+RegistrationModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
+RegistrationModel.belongsTo(patientModel, {as:'patient', foreignKey: 'patient_id'})
 module.exports = RegistrationModel;

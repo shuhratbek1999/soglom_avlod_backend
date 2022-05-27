@@ -16,7 +16,7 @@ Registration_recipeModel.init({
       allowNull: false
   },
 //registration_doctor id
-  doc_id: {
+registration_doctor_id: {
       type: DataTypes.INTEGER,
       allowNull: false
   },

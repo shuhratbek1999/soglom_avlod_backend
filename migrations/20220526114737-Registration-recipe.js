@@ -22,7 +22,7 @@ exports.up = function(db) {
       autoIncrement: true, 
       notNull: true
     },
-    doc_id:{
+    registration_doctor_id:{
       type: 'int',
       notNull: true
     },

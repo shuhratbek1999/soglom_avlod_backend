@@ -31,7 +31,7 @@ summa:{
       type: DataTypes.DECIMAL(17.2),
       allowNull: false
   },
-  datetime:{
+  date_time:{
       type: DataTypes.INTEGER,
       allowNull: false
   },
