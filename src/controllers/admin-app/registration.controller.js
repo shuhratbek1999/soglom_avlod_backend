@@ -38,10 +38,11 @@ class RegistrationController {
             },
             include:[
                 {model: Registration_filesModel, as: 'registration_files'},
-                {model: Registration_inspection_childModel, as: 'registration_inspection_child'},
-                {model: Registration_inspectionModel, as: 'registration_inspection'},
+                // {model: Registration_inspection_childModel, as: 'registration_inspection_child'},
+                // {model: Registration_inspectionModel, as: 'registration_inspection'},
                 {model: Registration_payModel, as: 'registration_pay'},
                 {model: Registration_recipeModel, as: 'registration_recipe'},
+                {model: PatientModel, as: 'patient'}
             ]
         }); 
         if(!model){
