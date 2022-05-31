@@ -48,5 +48,5 @@ DoctorModel.init({
     }
   }
 });
-// DoctorModel.belongsTo(InspectionModel, {as:'inspection', foreignKey: 'category_id'})
+DoctorModel.belongsTo(InspectionModel, {as:'inspection_category', foreignKey: 'category_id'})
 module.exports = DoctorModel;

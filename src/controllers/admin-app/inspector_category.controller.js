@@ -7,7 +7,7 @@ const { validationResult } = require('express-validator');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class DoctorController {
+class InspectionController {
     getAll = async (req, res, next) => {
         const model = await inspector_categoryModel.findAll();
         res.status(200).send({
@@ -92,4 +92,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new DoctorController;
+module.exports = new InspectionController;

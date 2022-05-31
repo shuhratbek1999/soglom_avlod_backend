@@ -11,9 +11,9 @@ const InspectionModel = require('../../models/inspector_category.model');
 class DoctorController {
     getAll = async (req, res, next) => {
         const model = await DoctorModel.findAll({ 
-            // include:[
-            //     {model: InspectionModel, as: 'inspection', attributes: ['name']}
-            // ]
+            include:[
+                {model: InspectionModel, as: 'inspection_category', attributes: ['name']}
+            ]
         });
         res.status(200).send({
             error: false,
