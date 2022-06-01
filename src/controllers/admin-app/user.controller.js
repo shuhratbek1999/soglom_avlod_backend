@@ -85,7 +85,7 @@ class UserController {
         });
        }
     getOne = async (req, res, next) =>{
-        const model = await UserModel.findOne({
+        const model = await UserModel.scope('withoutPassword').findOne({
             where:{
                 id: req.params.id
             },

@@ -18,9 +18,23 @@ class RegistrationController {
     getAll = async (req, res, next) => {
         const model = await RegistrationModel.findAll({
             include:[
-                {model: PatientModel, as: 'patient', attributes: ['fullname']},
-                {model: UserModel, as: 'user', attributes: ['user_name']}
-            ]
+                {
+                    model: Registration_doctorModel, as: 'registration_doctor',
+                    include:[
+                        {
+                            model: Registration_recipeModel, as: 'registration_recipe'
+                        }
+                    ]
+                },
+                {
+                    model: Registration_inspectionModel, as: 'registration_inspection',
+                    include:[
+                        {
+                            model: Registration_inspection_childModel, as: 'registration_Child'
+                        }
+                    ]
+                }
+             ],
         });
         res.status(200).send({
             error: false,
@@ -33,17 +47,28 @@ class RegistrationController {
     getOne = async (req, res, next) => {
         this.checkValidation(req);
         const model = await RegistrationModel.findOne({
+            include:[
+               {
+                   model: Registration_doctorModel, as: 'registration_doctor',
+                   include:[
+                       {
+                           model: Registration_recipeModel, as: 'registration_recipe'
+                       }
+                   ]
+               },
+               {
+                   model: Registration_inspectionModel, as: 'registration_inspection',
+                   include:[
+                       {
+                           model: Registration_inspection_childModel, as: 'registration_Child'
+                       }
+                   ]
+               }
+            ],
+            
             where:{
                 id: req.params.id
-            },
-            include:[
-                {model: Registration_filesModel, as: 'registration_files'},
-                // {model: Registration_inspection_childModel, as: 'registration_inspection_child'},
-                // {model: Registration_inspectionModel, as: 'registration_inspection'},
-                {model: Registration_payModel, as: 'registration_pay'},
-                {model: Registration_recipeModel, as: 'registration_recipe'},
-                {model: PatientModel, as: 'patient'}
-            ]
+            }
         }); 
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
@@ -59,32 +84,29 @@ class RegistrationController {
        this.checkValidation(req);
        const {registration_doctor, registration_files,registration_inspection,
         registration_pay,registration_inspection_child, registration_recipe, ...registration} = req.body;
-       
+        let ts = Date.now();
+        let date_ob = new Date(ts);
+        let date = date_ob.getDate();
+        let month = date_ob.getMonth() + 1;
+        let year = date_ob.getFullYear();
+        let day = year + "-" + month + "-" + date;
+        // prints date & time in YYYY-MM-DD format
        const model = await RegistrationModel.create(registration);
+       model.created_at = day;
        for(let i = 0; i < registration_doctor.length; i++){
            registration_doctor[i].registration_id = model.id;
+           registration_recipe[i].registration_id = model.id;
+           registration_files[i].registration_id = model.id;
+           registration_pay[i].registration_id = model.id;
+           registration_inspection[i].registration_id = model.id;
+           registration_inspection_child[i].registration_id = model.id;
            await Registration_doctorModel.create(registration_doctor[i])
+           await Registration_recipeModel.create(registration_recipe[i])
+           await Registration_filesModel.create(registration_files[i])
+           await Registration_payModel.create(registration_pay[i])
+           await Registration_inspectionModel.create(registration_inspection[i])
+           await Registration_inspection_childModel.create(registration_inspection_child[i])
        }
-       for(let j = 0; j < registration_files.length; j++){
-           registration_files[j].registration_id = model.id;
-           await Registration_filesModel.create(registration_files[j])
-       }
-       for(let j = 0; j < registration_inspection.length; j++){
-        registration_inspection[j].registration_id = model.id;
-        await Registration_inspectionModel.create(registration_inspection[j])
-    }
-    for(let j = 0; j < registration_pay.length; j++){
-        registration_pay[j].registration_id = model.id;
-        await Registration_payModel.create(registration_pay[j])
-    }
-    for(let j = 0; j < registration_inspection_child.length; j++){
-        registration_inspection_child[j].registration_id = model.id;
-        await Registration_inspection_childModel.create(registration_inspection_child[j])
-    }
-    for(let j = 0; j < registration_recipe.length; j++){
-        registration_recipe[j].registration_id = model.id;
-        await Registration_recipeModel.create(registration_recipe[j])
-    }
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -137,9 +159,15 @@ class RegistrationController {
         if(model === null){
             res.status(404).send("not found")
         }
+        let ts = Date.now();
+        let date_ob = new Date(ts);
+        let date = date_ob.getDate();
+        let month = date_ob.getMonth() + 1;
+        let year = date_ob.getFullYear();
+        let day = year + "-" + month + "-" + date;
         model.user_id = registration.user_id;
         model.created_at = registration.created_at;
-        model.updated_at = registration.updated_at;
+        model.updated_at = day;
         model.status = registration.status;
         model.patient_id = registration.patient_id;
         model.type_service = registration.type_service;
@@ -150,29 +178,19 @@ class RegistrationController {
         model.discount = registration.discount;
     model.save();
     for(let i = 0; i < registration_doctor.length; i++){
-        registration_doctor[i].registration_id = model.id;
+        registration_doctor[i].registration_id =model.id;
+        registration_recipe[i].registration_id =model.id;
+        registration_files[i].registration_id =model.id;
+        registration_pay[i].registration_id =model.id;
+        registration_inspection[i].registration_id =model.id;
+        registration_inspection_child[i].registration_id =model.id;
         await Registration_doctorModel.create(registration_doctor[i])
+        await Registration_recipeModel.create(registration_recipe[i])
+        await Registration_filesModel.create(registration_files[i])
+        await Registration_payModel.create(registration_pay[i])
+        await Registration_inspectionModel.create(registration_inspection[i])
+        await Registration_inspection_childModel.create(registration_inspection_child[i])
     }
-    for(let j = 0; j < registration_files.length; j++){
-        registration_files[j].registration_id = model.id;
-        await Registration_filesModel.create(registration_files[j])
-    }
-    for(let j = 0; j < registration_inspection.length; j++){
-     registration_inspection[j].registration_id = model.id;
-     await Registration_inspectionModel.create(registration_inspection[j])
- }
- for(let j = 0; j < registration_pay.length; j++){
-     registration_pay[j].registration_id = model.id;
-     await Registration_payModel.create(registration_pay[j])
- }
- for(let j = 0; j < registration_inspection_child.length; j++){
-     registration_inspection_child[j].registration_id = model.id;
-     await Registration_inspection_childModel.create(registration_inspection_child[j])
- }
- for(let j = 0; j < registration_recipe.length; j++){
-     registration_recipe[j].registration_id = model.id;
-     await Registration_recipeModel.create(registration_recipe[j])
- }
     res.status(200).send({
         error: false,
         error_code: 200,

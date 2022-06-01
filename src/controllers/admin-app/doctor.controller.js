@@ -11,6 +11,7 @@ const InspectionModel = require('../../models/inspector_category.model');
 class DoctorController {
     getAll = async (req, res, next) => {
         const model = await DoctorModel.findAll({ 
+            // include: InspectionModel
             include:[
                 {model: InspectionModel, as: 'inspection_category', attributes: ['name']}
             ]
@@ -40,6 +41,20 @@ class DoctorController {
             data: model
         });
     }
+
+    byName = async (req, res, next) => {
+        this.checkValidation(req);
+        const model = await DoctorModel.findAll({
+            attributes: ['category_id']
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 201,
+            message: "malumot keldi",
+            data: model
+        })
+    }
+
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await DoctorModel.create(req.body);

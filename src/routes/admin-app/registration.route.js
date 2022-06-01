@@ -9,7 +9,7 @@ const  {registrationValidate}  = require('../../middleware/validators/admin-app/
 
 router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
-router.post('/create', auth(), registrationValidate, awaitHandlerFactory(registrationControl.create));
-router.patch('/update/:id', auth(), registrationValidate, awaitHandlerFactory(registrationControl.update));
+router.post('/create', auth(), registrationValidate,  awaitHandlerFactory(registrationControl.create));
+router.patch('/update/:id', auth(),registrationValidate, awaitHandlerFactory(registrationControl.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
 module.exports = router;

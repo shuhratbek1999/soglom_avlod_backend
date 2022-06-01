@@ -12,7 +12,7 @@ class InspectionController {
         const model = await inspectionModel.findAll({
             include:[
                 {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
-                {model: inspectionChildModel, as: 'InspectionChild'}
+                    {model: inspectionChildModel, as: 'InspectionChild'}
             ]
         });
         res.status(200).send({
@@ -30,6 +30,7 @@ class InspectionController {
                 id: req.params.id
             },
             include:[
+                {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
                 {model: inspectionChildModel, as: 'InspectionChild'}
             ]
         });
@@ -100,15 +101,11 @@ class InspectionController {
 delete = async (req, res, next) => {
   const model = await inspectionModel.destroy({
         where:{
-          id: req.params.id
+          id: req.params.id,
+          parent_id: req.params.id
         }
     });
- const modell = await inspectionChildModel.destroy({
-     where:{
-         id: req.params.id
-     }
- })
-    if(!model || !modell){
+    if(!model){
         throw new HttpException(404, "bunday id yoq")
     }
     res.status(200).send({

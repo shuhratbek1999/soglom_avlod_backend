@@ -33,7 +33,8 @@ created_at : {
 },
 updated_at : {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    
 },
 status : {
     type: DataTypes.STRING(20),
@@ -83,19 +84,8 @@ discount : {
       ]
     },
   ],
-  //findOne da yoki findAll da chaqirish kerak
-  scopes: {
-    withoutPassword: {
-      attributes: { exclude: ['password_hash'] },
-    }
-  }
+   
 });
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
-RegistrationModel.hasMany(Registration_filesModel, {as: 'registration_files', foreignKey: 'registration_id'} )
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
-RegistrationModel.hasMany(Registration_inspection_childModel, {as: 'registration_inspection_child', foreignKey: 'registration_id'})
-RegistrationModel.hasMany(Registration_payModel, {as: 'registration_pay', foreignKey:'registration_id'})
-RegistrationModel.hasMany(Registration_recipeModel, {as: 'registration_recipe', foreignKey: 'registration_id'})
-RegistrationModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
-RegistrationModel.belongsTo(patientModel, {as:'patient', foreignKey: 'patient_id'})
 module.exports = RegistrationModel;

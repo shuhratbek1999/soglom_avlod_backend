@@ -78,7 +78,7 @@ UserModel.init({
   // findOne da yoki findAll da chaqirish kerak
   scopes: {
     withoutPassword: {
-      attributes: { exclude: ['password_hash'] },
+      attributes: { exclude: ['password'] },
     }
   }
 });
