@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const DoctorModel = require('./doctor.model');
 class InspectionModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -50,5 +51,4 @@ InspectionModel.init({
     }
   }
 });
-
 module.exports = InspectionModel;
