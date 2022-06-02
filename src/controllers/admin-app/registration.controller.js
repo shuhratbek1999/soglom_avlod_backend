@@ -90,7 +90,6 @@ class RegistrationController {
         let month = date_ob.getMonth() + 1;
         let year = date_ob.getFullYear();
         let day = year + "-" + month + "-" + date;
-        // prints date & time in YYYY-MM-DD format
        const model = await RegistrationModel.create(registration);
        model.created_at = day;
        for(let i = 0; i < registration_doctor.length; i++){
