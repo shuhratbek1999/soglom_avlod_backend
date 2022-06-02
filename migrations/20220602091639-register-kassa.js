@@ -15,43 +15,38 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('registration_recipe', {
+  return db.createTable('register_kassa', {
     id: { 
       type: 'int', 
       primaryKey: true, 
       autoIncrement: true, 
       notNull: true
     },
-    registration_doctor_id:{
+    date_time:{
       type: 'int',
       notNull: true
     },
-    registration_id:{
-      type: 'int',
-      notNull: true
-    },
-    pill_id:{
-      type: 'int',
-      notNull: true
-    },
-    time:{
-      type: 'int',
-      notNull: true,
-    },
-    day:{
-      type: 'int',
-      notNull: true
-    },
-    comment:{
+    type:{
       type: 'string',
-      notNull: true,
-      length: 20
+      notNull: true
+    },
+    price:{
+      type: 'decimal',
+      notNull: true
+    },
+    pay_type:{
+      type: 'int',
+      notNull: true
+    },
+    doctor_id:{
+      type: 'int',
+      notNull: true
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable('registration_recipe');
+  return db.dropTable('register_kassa');
 };
 
 exports._meta = {

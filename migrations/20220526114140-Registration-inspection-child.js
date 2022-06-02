@@ -67,7 +67,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return null;
+  return db.dropTable('registration_inspection_child');
 };
 
 exports._meta = {

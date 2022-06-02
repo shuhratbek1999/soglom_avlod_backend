@@ -48,7 +48,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return null;
+  return db.dropTable('Registration_doctor');
 };
 
 exports._meta = {
