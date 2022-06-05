@@ -44,19 +44,19 @@ UserModel.init({
   },
   doctor_id:{
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   inspection_category_id:{
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   pay_type:{
     type: DataTypes.ENUM('salary', 'percent'),
-    allowNull: false
+    allowNull: true
   },
   salary:{
     type: DataTypes.DECIMAL(10, 2), 
-    allowNull: false
+    allowNull: true
   },
  
 }, {

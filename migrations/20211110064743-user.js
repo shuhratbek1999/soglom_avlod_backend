@@ -58,7 +58,7 @@ exports.up = function(db) {
     pay_type:{
       type: 'enum',
       length: "'salary', 'parcent'",
-      notNull: false
+      notNull: true
     },
     salary:{
       type: 'decimal',

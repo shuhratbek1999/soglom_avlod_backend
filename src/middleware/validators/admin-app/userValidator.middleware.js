@@ -25,19 +25,19 @@ exports.validateLogin = [
          .isInt()
          .withMessage('room_id integer'),
     body('doctor_id')
-         .exists()
+         .optional()
          .isInt()
          .withMessage('doctor_id integer'),
     body('inspection_category_id')
          .exists()
-         .isInt()
+         .optional()
          .withMessage('inspection_category_id integer'),
     body('pay_type')
-         .exists()
+         .optional()
          .isString()
          .withMessage('pay_type string tipida'),
     body('salary')
-         .exists()
+         .optional()
          .isDecimal()
          .withMessage('salary decimal tipida'),
 ];
