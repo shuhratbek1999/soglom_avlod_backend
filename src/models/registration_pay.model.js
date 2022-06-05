@@ -32,8 +32,9 @@ summa:{
       allowNull: false
   },
   date_time:{
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
   },
 }, {
   sequelize,

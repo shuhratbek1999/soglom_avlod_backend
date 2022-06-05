@@ -7,10 +7,7 @@ const Registration_inspection_childModel = require('../../models/registration_in
 const Registration_inspectionModel = require('../../models/registration_inspection.model');
 const Registration_payModel = require('../../models/registration_pay.model');
 const Registration_recipeModel = require('../../models/registration_recipe.model');
-const PatientModel = require('../../models/patient.model');
-const UserModel = require('../../models/user.model');
-const DoctorModel = require('../../models/doctor.model');
-const Inspection_categoryModel = require('../../models/inspector_category.model')
+const Register_kassaModel = require('../../models/register_kassa.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -82,29 +79,33 @@ class RegistrationController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const {registration_doctor, registration_files,registration_inspection,
+       const {register_kassa, registration_doctor, registration_files,registration_inspection,
         registration_pay,registration_inspection_child, registration_recipe, ...registration} = req.body;
-        let ts = Date.now();
-        let date_ob = new Date(ts);
-        let date = date_ob.getDate();
-        let month = date_ob.getMonth() + 1;
-        let year = date_ob.getFullYear();
-        let day = year + "-" + month + "-" + date;
        const model = await RegistrationModel.create(registration);
-       model.created_at = day;
+       
+       if(!model){
+           throw new HttpException(500, 'model mavjud emas');
+       }
        for(let i = 0; i < registration_doctor.length; i++){
-           registration_doctor[i].registration_id = model.id;
-           registration_recipe[i].registration_id = model.id;
-           registration_files[i].registration_id = model.id;
-           registration_pay[i].registration_id = model.id;
-           registration_inspection[i].registration_id = model.id;
-           registration_inspection_child[i].registration_id = model.id;
+           registration_doctor[i].id = model.id; 
+           registration_recipe[i].id = model.id;
+           registration_files[i].id = model.id;
+           registration_pay[i].id = model.id;
+           registration_inspection[i].id = model.id;
+           registration_inspection_child[i].id = model.id;
            await Registration_doctorModel.create(registration_doctor[i])
            await Registration_recipeModel.create(registration_recipe[i])
            await Registration_filesModel.create(registration_files[i])
-           await Registration_payModel.create(registration_pay[i])
+          await Registration_payModel.create(registration_pay[i])
            await Registration_inspectionModel.create(registration_inspection[i])
            await Registration_inspection_childModel.create(registration_inspection_child[i])
+           await Register_kassaModel.create({
+            "data_time": model.created_at,
+            "pay_type": registration_pay[i].pay_type,
+            "type": "kirim",
+            "price": registration_pay[i].summa,
+            "doctor_id": model.id
+      }) 
        }
        res.status(200).send({
         error: false,
@@ -155,15 +156,14 @@ class RegistrationController {
                 registration_id: model.id
             }
            })
+           await Register_kassaModel.destroy({
+               where:{
+                   doctor_id: model.id
+               } 
+           })
         if(model === null){
             res.status(404).send("not found")
         }
-        let ts = Date.now();
-        let date_ob = new Date(ts);
-        let date = date_ob.getDate();
-        let month = date_ob.getMonth() + 1;
-        let year = date_ob.getFullYear();
-        let day = year + "-" + month + "-" + date;
         model.user_id = registration.user_id;
         model.created_at = registration.created_at;
         model.updated_at = day;
@@ -187,6 +187,13 @@ class RegistrationController {
         await Registration_recipeModel.create(registration_recipe[i])
         await Registration_filesModel.create(registration_files[i])
         await Registration_payModel.create(registration_pay[i])
+        await Register_kassaModel.create({
+            "data_time": model.created_at,
+            "pay_type": registration_pay[i].pay_type,
+            "type": "kirim",
+            "price": registration_pay[i].summa,
+            "doctor_id": model.id
+      }) 
         await Registration_inspectionModel.create(registration_inspection[i])
         await Registration_inspection_childModel.create(registration_inspection_child[i])
     }
@@ -205,33 +212,38 @@ delete = async (req, res, next) => {
     });
     await Registration_doctorModel.destroy({
         where:{
-            registration_id: model.id
+            id: req.params.id
         }
        })
        await Registration_filesModel.destroy({
            where:{
-               registration_id: model.id
+            id: req.params.id
            }
           })
           await Registration_inspectionModel.destroy({
            where:{
-               registration_id: model.id
+            id: req.params.id
            }
           })
           await Registration_inspection_childModel.destroy({
            where:{
-               registration_id: model.id
+            id: req.params.id
            }
           })
           await Registration_payModel.destroy({
            where:{
-               registration_id: model.id
+            id: req.params.id
            }
           })
           await Registration_recipeModel.destroy({
            where:{
-               registration_id: model.id
+            id: req.params.id
            }
+          })
+          await Register_kassaModel.destroy({
+              where:{
+                  id: req.params.id
+              }
           })
     if(!model){
         throw new HttpException(404, "bunday id yoq")

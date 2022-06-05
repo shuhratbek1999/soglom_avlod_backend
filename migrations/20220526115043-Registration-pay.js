@@ -41,7 +41,7 @@ exports.up = function(db) {
       length: (17, 2)
     },
     date_time:{
-      type: 'int',
+      type: 'date',
       notNull: true
     }
   });

@@ -7,7 +7,8 @@ const Registration_inspection_childModel = require('../models/registration_inspe
 const Registration_payModel = require('../models/registration_pay.model')
 const Registration_recipeModel = require('../models/registration_recipe.model');
 const UserModel = require('./user.model');
-const patientModel = require('./patient.model')
+const patientModel = require('./patient.model');
+const Register_kassaModel = require('./register_kassa.model');
 class RegistrationModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -28,13 +29,15 @@ user_id: {
     allowNull: false
 },
 created_at : {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
+
 },
 updated_at : {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DATE,
     allowNull: false,
-    
+    defaultValue: DataTypes.NOW
 },
 status : {
     type: DataTypes.STRING(20),
@@ -88,4 +91,5 @@ discount : {
 });
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})
 module.exports = RegistrationModel;

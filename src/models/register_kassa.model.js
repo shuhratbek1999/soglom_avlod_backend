@@ -16,8 +16,9 @@ Register_kassaModel.init({
     primaryKey: true 
   },
  date_time:{
-   type: DataTypes.INTEGER,
-   allowNull: false
+   type: DataTypes.DATE,
+   allowNull: true,
+   defaultValue: DataTypes.NOW
  },
  type: {
    type: DataTypes.STRING(40),
@@ -28,7 +29,7 @@ Register_kassaModel.init({
    allowNull: false
  },
  pay_type:{
-   type: DataTypes.INTEGER,
+   type: DataTypes.STRING,
    allowNull: false
  },
  doctor_id:{
@@ -38,8 +39,8 @@ Register_kassaModel.init({
 
 }, {
   sequelize,
-  modelName: 'region',
-  tableName: 'region',
+  modelName: 'register_kassa',
+  tableName: 'register_kassa',
   timestamps: false,
   indexes: [
     {

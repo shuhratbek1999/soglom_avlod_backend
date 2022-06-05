@@ -45,4 +45,24 @@ exports.registrationValidate = [
        .exists()
        .isDecimal()
        .withMessage('decimal tipida kiriting'),
+      //  body('registration_doctor')
+      //  .exists()
+      //  .isArray()
+      //  .withMessage('massiv korinishida kiriting'),
+      //  body('doctor_id')
+      //  .exists()
+      //  .isInt()
+      //  .withMessage('Int tipida kiriting'),
+      //  body('status')
+      //  .exists()
+      //  .isString()
+      //  .withMessage('String tipida kiriting'),
+      //  body('price')
+      //  .exists()
+      //  .isDecimal()
+      //  .withMessage('decimal tipida kiriting'),
+      //  body('text')
+      //  .exists()
+      //  .isString()
+      //  .withMessage('string korinishida kiriting')
 ];

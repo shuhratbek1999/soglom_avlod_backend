@@ -23,7 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     date_time:{
-      type: 'int',
+      type: 'date',
       notNull: true
     },
     type:{
@@ -35,7 +35,7 @@ exports.up = function(db) {
       notNull: true
     },
     pay_type:{
-      type: 'int',
+      type: 'string',
       notNull: true
     },
     doctor_id:{
