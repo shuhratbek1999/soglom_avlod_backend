@@ -11,7 +11,6 @@ body('inspectionChild')
                         let ok = true;
                         ok = ok && element.norm != null;
                         ok = ok && element.parent_id != null;
-                        ok = ok && element.price != null;
                         ok = ok && element.name != null;
                         ok = ok && element.file != null;
                         return ok;

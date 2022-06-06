@@ -98,14 +98,17 @@ class RegistrationController {
            await Registration_filesModel.create(registration_files[i])
           await Registration_payModel.create(registration_pay[i])
            await Registration_inspectionModel.create(registration_inspection[i])
-           await Registration_inspection_childModel.create(registration_inspection_child[i])
+           await Registration_inspection_childModel.create(registration_inspection_child[i]) 
+       }
+       for(let i = 0; i < registration_pay.length; i++){
+           register_kassa[i].id = model.id;
            await Register_kassaModel.create({
             "data_time": model.created_at,
             "pay_type": registration_pay[i].pay_type,
             "type": "kirim",
             "price": registration_pay[i].summa,
             "doctor_id": model.id
-      }) 
+      })
        }
        res.status(200).send({
         error: false,
