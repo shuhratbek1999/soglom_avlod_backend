@@ -138,7 +138,7 @@ class UserController {
             data['password_hash'] = pasXash;
             const model = await UserModel.scope('withoutPassword').findOne({
                 where:{
-                    id: req.currentUser.id
+                    id: req.params.id
                 }
             })
         model.user_name = req.body.user_name;
