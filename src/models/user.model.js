@@ -32,7 +32,7 @@ UserModel.init({
   // },
   role: { 
     type: DataTypes.STRING,
-    // allowNull: true
+    allowNull: false
   },
   token:{
     type: DataTypes.STRING(100),

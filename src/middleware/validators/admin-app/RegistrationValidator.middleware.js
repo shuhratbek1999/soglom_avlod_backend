@@ -9,18 +9,6 @@ exports.registrationValidate = [
          .optional()
          .isInt()
          .withMessage('int tipida kiriting'),
-      body('updated_at')
-         .optional()
-         .isInt()
-         .withMessage('int tipida kiriting'),
-       body('status')
-       .exists()
-       .isString()
-       .withMessage('string tipida kiriting'),
-       body('patient_id')
-       .exists()
-       .isInt()
-       .withMessage('Int tipida kiriting'),
        body('type_service')
        .exists()
        .isInt()

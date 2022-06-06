@@ -165,8 +165,6 @@ class RegistrationController {
             res.status(404).send("not found")
         }
         model.user_id = registration.user_id;
-        model.created_at = registration.created_at;
-        model.updated_at = day;
         model.status = registration.status;
         model.patient_id = registration.patient_id;
         model.type_service = registration.type_service;

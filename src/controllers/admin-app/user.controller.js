@@ -131,13 +131,12 @@ class UserController {
         });
     }
     update = async (req, res, next) =>{
-        const bcrypt = require('bcrypt');
         const salt = await bcrypt.genSalt();
         let data = req.body;
             const pasXash = await bcrypt.hash(data.password.toString(), salt);
             delete data['password'];
             data['password_hash'] = pasXash;
-            const model = await UserModel.findOne({
+            const model = await UserModel.scope('withoutPassword').findOne({
                 where:{
                     id: req.currentUser.id
                 }
