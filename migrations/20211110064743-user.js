@@ -39,9 +39,8 @@ exports.up = function(db) {
       // notNull: true
     },
     role: {
-      type: 'enum',
-      length: " 'doctor','register','cashier','inspector'",
-      notNull: false
+      type: 'string',
+      notNull: true
     },
     room_id: {
       type: 'int',
@@ -56,9 +55,8 @@ exports.up = function(db) {
       notNull: true
     },
     pay_type:{
-      type: 'enum',
-      length: "'salary', 'parcent'",
-      notNull: true
+      type: 'string',
+      notNullL:true
     },
     salary:{
       type: 'decimal',

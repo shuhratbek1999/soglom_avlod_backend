@@ -31,7 +31,7 @@ UserModel.init({
   //   allowNull: false
   // },
   role: { 
-    type: DataTypes.ENUM('doctor','kassir','operator'),
+    type: DataTypes.STRING,
     // allowNull: true
   },
   token:{
