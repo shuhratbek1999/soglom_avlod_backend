@@ -62,6 +62,9 @@ exports.up = function(db) {
       type: 'decimal',
       notNull: true
     },
+    percent:{
+      type: 'decimal'
+    }
   });
 };
 

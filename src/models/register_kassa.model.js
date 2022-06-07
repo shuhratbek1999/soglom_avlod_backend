@@ -17,8 +17,7 @@ Register_kassaModel.init({
   },
  date_time:{
    type: DataTypes.DATE,
-   allowNull: true,
-   defaultValue: DataTypes.NOW
+   allowNull: true
  },
  type: {
    type: DataTypes.STRING(40),

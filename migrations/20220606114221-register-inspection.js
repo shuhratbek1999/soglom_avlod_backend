@@ -15,39 +15,38 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('queue',{
+  return db.createTable('register_inspection', {
     id: { 
       type: 'int', 
       primaryKey: true, 
       autoIncrement: true, 
       notNull: true
     },
-    room_id:{
-      type: 'int',
-      notNull: true
-    },
-    patient_id:{
-      type: 'int',
-      notNull: true
-    },
-    number:{
-      type: 'int',
-      notNull: true
-    },
     date_time:{
       type: 'date',
       notNull: true
     },
-    status:{
+    type:{
       type: 'string',
-      length: 20,
+      notNull: true
+    },
+    price:{
+      type: 'decimal',
+      notNull: true
+    },
+    doc_id:{
+      type: 'int',
+      notNull: true
+    },
+    user_id: {
+      type: 'int',
       notNull: true
     }
-  })
+  });
 };
 
 exports.down = function(db) {
-  return db.dropTable('queue');
+  return db.dropTable('register_inspection');
 };
 
 exports._meta = {

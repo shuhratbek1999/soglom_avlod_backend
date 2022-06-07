@@ -29,7 +29,7 @@ registration_doctor_id: {
       allowNull: false
   },
   time:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.DATE,
       allowNull: false
   },
   day:{

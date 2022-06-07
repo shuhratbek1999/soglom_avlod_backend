@@ -27,7 +27,7 @@ number : {
     type: DataTypes.INTEGER,
 },
 date_time: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DATE,
 },
 status: {
     type: DataTypes.STRING(20),

@@ -26,10 +26,6 @@ UserModel.init({
     type: DataTypes.STRING(100),
     allowNull: false,
   },
-  // password_hash: {
-  //   type: DataTypes.STRING(100),
-  //   allowNull: false
-  // },
   role: { 
     type: DataTypes.STRING,
     allowNull: false
@@ -58,6 +54,9 @@ UserModel.init({
     type: DataTypes.DECIMAL(10, 2), 
     allowNull: true
   },
+  percent:{
+    type: DataTypes.DECIMAL(10,2)
+  }
  
 }, {
   sequelize,
