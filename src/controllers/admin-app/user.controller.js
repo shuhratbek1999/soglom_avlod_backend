@@ -156,7 +156,11 @@ class UserController {
         });
     }
     delete = async (req, res, next) =>{
-        const model = await UserModel.destroy(req.body);
+        const model = await UserModel.destroy({
+            where:{
+                id: req.params.id
+            }
+        });
         if(!model){
             throw new HttpException(404, "bunday id yoq")
         }
