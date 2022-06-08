@@ -31,11 +31,11 @@ class InspectionController {
             where:{
                 id: req.params.id
             },
-            include:[
-                {model: UserModel, as: 'User'},
-                {model: inspectionChildModel, as: 'InspectionChild'},
-                {model: inspector_categoryModel, as: 'inspector_category'}
-            ]
+            // include:[
+            //     {model: UserModel, as: 'User'},
+            //     {model: inspectionChildModel, as: 'InspectionChild'},
+            //     {model: inspector_categoryModel, as: 'inspector_category'}
+            // ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
@@ -104,8 +104,7 @@ class InspectionController {
 delete = async (req, res, next) => {
   const model = await inspectionModel.destroy({
         where:{
-          id: req.params.id,
-          parent_id: req.params.id
+          id: req.params.id
         }
     });
     if(!model){

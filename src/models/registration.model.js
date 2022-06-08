@@ -31,13 +31,13 @@ user_id: {
 created_at : {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: new Date(1549312452 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+    defaultValue: Math.floor(new Date().getTime() / 1000)
 
 },
 updated_at : {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: new Date(1549312452 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+    defaultValue: Math.floor(new Date().getTime() / 1000)
 },
 status : {
     type: DataTypes.STRING(20),

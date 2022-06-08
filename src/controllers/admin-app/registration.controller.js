@@ -80,20 +80,20 @@ class RegistrationController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const {register_kassa, register_doctor, registration_doctor, registration_files,registration_inspection,
-        registration_pay,registration_inspection_child, ...registration} = req.body;
+       const {registration_files, ...registration} = req.body;
        const model = await RegistrationModel.create(registration);
        
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
+       
        registration_doctor.forEach((value, index) =>{
       var {registration_recipe, ...registration_doctor} = value
      Registration_doctorModel.create(registration_doctor);
    for(let i = 0; i < registration_recipe.length; i++){
        Registration_recipeModel.create(registration_recipe[i]);
        RegisterDoctorModel.create({
-           "date_time":new Date(1549312452 * 1000).toISOString().slice(0, 19).replace('T', ' '),
+           "date_time": Math.floor(new Date().getTime() / 1000),
            "type": value.text,
            "price": value.price,
            "doc_id": value.registration_id, 
@@ -107,6 +107,16 @@ class RegistrationController {
             for(let i = 0; i < registration_inspection_child.length; i++){
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
             }
+    })
+    registration_pay.forEach((value, index)=>{
+        Registration_payModel.create(value);
+        Register_kassaModel.create({
+            "date_time": value.date_time,
+            "doctor_id": model.id,
+            "pay_type": value.pay_type,
+            "price": value.summa, 
+            "type": 'kirim'
+        })
     })
 
     //    for(let i = 0; i < registration_doctor.length; i++){
