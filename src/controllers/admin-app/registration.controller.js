@@ -9,6 +9,8 @@ const Registration_payModel = require('../../models/registration_pay.model');
 const Registration_recipeModel = require('../../models/registration_recipe.model');
 const Register_kassaModel = require('../../models/register_kassa.model')
 const RegisterDoctorModel = require('../../models/register_doctor.model')
+const Register_inspectionModel = require('../../models/register_inspection.model');
+const UserModel = require('../../models/user.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -80,13 +82,15 @@ class RegistrationController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const {registration_files, ...registration} = req.body;
+       const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        const model = await RegistrationModel.create(registration);
        
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
-       
+       registration_files.forEach((value, index) => {
+           Registration_filesModel.create(value)
+       })
        registration_doctor.forEach((value, index) =>{
       var {registration_recipe, ...registration_doctor} = value
      Registration_doctorModel.create(registration_doctor);
@@ -105,6 +109,13 @@ class RegistrationController {
             var {registration_inspection_child, ...registration_inspection} = value;
             Registration_inspectionModel.create(registration_inspection);
             for(let i = 0; i < registration_inspection_child.length; i++){
+                Register_inspectionModel.create({
+                  "date_time": Math.floor(new Date().getTime() / 1000),
+                  "type": value.type,
+                  "price": value.price,
+                  "doc_id": value.registration_id,
+                  "user_id": value.id
+                })
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
             }
     })
@@ -114,7 +125,7 @@ class RegistrationController {
             "date_time": value.date_time,
             "doctor_id": model.id,
             "pay_type": value.pay_type,
-            "price": value.summa, 
+            "price": value.summa,   
             "type": 'kirim'
         })
     })

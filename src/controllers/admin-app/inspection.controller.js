@@ -31,11 +31,9 @@ class InspectionController {
             where:{
                 id: req.params.id
             },
-            // include:[
-            //     {model: UserModel, as: 'User'},
-            //     {model: inspectionChildModel, as: 'InspectionChild'},
-            //     {model: inspector_categoryModel, as: 'inspector_category'}
-            // ]
+            include:[
+                {model: inspectionChildModel, as: 'InspectionChild'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
