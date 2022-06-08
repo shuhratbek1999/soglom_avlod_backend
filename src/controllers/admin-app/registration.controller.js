@@ -81,12 +81,20 @@ class RegistrationController {
    create = async (req, res, next) => {
        this.checkValidation(req);
        const {register_kassa, register_doctor, registration_doctor, registration_files,registration_inspection,
-        registration_pay,registration_inspection_child, registration_recipe, ...registration} = req.body;
+        registration_pay,registration_inspection_child, ...registration} = req.body;
        const model = await RegistrationModel.create(registration);
        
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
+       registration_doctor.forEach((value, index) =>{
+      var {registration_recipe, ...registration_doctor} = value
+    const x =  Registration_doctorModel.create(registration_doctor);
+   
+    })
+    registration_inspection.forEach((value, index) => {
+
+    })
     //    for(let i = 0; i < registration_doctor.length; i++){
     //        registration_doctor[i].id = model.id; 
     //        registration_recipe[i].id = model.id;
@@ -117,7 +125,7 @@ class RegistrationController {
     //         "doctor_id": model.id
     //   })
     //    }
-
+   
         
        res.status(200).send({
         error: false,

@@ -23,8 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     registration_doctor_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     registration_id:{
       type: 'int',

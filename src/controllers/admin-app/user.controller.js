@@ -88,21 +88,7 @@ class UserController {
         const model = await UserModel.scope('withoutPassword').findOne({
             where:{
                 id: req.params.id
-            },
-            include:[
-                {model: DoctorModel, as: 'doctor',
-            
-            attributes: ['id', 'name']
-        },
-        {
-            model: InspectionModel, as: 'inspecton',
-            attributes: ['id', 'name']
-        },
-        {
-            model: RoomModel, as: 'Room',
-            attributes: ['id', 'name']
-        }
-            ],
+            }
         })
         if(!model){
             throw new HttpException(404, "bu id da malumot yo\'q")
@@ -122,7 +108,7 @@ class UserController {
             console.log(req.body.password);
         }
         const modell = await UserModel.create(req.body);
-        // delete req.body['password']
+        delete req.body['password']
         res.status(200).send({
             error: false,  
             error_code: 200,
