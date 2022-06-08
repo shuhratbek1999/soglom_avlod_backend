@@ -32,10 +32,9 @@ class InspectionController {
                 id: req.params.id
             },
             include:[
-                {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
+                {model: UserModel, as: 'User'},
                 {model: inspectionChildModel, as: 'InspectionChild'},
-                ,
-                    {model: inspector_categoryModel, as: 'inspector_category'}
+                {model: inspector_categoryModel, as: 'inspector_category'}
             ]
         });
         if(!model){

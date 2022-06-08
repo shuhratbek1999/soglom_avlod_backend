@@ -89,12 +89,26 @@ class RegistrationController {
        }
        registration_doctor.forEach((value, index) =>{
       var {registration_recipe, ...registration_doctor} = value
-    const x =  Registration_doctorModel.create(registration_doctor);
-   
+     Registration_doctorModel.create(registration_doctor);
+   for(let i = 0; i < registration_recipe.length; i++){
+       Registration_recipeModel.create(registration_recipe[i]);
+       RegisterDoctorModel.create({
+           "date_time":new Date(1549312452 * 1000).toISOString().slice(0, 19).replace('T', ' '),
+           "type": value.text,
+           "price": value.price,
+           "doc_id": value.registration_id, 
+           "doctor_id": value.doctor_id
+       })
+   }
     })
     registration_inspection.forEach((value, index) => {
-
+            var {registration_inspection_child, ...registration_inspection} = value;
+            Registration_inspectionModel.create(registration_inspection);
+            for(let i = 0; i < registration_inspection_child.length; i++){
+                Registration_inspection_childModel.create(registration_inspection_child[i]);
+            }
     })
+
     //    for(let i = 0; i < registration_doctor.length; i++){
     //        registration_doctor[i].id = model.id; 
     //        registration_recipe[i].id = model.id;
