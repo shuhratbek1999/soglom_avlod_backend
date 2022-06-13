@@ -109,23 +109,24 @@ class RegistrationController {
             var {registration_inspection_child, ...registration_inspection} = value;
             Registration_inspectionModel.create(registration_inspection);
             for(let i = 0; i < registration_inspection_child.length; i++){
-                Register_inspectionModel.create({
-                  "date_time": Math.floor(new Date().getTime() / 1000),
-                  "type": value.type,
-                  "price": value.price,
-                  "doc_id": value.registration_id,
-                  "user_id": value.id
-                })
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
+                console.log(value);
             }
+            // Register_inspectionModel.create({
+            //     "date_time": Math.floor(new Date().getTime() / 1000),
+            //     "type": "uzcard",
+            //     "price": "12000",
+            //     "doctor_id": 12,
+            //     "user_id": 1
+            //   })
     })
     registration_pay.forEach((value, index)=>{
         Registration_payModel.create(value);
         Register_kassaModel.create({
             "date_time": value.date_time,
-            "doctor_id": model.id,
+            "doctor_id": value.user_id,
             "pay_type": value.pay_type,
-            "price": value.summa,   
+            "price": sequelize.query('SELECT * FROM user left join register_kassa as rk on user.percent * rk.summa'),   
             "type": 'kirim'
         })
     })

@@ -70,6 +70,7 @@ class PatientController {
     model.gender = req.body.gender;
     model.addres = req.body.addres;
     model.birthday = req.body.birthday;
+    model.street = req.body.street;
     model.save();
     res.status(200).send({
         error: false,

@@ -72,6 +72,10 @@ exports.up = function(db) {
     birthday:{
       type: 'string',
       notNull: true
+    },
+    street:{
+      type: 'string',
+      notNull: true
     }
   })
 };
