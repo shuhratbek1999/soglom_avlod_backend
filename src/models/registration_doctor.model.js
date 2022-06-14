@@ -17,12 +17,10 @@ Registration_doctorModel.init({
       allowNull: false
   },
   doctor_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   registration_id : {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   status:{
       type:DataTypes.STRING(20),

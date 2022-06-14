@@ -28,8 +28,7 @@ exports.up = function(db) {
       notNull: true
     },
     parent_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     price:{
       type: 'decimal(17,2)',

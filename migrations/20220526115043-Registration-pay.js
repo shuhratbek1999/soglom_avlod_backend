@@ -23,12 +23,10 @@ exports.up = function(db) {
       notNull: true
     },
     user_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     registration_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     pay_type:{
       type: 'string',
@@ -41,8 +39,7 @@ exports.up = function(db) {
       length: (17, 2)
     },
     date_time:{
-      type: 'date',
-      notNull: true
+      type: 'int'
     }
   });
 };

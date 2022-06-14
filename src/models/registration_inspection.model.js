@@ -18,12 +18,10 @@ Registration_inspectionModel.init({
       allowNull: false
   },
   inspection_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   registration_id : {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   type:{
       type:DataTypes.BOOLEAN,
@@ -35,8 +33,7 @@ Registration_inspectionModel.init({
   },
 //inspection_category
   category_id:{
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   status:{
       type: DataTypes.STRING(20),

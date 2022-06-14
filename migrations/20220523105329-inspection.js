@@ -28,8 +28,7 @@ exports.up = function(db) {
       notNull: true
     },
     parent_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     price:{
       type: 'decimal(17,2)',
@@ -40,12 +39,10 @@ exports.up = function(db) {
       notNull: true
     },
     user_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     category_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     percent_bonus:{
       type: 'decimal(5, 2)',

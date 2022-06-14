@@ -11,6 +11,7 @@ const Register_kassaModel = require('../../models/register_kassa.model')
 const RegisterDoctorModel = require('../../models/register_doctor.model')
 const Register_inspectionModel = require('../../models/register_inspection.model');
 const UserModel = require('../../models/user.model');
+const { sequelize } = require('../../models/user.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -96,11 +97,12 @@ class RegistrationController {
      Registration_doctorModel.create(registration_doctor);
    for(let i = 0; i < registration_recipe.length; i++){
        Registration_recipeModel.create(registration_recipe[i]);
+       var date_time = Math.floor(new Date().getTime() / 1000);
        RegisterDoctorModel.create({
-           "date_time": Math.floor(new Date().getTime() / 1000),
+           "date_time": date_time,
            "type": value.text,
            "price": value.price,
-           "doc_id": value.registration_id, 
+           "doc_id": 1, 
            "doctor_id": value.doctor_id
        })
    }
@@ -108,27 +110,37 @@ class RegistrationController {
     registration_inspection.forEach((value, index) => {
             var {registration_inspection_child, ...registration_inspection} = value;
             Registration_inspectionModel.create(registration_inspection);
+            Register_inspectionModel.save();
             for(let i = 0; i < registration_inspection_child.length; i++){
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
                 console.log(value);
             }
-            // Register_inspectionModel.create({
-            //     "date_time": Math.floor(new Date().getTime() / 1000),
-            //     "type": "uzcard",
-            //     "price": "12000",
-            //     "doctor_id": 12,
-            //     "user_id": 1
-            //   })
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            console.log(date_time);
+            Register_inspectionModel.create({
+                "date_time": date_time,
+                "type": "uzcard",
+                "price": "12000",
+                "doctor_id": 12,
+                "user_id": 1
+              })
     })
     registration_pay.forEach((value, index)=>{
         Registration_payModel.create(value);
+        var date_time = Math.floor(new Date().getTime() / 1000);
+        var x = UserModel.findAll({
+            attributes: ['percent', 'role']
+        })
+        console.log(x);
+        console.log(value.summa);
         Register_kassaModel.create({
-            "date_time": value.date_time,
+            "date_time": date_time,
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,
-            "price": sequelize.query('SELECT * FROM user left join register_kassa as rk on user.percent * rk.summa'),   
+            "price": value.summa * x,    
             "type": 'kirim'
         })
+        
     })
 
     //    for(let i = 0; i < registration_doctor.length; i++){

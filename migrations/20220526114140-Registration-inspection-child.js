@@ -23,8 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     parent_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     text:{
       type: 'string',
@@ -41,8 +40,7 @@ exports.up = function(db) {
       length: 60
     },
     registration_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     status:{
       type: 'string',

@@ -23,8 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     user_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     created_at:{
       type: 'date',
@@ -40,8 +39,7 @@ exports.up = function(db) {
       length: 20
     },
     patient_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     type_service:{
       type: 'int',

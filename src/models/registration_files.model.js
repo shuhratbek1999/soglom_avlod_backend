@@ -16,8 +16,7 @@ Registration_filesModel.init({
     allowNull: false
 },
 registration_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: DataTypes.INTEGER
 },
 href : {
     type: DataTypes.STRING(100),

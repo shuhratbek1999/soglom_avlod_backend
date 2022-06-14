@@ -23,8 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     registration_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     href:{
       type: 'string',

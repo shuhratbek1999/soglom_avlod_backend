@@ -43,16 +43,13 @@ exports.up = function(db) {
       notNull: true
     },
     room_id: {
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     doctor_id: {
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     inspection_category_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     pay_type:{
       type: 'string',

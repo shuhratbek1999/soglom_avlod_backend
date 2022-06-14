@@ -23,12 +23,10 @@ exports.up = function(db) {
       notNull: true
     },
     inspection_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     registration_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     type:{
       type: 'boolean',
@@ -39,8 +37,7 @@ exports.up = function(db) {
       notNull: true
     },
     category_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     status:{
       type: 'string',

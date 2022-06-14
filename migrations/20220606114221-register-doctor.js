@@ -23,8 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     date_time:{
-      type: 'date',
-      notNull: true
+      type: 'int'
     },
     type:{
       type: 'string',
@@ -35,12 +34,10 @@ exports.up = function(db) {
       notNull: true
     },
     doc_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     doctor_id: {
-      type: 'int',
-      notNull: true
+      type: 'int'
     }
   });
 };

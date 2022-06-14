@@ -49,10 +49,6 @@ gender:{
 },
 birthday:{
     type:DataTypes.INTEGER
-},
-street:{
-    type: DataTypes.STRING(30),
-    allowNull: false
 }
 
 }, {

@@ -16,8 +16,7 @@ Register_inspectionModel.init({
     primaryKey: true 
   },
  date_time:{
-   type: DataTypes.DATE,
-   allowNull: true
+   type: DataTypes.INTEGER
  },
  type: {
    type: DataTypes.STRING(40),
@@ -28,12 +27,10 @@ Register_inspectionModel.init({
    allowNull: false
  },
  doc_id:{
-   type: DataTypes.INTEGER,
-   allowNull: false
+   type: DataTypes.INTEGER
  },
  user_id:{
-  type: DataTypes.INTEGER,
-  allowNull: false
+  type: DataTypes.INTEGER
 }
 
 }, {

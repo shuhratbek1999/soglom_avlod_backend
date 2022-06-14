@@ -16,12 +16,10 @@ Registration_payModel.init({
       allowNull: false
   },
   registration_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   pay_type : {
       type: DataTypes.STRING(20),
@@ -32,10 +30,8 @@ summa:{
       allowNull: false
   },
   date_time:{
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Math.floor(new Date().getTime() / 1000)
-  },
+      type: DataTypes.INTEGER
+    }
 }, {
   sequelize,
   modelName: 'registration_pay',

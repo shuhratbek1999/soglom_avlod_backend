@@ -16,8 +16,7 @@ Register_kassaModel.init({
     primaryKey: true 
   },
  date_time:{
-   type: DataTypes.DATE,
-   allowNull: true
+   type: DataTypes.INTEGER
  },
  type: {
    type: DataTypes.STRING(40),
@@ -32,8 +31,7 @@ Register_kassaModel.init({
    allowNull: false
  },
  doctor_id:{
-   type: DataTypes.INTEGER,
-   allowNull: false
+   type: DataTypes.INTEGER
  }
 
 }, {

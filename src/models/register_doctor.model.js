@@ -16,8 +16,7 @@ register_doctorModel.init({
     primaryKey: true 
   },
  date_time:{
-   type: DataTypes.DATE,
-   allowNull: true
+   type: DataTypes.INTEGER
  },
  type: {
    type: DataTypes.STRING(40),
@@ -28,12 +27,10 @@ register_doctorModel.init({
    allowNull: false
  },
  doc_id:{
-   type: DataTypes.INTEGER,
-   allowNull: false
+   type: DataTypes.INTEGER
  },
  doctor_id:{
-  type: DataTypes.INTEGER,
-  allowNull: false
+  type: DataTypes.INTEGER
 }
 
 }, {

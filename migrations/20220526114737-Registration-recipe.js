@@ -26,12 +26,10 @@ exports.up = function(db) {
       type: 'int'
     },
     registration_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     pill_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     time:{
       type: 'int',

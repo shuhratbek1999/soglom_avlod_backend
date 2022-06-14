@@ -43,12 +43,10 @@ exports.up = function(db) {
       notNull: true
     },
     region_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     district_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     phone:{
       type: 'string',
@@ -73,10 +71,6 @@ exports.up = function(db) {
       type: 'string',
       notNull: true
     },
-    street:{
-      type: 'string',
-      notNull: true
-    }
   })
 };
 

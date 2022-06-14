@@ -17,8 +17,7 @@ Registration_inspection_childModel.init({
   },
 //registration inspection
   parent_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   text : {
       type: DataTypes.STRING,
@@ -33,8 +32,7 @@ Registration_inspection_childModel.init({
       allowNull: false
   },
   registration_id:{
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
   },
   status:{
       type: DataTypes.STRING(20),

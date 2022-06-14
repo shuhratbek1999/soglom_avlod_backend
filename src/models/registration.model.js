@@ -25,17 +25,16 @@ RegistrationModel.init({
     allowNull: false
 },
 user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: DataTypes.INTEGER
 },
 created_at : {
-    type: DataTypes.DATE,
+    type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: Math.floor(new Date().getTime() / 1000)
 
 },
 updated_at : {
-    type: DataTypes.DATE,
+    type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: Math.floor(new Date().getTime() / 1000)
 },
@@ -44,8 +43,7 @@ status : {
     allowNull: false
 },
 patient_id : {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: DataTypes.INTEGER
 },
 type_service : {
     type: DataTypes.STRING(20),

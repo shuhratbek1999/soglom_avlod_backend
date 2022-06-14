@@ -27,18 +27,6 @@ exports.patientValidate = [
          .exists()
          .isInt()
          .withMessage('Int tipida kiriting'),
-     body('phone')
-         .exists()
-         .isInt()
-         .withMessage('Int tipida kiriting'),
-     body('passport')
-         .exists()
-         .isString()
-         .withMessage('string tipida kiriting'),
-     body('addres')
-         .exists()
-         .isString()
-         .withMessage('string tipida kiriting'),
      body('gender')
          .exists()
          .isString()

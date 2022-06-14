@@ -23,8 +23,7 @@ exports.up = function(db) {
       notNull: true
     },
     region_id:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     name: {
       type: 'string',
