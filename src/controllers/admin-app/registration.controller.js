@@ -90,10 +90,15 @@ class RegistrationController {
         });
     }
    create = async (req, res, next, insert = true) => {
-    const x = await UserModel.findOne({
+    var x = await UserModel.findOne({
         where:{
-            id: 1
+            doctor_id: registration_doctor.doctor_id
         },
+    })
+    var y = await UserModel.findOne({
+        where:{
+            id: registration.user_id
+        }
     })
     let miqdor = x._previousDataValues.percent;
     console.log(miqdor);
@@ -109,21 +114,23 @@ class RegistrationController {
        })
        registration_doctor.forEach((value, index) =>{
       var {registration_recipe, ...registration_doctor} = value;
+      console.log(value);
       function isHave(item){
-        return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+        return item.room_id == x.room_id && item.patient_id == model.patient_id;
     }
-    var a = this.massiv.find(isHave)
-    console.log(a);
-    if(a == undefined){
-        this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+    console.log(x.room_id + "||"+ model.patient_id);
+    var have =  this.massiv.find(isHave);
+    console.log(have);
+    if(have == undefined){
+        this.massiv.push({"room_id":x.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
     }
-    else if(value.status!=a.status){
+    else if(value.status!=have.status){
       if(value.status!='complete'){
           var index=this.massiv.findIndex(isHave);
-          this.massiv[index].status=a.status;
-      }else if(a.status!='complete'){
+          this.massiv[index].status=have.status;
+      }else if(have.status!='complete'){
           var index=this.massiv.findIndex(isHave);
-          this.massiv[index].status=a.status;
+          this.massiv[index].status=have.status;
       }
   }
      Registration_doctorModel.create(registration_doctor);
@@ -143,12 +150,12 @@ class RegistrationController {
     registration_inspection.forEach((value, index) => {
             var {registration_inspection_child, ...registration_inspection} = value;
               function isHave(item){
-                  return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+                  return item.room_id == y.room_id && item.patient_id == model.patient_id;
               }
               var a = this.massiv.find(isHave)
-              console.log(a);
+            //   console.log(a);
               if(a == undefined){
-                  this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+                  this.massiv.push({"room_id":y.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_inspection.status})
               }
               else if(value.status!=a.status){
                 if(value.status!='complete'){
@@ -158,9 +165,7 @@ class RegistrationController {
                     var index=this.massiv.findIndex(isHave);
                     this.massiv[index].status=a.status;
                 }
-            }
-            // console.log(x._previousDataValues.room_id);
-            // console.log(value.status);
+              }
             Registration_inspectionModel.create(registration_inspection);
             for(let i = 0; i < registration_inspection_child.length; i++){
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
@@ -197,6 +202,7 @@ class RegistrationController {
                             patient_id: element.patient_id
                         }
                     });
+                    console.log(has + " |||||||||");
                     if(has!=null){
                         if(element.status!=has.status){
                             has.status=element.status;
@@ -211,6 +217,7 @@ class RegistrationController {
                                 ['number', 'DESC']
                             ],
                         });
+                        console.log(que);
                         if(que!=null){
                             element.number=que.number+1;
                         }else{
@@ -244,12 +251,13 @@ class RegistrationController {
         data: model
     });
    }
-   update = async (req, res, next) => {
+   update = async (req, res, next, insert = true) => {
        this.checkValidation(req);
+       const id = req.params.id;
        const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
     const model = await RegistrationModel.findOne({
         where:{
-            id: req.params.id
+            id: id
         }
     });
      if(model === null){
@@ -257,23 +265,53 @@ class RegistrationController {
      }
     await Registration_doctorModel.destroy({
          where:{
-             registration_id: model.id
+            id: id
          }
         })
+        await Registration_recipeModel.destroy({
+            where:{
+                id: id
+             }
+           })
         await Registration_filesModel.destroy({
             where:{
-                registration_id: model.id
-            }
+                id: id
+             }
            })
            await Registration_inspectionModel.destroy({
             where:{
-                registration_id: model.id
-            }
+                id: id
+             }
+           })
+           await Registration_inspection_childModel.destroy({
+            where:{
+                id: id
+             }
            })
            await Registration_payModel.destroy({
             where:{
-                registration_id: model.id
-            }
+                id: id
+             }
+           })
+           await RegisterDoctorModel.destroy({
+            where:{
+                id: id
+             }
+           })
+           await Register_inspectionModel.destroy({
+            where:{
+                id: id
+             }
+           })
+           await Register_kassaModel.destroy({
+            where:{
+                id: id
+             }
+           })
+           await QueueModel.destroy({ 
+            where:{
+                id: id
+             }
            })
         if(model === null){
             res.status(404).send("not found")
@@ -430,12 +468,6 @@ class RegistrationController {
                 }
             } 
             this.massiv=[];
-       res.status(200).send({
-        error: false,
-        error_code: 200,
-        message: 'Malumotlar qo\'shildi',
-        data: model
-    });
     res.status(200).send({
         error: false,
         error_code: 200,
