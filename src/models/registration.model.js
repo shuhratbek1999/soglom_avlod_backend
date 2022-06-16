@@ -9,6 +9,7 @@ const Registration_recipeModel = require('../models/registration_recipe.model');
 const UserModel = require('./user.model');
 const patientModel = require('./patient.model');
 const Register_kassaModel = require('./register_kassa.model');
+const PatientModel = require('./patient.model');
 class RegistrationModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -90,4 +91,5 @@ discount : {
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})
+RegistrationModel.hasMany(PatientModel, {as: 'patient', foreignKey: 'id'})
 module.exports = RegistrationModel;

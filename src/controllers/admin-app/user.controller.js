@@ -54,6 +54,12 @@ class UserController {
         const model = await UserModel.findAll({
                     attributes: ['id','user_name']
         })
+        const a = await UserModel.findOne({
+            where:{
+                percent: 100
+            }
+        })
+        console.log(a._previousDataValues.percent);
         res.status(200).send({
             error: false,
             error_code: 20,

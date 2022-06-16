@@ -31,12 +31,15 @@ Register_inspectionModel.init({
  },
  user_id:{
   type: DataTypes.INTEGER
+},
+inspection_id:{
+  type: DataTypes.INTEGER
 }
 
 }, {
   sequelize,
-  modelName: 'register_kassa',
-  tableName: 'register_kassa',
+  modelName: 'register_inspection',
+  tableName: 'register_inspection',
   timestamps: false,
   indexes: [
     {

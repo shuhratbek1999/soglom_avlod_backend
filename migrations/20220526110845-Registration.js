@@ -26,11 +26,11 @@ exports.up = function(db) {
       type: 'int'
     },
     created_at:{
-      type: 'date',
+      type: 'int',
       notNull: true
     },
     updated_at:{
-      type: 'date',
+      type: 'int',
       notNull: true
     },
     status:{

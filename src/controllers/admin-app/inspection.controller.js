@@ -48,7 +48,11 @@ class InspectionController {
   
     create = async (req, res, next) => {
         this.checkValidation(req);
-       const {inspectionChild, ...inspection} = req.body;
+        for(var element of req.body){
+            var {inspection, inspectionChild, ...data} = element;
+            console.log(data);
+        }
+    //    const {inspectionChild, ...inspection} = req.body;
        const model = await inspectionModel.create(inspection);
        for(let i = 0; i < inspectionChild.length; i++){
            inspectionChild[i].parent_id = model.id;

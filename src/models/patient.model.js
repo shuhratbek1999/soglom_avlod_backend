@@ -1,7 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const RegionModel = require('../models/region.model')
-const districtModel = require('../models/district.model')
+const districtModel = require('../models/district.model');
+// const RegistrationModel = require('./registration.model');
 class PatientModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());

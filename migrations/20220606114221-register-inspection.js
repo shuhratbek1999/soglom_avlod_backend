@@ -38,6 +38,9 @@ exports.up = function(db) {
     },
     user_id: {
       type: 'int'
+    },
+    inspection_id:{
+      type: 'int'
     }
   });
 };

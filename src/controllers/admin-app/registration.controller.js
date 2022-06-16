@@ -11,14 +11,22 @@ const Register_kassaModel = require('../../models/register_kassa.model')
 const RegisterDoctorModel = require('../../models/register_doctor.model')
 const Register_inspectionModel = require('../../models/register_inspection.model');
 const UserModel = require('../../models/user.model');
-const { sequelize } = require('../../models/user.model')
+const QueueModel = require('../../models/queue.model')
+const { sequelize } = require('../../models/user.model');
+const PatientModel = require('../../models/patient.model');
+const {Op} = require('sequelize')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class RegistrationController {
+     massiv = [];
     getAll = async (req, res, next) => {
         const model = await RegistrationModel.findAll({
             include:[
+                {
+                    model: PatientModel, as: 'patient'
+                },
+
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
                     include:[
@@ -81,9 +89,16 @@ class RegistrationController {
             data: model
         });
     }
-   create = async (req, res, next) => {
+   create = async (req, res, next, insert = true) => {
+    const x = await UserModel.findOne({
+        where:{
+            id: 1
+        },
+    })
+    let miqdor = x._previousDataValues.percent;
+    console.log(miqdor);
        this.checkValidation(req);
-       const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
+       const {registration_files, queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        const model = await RegistrationModel.create(registration);
        
        if(!model){
@@ -93,7 +108,24 @@ class RegistrationController {
            Registration_filesModel.create(value)
        })
        registration_doctor.forEach((value, index) =>{
-      var {registration_recipe, ...registration_doctor} = value
+      var {registration_recipe, ...registration_doctor} = value;
+      function isHave(item){
+        return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+    }
+    var a = this.massiv.find(isHave)
+    console.log(a);
+    if(a == undefined){
+        this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+    }
+    else if(value.status!=a.status){
+      if(value.status!='complete'){
+          var index=this.massiv.findIndex(isHave);
+          this.massiv[index].status=a.status;
+      }else if(a.status!='complete'){
+          var index=this.massiv.findIndex(isHave);
+          this.massiv[index].status=a.status;
+      }
+  }
      Registration_doctorModel.create(registration_doctor);
    for(let i = 0; i < registration_recipe.length; i++){
        Registration_recipeModel.create(registration_recipe[i]);
@@ -107,74 +139,104 @@ class RegistrationController {
        })
    }
     })
+
     registration_inspection.forEach((value, index) => {
             var {registration_inspection_child, ...registration_inspection} = value;
+              function isHave(item){
+                  return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+              }
+              var a = this.massiv.find(isHave)
+              console.log(a);
+              if(a == undefined){
+                  this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+              }
+              else if(value.status!=a.status){
+                if(value.status!='complete'){
+                    var index=this.massiv.findIndex(isHave);
+                    this.massiv[index].status=a.status;
+                }else if(a.status!='complete'){
+                    var index=this.massiv.findIndex(isHave);
+                    this.massiv[index].status=a.status;
+                }
+            }
+            // console.log(x._previousDataValues.room_id);
+            // console.log(value.status);
             Registration_inspectionModel.create(registration_inspection);
-            Register_inspectionModel.save();
             for(let i = 0; i < registration_inspection_child.length; i++){
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
-                console.log(value);
             }
             var date_time = Math.floor(new Date().getTime() / 1000);
-            console.log(date_time);
+            // console.log(date_time);
             Register_inspectionModel.create({
                 "date_time": date_time,
-                "type": "uzcard",
-                "price": "12000",
-                "doctor_id": 12,
-                "user_id": 1
+                "type": value.type,
+                "price": value.price * miqdor,
+                "doc_id": value.registration_id,
+                "user_id": value.id,
+                "inspection_id": value.inspection_id
               })
     })
     registration_pay.forEach((value, index)=>{
         Registration_payModel.create(value);
         var date_time = Math.floor(new Date().getTime() / 1000);
-        var x = UserModel.findAll({
-            attributes: ['percent', 'role']
-        })
-        console.log(x);
-        console.log(value.summa);
         Register_kassaModel.create({
             "date_time": date_time,
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,
-            "price": value.summa * x,    
+            "price": value.summa * miqdor,    
             "type": 'kirim'
         })
         
     })
-
-    //    for(let i = 0; i < registration_doctor.length; i++){
-    //        registration_doctor[i].id = model.id; 
-    //        registration_recipe[i].id = model.id;
-    //        registration_files[i].id = model.id;
-    //        registration_inspection[i].id = model.id;
-    //        registration_inspection_child[i].id = model.id;
-    //        registration_pay[i].id = model.id;
-    //        await Registration_payModel.create(registration_pay[i])
-    //        await Registration_doctorModel.create(registration_doctor[i])
-    //        await RegisterDoctorModel.create({
-    //            "doc_id": registration_doctor[i].registration_id,
-    //            "doctor_id": registration_doctor[i].doctor_id,
-    //            "price": registration_doctor[i].price,
-    //            "date_time": model.created_at,
-    //            "type": registration_doctor[i].status
-    //        })
-    //        await Registration_recipeModel.create(registration_recipe[i])
-    //        await Registration_filesModel.create(registration_files[i])
-    //        await Registration_inspectionModel.create(registration_inspection[i])
-    //        await Registration_inspection_childModel.create(registration_inspection_child[i]) 
-    //    }
-    //    for(let i = 0; i < registration_pay.length; i++){
-    //        await Register_kassaModel.create({
-    //         "date_time": model.created_at,
-    //         "pay_type": registration_pay[i].pay_type,
-    //         "type": "kirim",
-    //         "price": registration_pay[i].summa,
-    //         "doctor_id": model.id
-    //   })
-    //    }
-   
-        
+            for(var element of this.massiv){
+                if(!insert){
+                    var has= await QueueModel.findOne({
+                        where:{
+                            status:{[Op.not]:'complete'},
+                            room_id: element.room_id,
+                            patient_id: element.patient_id
+                        }
+                    });
+                    if(has!=null){
+                        if(element.status!=has.status){
+                            has.status=element.status;
+                           await  has.save();
+                        }
+                    }else if(element.status!='complete') {
+                        var que= await QueueModel.findOne({
+                            where:{ 
+                                room_id: element.room_id,
+                            },
+                            order: [
+                                ['number', 'DESC']
+                            ],
+                        });
+                        if(que!=null){
+                            element.number=que.number+1;
+                        }else{
+                            element.number=1;
+                        }
+                       await  QueueModel.create(element);
+                    }
+                }else{
+                    var que= await QueueModel.findOne({
+                        where:{ 
+                            room_id: element.room_id,
+                        },
+                        order: [
+                            ['number', 'DESC']
+                        ],
+                    });
+                    if(que!=null){
+                        element.number=que.number+1;
+                    }else{
+                        element.number=1;
+                    }
+                   await  QueueModel.create(element); 
+    
+                }
+            } 
+            this.massiv=[];
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -184,8 +246,7 @@ class RegistrationController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-       const {registration_doctor, registration_files,registration_inspection,
-        registration_pay,registration_inspection_child, registration_recipe, ...registration} = req.body;
+       const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
     const model = await RegistrationModel.findOne({
         where:{
             id: req.params.id
@@ -194,88 +255,191 @@ class RegistrationController {
      if(model === null){
          throw new HttpException(404, 'data not found')
      }
-    // await Registration_doctorModel.destroy({
-    //      where:{
-    //          registration_id: model.id
-    //      }
-    //     })
-    //     await Registration_filesModel.destroy({
-    //         where:{
-    //             registration_id: model.id
-    //         }
-    //        })
-    //        await Registration_inspectionModel.destroy({
-    //         where:{
-    //             registration_id: model.id
-    //         }
-    //        })
-    //        await Registration_inspection_childModel.destroy({
-    //         where:{
-    //             registration_id: model.id
-    //         }
-    //        })
-    //        await Registration_payModel.destroy({
-    //         where:{
-    //             registration_id: model.id
-    //         }
-    //        })
-    //        await Registration_recipeModel.destroy({
-    //         where:{
-    //             registration_id: model.id
-    //         }
-    //        })
-    //        await Register_kassaModel.destroy({
-    //            where:{
-    //                doctor_id: model.id
-    //            } 
-    //        })
-    //     if(model === null){
-    //         res.status(404).send("not found")
-    //     }
-    //     model.user_id = registration.user_id;
-    //     model.status = registration.status;
-    //     model.patient_id = registration.patient_id;
-    //     model.type_service = registration.type_service;
-    //     model.complaint = registration.complaint;
-    //     model.summa = registration.summa;
-    //     model.pay_summa = registration.pay_summa;
-    //     model.backlog = registration.backlog;
-    //     model.discount = registration.discount;
-    // model.save();
-    // for(let i = 0; i < registration_doctor.length; i++){
-    //     registration_doctor[i].registration_id =model.id;
-    //     registration_recipe[i].registration_id =model.id;
-    //     registration_files[i].registration_id =model.id;
-    //     registration_pay[i].registration_id =model.id;
-    //     registration_inspection[i].registration_id =model.id;
-    //     registration_inspection_child[i].registration_id =model.id;
-    //     await Registration_doctorModel.create(registration_doctor[i])
-    //     await Registration_recipeModel.create(registration_recipe[i])
-    //     await Registration_filesModel.create(registration_files[i])
-    //     await Registration_payModel.create(registration_pay[i])
-    //     await RegisterDoctorModel.create({
-    //         "doc_id": registration_doctor[i].doctor_id,
-    //         "doctor_id": registration_doctor[i].registration_id,
-    //         "price": registration_doctor[i].price,
-    //         "date_time": model.created_at,
-    //         "type": registration_doctor[i].status
-    //     })
-    //     await Registration_inspectionModel.create(registration_inspection[i])
-    //     await Registration_inspection_childModel.create(registration_inspection_child[i])
-    //     for(let i = 0; i < registration_pay.length; i++){
-    //         await Register_kassaModel.create({
-    //          "date_time": model.created_at,
-    //          "pay_type": registration_pay[i].pay_type,
-    //          "type": "kirim",
-    //          "price": registration_pay[i].summa,
-    //          "doctor_id": model.id
-    //    })
-    //     }
-    // }
+    await Registration_doctorModel.destroy({
+         where:{
+             registration_id: model.id
+         }
+        })
+        await Registration_filesModel.destroy({
+            where:{
+                registration_id: model.id
+            }
+           })
+           await Registration_inspectionModel.destroy({
+            where:{
+                registration_id: model.id
+            }
+           })
+           await Registration_payModel.destroy({
+            where:{
+                registration_id: model.id
+            }
+           })
+        if(model === null){
+            res.status(404).send("not found")
+        }
+        model.user_id = registration.user_id;
+        model.status = registration.status;
+        model.patient_id = registration.patient_id;
+        model.type_service = registration.type_service;
+        model.complaint = registration.complaint;
+        model.summa = registration.summa;
+        model.pay_summa = registration.pay_summa;
+        model.backlog = registration.backlog;
+        model.discount = registration.discount;
+    model.save();
+   
+    const x = await UserModel.findOne({
+        where:{
+            id: 1
+        },
+    })
+    let miqdor = x._previousDataValues.percent;
+    console.log(miqdor);
+       if(!model){
+           throw new HttpException(500, 'model mavjud emas');
+       }
+       registration_files.forEach((value, index) => {
+           Registration_filesModel.create(value)
+       })
+       registration_doctor.forEach((value, index) =>{
+      var {registration_recipe, ...registration_doctor} = value;
+      function isHave(item){
+        return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+    }
+    var a = this.massiv.find(isHave)
+    console.log(a);
+    if(a == undefined){
+        this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+    }
+    else if(value.status!=a.status){
+      if(value.status!='complete'){
+          var index=this.massiv.findIndex(isHave);
+          this.massiv[index].status=a.status;
+      }else if(a.status!='complete'){
+          var index=this.massiv.findIndex(isHave);
+          this.massiv[index].status=a.status;
+      }
+  }
+     Registration_doctorModel.create(registration_doctor);
+   for(let i = 0; i < registration_recipe.length; i++){
+       Registration_recipeModel.create(registration_recipe[i]);
+       var date_time = Math.floor(new Date().getTime() / 1000);
+       RegisterDoctorModel.create({
+           "date_time": date_time,
+           "type": value.text,
+           "price": value.price,
+           "doc_id": 1, 
+           "doctor_id": value.doctor_id
+       })
+   }
+    })
+
+    registration_inspection.forEach((value, index) => {
+            var {registration_inspection_child, ...registration_inspection} = value;
+              function isHave(item){
+                  return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+              }
+              var a = this.massiv.find(isHave)
+              console.log(a);
+              if(a == undefined){
+                  this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+              }
+              else if(value.status!=a.status){
+                if(value.status!='complete'){
+                    var index=this.massiv.findIndex(isHave);
+                    this.massiv[index].status=a.status;
+                }else if(a.status!='complete'){
+                    var index=this.massiv.findIndex(isHave);
+                    this.massiv[index].status=a.status;
+                }
+            }
+            Registration_inspectionModel.create(registration_inspection);
+            for(let i = 0; i < registration_inspection_child.length; i++){
+                Registration_inspection_childModel.create(registration_inspection_child[i]);
+            }
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            console.log(date_time);
+            Register_inspectionModel.create({
+                "date_time": date_time,
+                "type": value.type,
+                "price": value.price * miqdor,
+                "doc_id": value.registration_id,
+                "user_id": value.id,
+                "inspection_id": value.inspection_id
+              })
+    })
+    registration_pay.forEach((value, index)=>{
+        Registration_payModel.create(value);
+        var date_time = Math.floor(new Date().getTime() / 1000);
+        Register_kassaModel.create({
+            "date_time": date_time,
+            "doctor_id": value.user_id,
+            "pay_type": value.pay_type,
+            "price": value.summa * miqdor,    
+            "type": 'kirim'
+        })
+        
+    })
+            for(var element of this.massiv){
+                if(!insert){
+                    var has= await QueueModel.findOne({
+                        where:{
+                            status:{[Op.not]:'complete'},
+                            room_id: element.room_id,
+                            patient_id: element.patient_id
+                        }
+                    });
+                    if(has!=null){
+                        if(element.status!=has.status){
+                            has.status=element.status;
+                           await  has.save();
+                        }
+                    }else if(element.status!='complete') {
+                        var que= await QueueModel.findOne({
+                            where:{ 
+                                room_id: element.room_id,
+                            },
+                            order: [
+                                ['number', 'DESC']
+                            ],
+                        });
+                        if(que!=null){
+                            element.number=que.number+1;
+                        }else{
+                            element.number=1;
+                        }
+                       await  QueueModel.create(element);
+                    }
+                }else{
+                    var que= await QueueModel.findOne({
+                        where:{ 
+                            room_id: element.room_id,
+                        },
+                        order: [
+                            ['number', 'DESC']
+                        ],
+                    });
+                    if(que!=null){
+                        element.number=que.number+1;
+                    }else{
+                        element.number=1;
+                    }
+                   await  QueueModel.create(element); 
+    
+                }
+            } 
+            this.massiv=[];
+       res.status(200).send({
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar qo\'shildi',
+        data: model
+    });
     res.status(200).send({
         error: false,
         error_code: 200,
-        message: 'Malumotlar tahrirlandi',
+        message: 'Malumot tahrirlandi',
         data: model
     });
 }
