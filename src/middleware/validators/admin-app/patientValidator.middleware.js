@@ -20,11 +20,11 @@ exports.patientValidate = [
          .isString()
          .withMessage('string tipida kiriting'),
      body('region_id')
-         .exists()
+         .optional()
          .isInt()
          .withMessage('Int tipida kiriting'),
      body('district_id')
-         .exists()
+         .optional()
          .isInt()
          .withMessage('Int tipida kiriting'),
      body('gender')

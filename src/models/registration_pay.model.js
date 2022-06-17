@@ -30,7 +30,8 @@ summa:{
       allowNull: false
   },
   date_time:{
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      defaultValue: Math.floor(new Date().getTime() / 1000)
     }
 }, {
   sequelize,

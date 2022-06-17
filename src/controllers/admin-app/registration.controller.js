@@ -90,18 +90,13 @@ class RegistrationController {
         });
     }
    create = async (req, res, next, insert = true) => {
-    var x = await UserModel.findOne({
+    const x = await UserModel.findOne({
         where:{
-            doctor_id: registration_doctor.doctor_id
+            id: 1
         },
     })
-    var y = await UserModel.findOne({
-        where:{
-            id: registration.user_id
-        }
-    })
     let miqdor = x._previousDataValues.percent;
-    console.log(miqdor);
+    // console.log(miqdor);
        this.checkValidation(req);
        const {registration_files, queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        const model = await RegistrationModel.create(registration);
@@ -112,17 +107,22 @@ class RegistrationController {
        registration_files.forEach((value, index) => {
            Registration_filesModel.create(value)
        })
-       registration_doctor.forEach((value, index) =>{
+       registration_doctor.forEach( async (value, index) =>{
       var {registration_recipe, ...registration_doctor} = value;
-      console.log(value);
+    //   console.log(value);
+      var user = await UserModel.findOne({
+        where:{
+            doctor_id: value.doctor_id
+        }
+      })
       function isHave(item){
-        return item.room_id == x.room_id && item.patient_id == model.patient_id;
+        return item.room_id == user._previousDataValues.room_id && item.patient_id == model.patient_id;
     }
-    console.log(x.room_id + "||"+ model.patient_id);
+    // console.log(user.room_id + "||"+ model.patient_id);
     var have =  this.massiv.find(isHave);
-    console.log(have);
+    // console.log(have);
     if(have == undefined){
-        this.massiv.push({"room_id":x.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
+        this.massiv.push({"room_id":user._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
     }
     else if(value.status!=have.status){
       if(value.status!='complete'){
@@ -147,15 +147,20 @@ class RegistrationController {
    }
     })
 
-    registration_inspection.forEach((value, index) => {
+    registration_inspection.forEach( async (value, index) => {
             var {registration_inspection_child, ...registration_inspection} = value;
+            var user = await UserModel.findOne({
+                where:{
+                    id: value.inspection_id
+                }
+            })
               function isHave(item){
-                  return item.room_id == y.room_id && item.patient_id == model.patient_id;
+                  return item.room_id == user._previousDataValues.room_id && item.patient_id == model.patient_id;
               }
               var a = this.massiv.find(isHave)
             //   console.log(a);
               if(a == undefined){
-                  this.massiv.push({"room_id":y.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_inspection.status})
+                  this.massiv.push({"room_id":user._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_inspection.status})
               }
               else if(value.status!=a.status){
                 if(value.status!='complete'){
@@ -177,7 +182,7 @@ class RegistrationController {
                 "type": value.type,
                 "price": value.price * miqdor,
                 "doc_id": value.registration_id,
-                "user_id": value.id,
+                "user_id": model.id,
                 "inspection_id": value.inspection_id
               })
     })
@@ -202,7 +207,6 @@ class RegistrationController {
                             patient_id: element.patient_id
                         }
                     });
-                    console.log(has + " |||||||||");
                     if(has!=null){
                         if(element.status!=has.status){
                             has.status=element.status;
