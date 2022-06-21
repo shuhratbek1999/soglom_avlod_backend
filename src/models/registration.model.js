@@ -70,6 +70,9 @@ discount : {
     type: DataTypes.DECIMAL(11,2),
     allowNull: false
 },
+hospital_summa:{
+    type: DataTypes.DECIMAL()
+}
 
 }, {
   sequelize,

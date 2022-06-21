@@ -14,6 +14,8 @@ const UserModel = require('../../models/user.model');
 const QueueModel = require('../../models/queue.model')
 const { sequelize } = require('../../models/user.model');
 const PatientModel = require('../../models/patient.model');
+const registration_palataModel = require('../../models/registration_palata.model');
+const register_palataModel = require('../../models/register_palata.model');
 const {Op} = require('sequelize')
 /******************************************************************************
  *                              Employer Controller
@@ -98,12 +100,25 @@ class RegistrationController {
     let miqdor = x._previousDataValues.percent;
     // console.log(miqdor);
        this.checkValidation(req);
-       const {registration_files, queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
+       const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        const model = await RegistrationModel.create(registration);
-       
+    //    registration.forEach()
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
+       registration_palata.forEach((value, index) =>{
+            registration_palataModel.create(value);
+            register_palataModel.create({
+                "palata_id": value.palata_id,
+                "patient_id": model.id,
+                "registration_id": value.registration_id,
+                "price": value.price,
+                "day": value.day,
+                "date_to": value.date_to,
+                "date_do": value.date_do,
+                "date_time": value.date_time
+            })
+       })
        registration_files.forEach((value, index) => {
            Registration_filesModel.create(value)
        })

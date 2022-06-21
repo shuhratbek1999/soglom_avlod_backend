@@ -68,6 +68,9 @@ exports.up = function(db) {
       type: 'decimal',
       notNull: true,
       length: (11,2)
+    },
+    hospital_summa:{
+      type: 'decimal'
     }
 })
 } 
