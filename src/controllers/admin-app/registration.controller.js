@@ -12,7 +12,7 @@ const RegisterDoctorModel = require('../../models/register_doctor.model')
 const Register_inspectionModel = require('../../models/register_inspection.model');
 const UserModel = require('../../models/user.model');
 const QueueModel = require('../../models/queue.model')
-const { sequelize } = require('../../models/user.model');
+const { sequelize, sum } = require('../../models/user.model');
 const PatientModel = require('../../models/patient.model');
 const registration_palataModel = require('../../models/registration_palata.model');
 const register_palataModel = require('../../models/register_palata.model');
@@ -101,8 +101,31 @@ class RegistrationController {
     // console.log(miqdor);
        this.checkValidation(req);
        const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
-       const model = await RegistrationModel.create(registration);
-    //    registration.forEach()
+       const aa = await RegisterDoctorModel.sum('price');
+       console.log(aa);
+       let inspection_sum = await Registration_inspectionModel.sum('price');
+       let doc_summa = await Registration_doctorModel.sum('price');
+       let palata_sum = await registration_palataModel.sum('price');
+    //    const mod = await Registration_inspectionModel.findAll({
+    //     attributes:[
+    //         [sequelize.fn('sum', sequelize.col('price')), 'summa']
+    //     ],
+    //     raw: true,
+    //     order: sequelize.literal('summa DESC')
+    //    })
+       let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
+       const model = await RegistrationModel.create({
+        "user_id": req.body.user_id,
+        "status": req.body.status,
+        "patient_id": req.body.patient_id,
+        "type_service": req.body.type_service,
+        "complaint": req.body.complaint,
+        "summa": reg_summa,
+        "pay_summa": req.body.pay_summa,
+        "backlog": req.body.backlog,
+        "discount": req.body.discount,
+        "hospital_summa": palata_sum
+       });
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
