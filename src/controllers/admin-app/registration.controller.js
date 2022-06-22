@@ -130,7 +130,17 @@ class RegistrationController {
            throw new HttpException(500, 'model mavjud emas');
        }
        registration_palata.forEach((value, index) =>{
-            registration_palataModel.create(value);
+        let day = new Date();
+        let date = Math.floor(new Date().getTime() / 1000);
+            registration_palataModel.create({
+                "palata_id": value.palata_id,
+                "registration_id": model.id,
+                "price": value.price,
+                "day": day.getDay(),
+                "date_to": date,
+                "date_do": date,
+                "date_time": date
+            });
             register_palataModel.create({
                 "palata_id": value.palata_id,
                 "patient_id": model.id,
@@ -143,7 +153,10 @@ class RegistrationController {
             })
        })
        registration_files.forEach((value, index) => {
-           Registration_filesModel.create(value)
+           Registration_filesModel.create({
+            "registration_id": model.id,
+            "href": value.href
+           })
        })
        registration_doctor.forEach( async (value, index) =>{
       var {registration_recipe, ...registration_doctor} = value;
@@ -171,7 +184,13 @@ class RegistrationController {
           this.massiv[index].status=have.status;
       }
   }
-     Registration_doctorModel.create(registration_doctor);
+     Registration_doctorModel.create({
+        "doctor_id": value.doctor_id,
+        "registration_id": model.id,
+        "status": value.status,
+        "price": value.price,
+        "text": value.text,
+     });
    for(let i = 0; i < registration_recipe.length; i++){
        Registration_recipeModel.create(registration_recipe[i]);
        var date_time = Math.floor(new Date().getTime() / 1000);
@@ -209,7 +228,14 @@ class RegistrationController {
                     this.massiv[index].status=a.status;
                 }
               }
-            Registration_inspectionModel.create(registration_inspection);
+            Registration_inspectionModel.create({
+            "inspection_id": value.inspection_id,
+            "registration_id": model.id,
+            "price": value.price,
+            "type": value.type,
+            "category_id": value.category_id,
+            "status": value.status,
+            });
             for(let i = 0; i < registration_inspection_child.length; i++){
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
             }
@@ -225,7 +251,12 @@ class RegistrationController {
               })
     })
     registration_pay.forEach((value, index)=>{
-        Registration_payModel.create(value);
+        Registration_payModel.create({
+            "user_id": value.user_id,
+            "registration_id": model.id,
+            "pay_type": value.pay_type,
+            "summa": value.summa
+        });
         var date_time = Math.floor(new Date().getTime() / 1000);
         Register_kassaModel.create({
             "date_time": date_time,
