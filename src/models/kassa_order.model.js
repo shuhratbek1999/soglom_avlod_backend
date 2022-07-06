@@ -55,5 +55,5 @@ comment:{
   ],
  
 });
-kassaOrderModel.hasMany(expenseModel, {as: 'expense', foreignKey: 'id'})
+kassaOrderModel.belongsTo(expenseModel, {as: 'expense', foreignKey: 'id'})
 module.exports = kassaOrderModel;

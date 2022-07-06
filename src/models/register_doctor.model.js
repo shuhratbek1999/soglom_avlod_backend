@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const DoctorModel = require('./doctor.model');
 class register_doctorModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -19,12 +20,10 @@ register_doctorModel.init({
    type: DataTypes.INTEGER
  },
  type: {
-   type: DataTypes.STRING(40),
-   allowNull: false
+   type: DataTypes.STRING(40)
  },
  price:{
-   type: DataTypes.DECIMAL(12, 2),
-   allowNull: false
+   type: DataTypes.DECIMAL(12, 2)
  },
  doc_id:{
    type: DataTypes.INTEGER
@@ -50,5 +49,5 @@ register_doctorModel.init({
   ],
  
 });
-
+register_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'id'})
 module.exports = register_doctorModel;

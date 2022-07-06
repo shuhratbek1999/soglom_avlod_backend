@@ -11,11 +11,6 @@ const auth = (...roles) => {
 
             if (!authHeader || !authHeader.startsWith(bearer)) {
                 throw new HttpException(401, 'ro\'yhatdan o\'tmagansiz!');
-                // res.status(200).send({
-                //     error_code: 401,
-                //     error: true,
-                //     message: 'ro\'yhatdan o\'tmagansiz'
-                // })
             }
 
             const token = authHeader.replace(bearer, '');

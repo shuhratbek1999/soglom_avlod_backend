@@ -26,12 +26,10 @@ exports.up = function(db) {
       type: 'int'
     },
     type:{
-      type: 'string',
-      notNull: true
+      type: 'string'
     },
     price:{
-      type: 'decimal',
-      notNull: true
+      type: 'decimal'
     },
     doc_id:{
       type: 'int'

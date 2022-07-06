@@ -16,7 +16,9 @@ const { sequelize, sum } = require('../../models/user.model');
 const PatientModel = require('../../models/patient.model');
 const registration_palataModel = require('../../models/registration_palata.model');
 const register_palataModel = require('../../models/register_palata.model');
-const {Op} = require('sequelize')
+const {Op} = require('sequelize');
+const RoomModel = require('../../models/room.model');
+const DoctorModel = require('../../models/doctor.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -96,23 +98,17 @@ class RegistrationController {
         where:{
             id: 1
         },
+        raw: true
     })
-    let miqdor = x._previousDataValues.percent;
+    let miqdor = x.percent;
     // console.log(miqdor);
        this.checkValidation(req);
        const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
-       const aa = await RegisterDoctorModel.sum('price');
-       console.log(aa);
+    //    const aa = await RegisterDoctorModel.sum('price');
+    // //    console.log(aa);
        let inspection_sum = await Registration_inspectionModel.sum('price');
        let doc_summa = await Registration_doctorModel.sum('price');
        let palata_sum = await registration_palataModel.sum('price');
-    //    const mod = await Registration_inspectionModel.findAll({
-    //     attributes:[
-    //         [sequelize.fn('sum', sequelize.col('price')), 'summa']
-    //     ],
-    //     raw: true,
-    //     order: sequelize.literal('summa DESC')
-    //    })
        let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
        const model = await RegistrationModel.create({
         "user_id": req.body.user_id,
@@ -160,24 +156,26 @@ class RegistrationController {
        })
        registration_doctor.forEach( async (value, index) =>{
       var {registration_recipe, ...registration_doctor} = value;
+      value.registration_id = model.id;
     //   console.log(value);
       var user = await UserModel.findOne({
         where:{
-            doctor_id: value.doctor_id
-        }
+         doctor_id: value.doctor_id  
+        },
+        raw: true
       })
+      console.log(user);
       function isHave(item){
-        return item.room_id == user._previousDataValues.room_id && item.patient_id == model.patient_id;
+        return item.room_id == user.room_id && item.patient_id == model.patient_id;
     }
-    // console.log(user.room_id + "||"+ model.patient_id);
-    var have =  this.massiv.find(isHave);
-    // console.log(have);
+    var have = await this.massiv.find(isHave);
     if(have == undefined){
-        this.massiv.push({"room_id":user._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
+        this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
     }
     else if(value.status!=have.status){
       if(value.status!='complete'){
           var index=this.massiv.findIndex(isHave);
+          console.log(index);
           this.massiv[index].status=have.status;
       }else if(have.status!='complete'){
           var index=this.massiv.findIndex(isHave);
@@ -196,7 +194,7 @@ class RegistrationController {
        var date_time = Math.floor(new Date().getTime() / 1000);
        RegisterDoctorModel.create({
            "date_time": date_time,
-           "type": value.text,
+           "type": value.id,
            "price": value.price,
            "doc_id": 1, 
            "doctor_id": value.doctor_id
@@ -209,15 +207,17 @@ class RegistrationController {
             var user = await UserModel.findOne({
                 where:{
                     id: value.inspection_id
-                }
+                },
+                raw: true
             })
               function isHave(item){
-                  return item.room_id == user._previousDataValues.room_id && item.patient_id == model.patient_id;
+                  return item.room_id == user.room_id && item.patient_id == model.patient_id;
               }
-              var a = this.massiv.find(isHave)
+              var a = await this.massiv.find(isHave);
             //   console.log(a);
+              console.log(value.status);
               if(a == undefined){
-                  this.massiv.push({"room_id":user._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_inspection.status})
+                  this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
               }
               else if(value.status!=a.status){
                 if(value.status!='complete'){
@@ -548,6 +548,100 @@ class RegistrationController {
         data: model
     });
 }
+
+kassa = async (req, res, next) => {
+    this.checkValidation(req);
+
+    let result;
+    let body = req.body; 
+    let query = {}, query_begin = {}, query_end = {};
+    query.date_time =  {
+        [Op.gte]: body.datetime1,
+        [Op.lte]: body.datetime2,
+    };
+    query_begin.date_time =  {
+        [Op.lt]: body.datetime1,
+    };
+    query_end.date_time =  {
+        [Op.lte]: body.datetime2,
+    };
+    if(body.doctor_id != null){
+        query.doctor_id= {[Op.eq] : body.doctor_id } 
+        query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
+        query_end.doctor_id = {[Op.eq] : body.doctor_id }
+    };
+    
+
+    
+    result = await Register_kassaModel.findAll({
+        attributes : [
+            //'doc_id', 'doc_type',
+            'id', 'doctor_id',
+            [sequelize.literal('sum(`price` * power(-1, `register_kassa`.`type` + 1))'), 'total'],
+            [sequelize.literal('sum(`price` * (-1  + `register_kassa`.`type`)) * (-1)'), 'total_chiqim'],
+            [sequelize.literal('sum(`price` * `register_kassa`.`type`)'), 'total_kirim'],
+        ],
+        include: [
+            { model: DoctorModel, as: 'doctor', attributes: ['name'] },
+        ],
+        where: query,
+        group: ['id', 'doctor_id'],
+        order: [
+            ['date_time', 'ASC']
+        ],
+        raw: true
+    })
+    // console.log(result);
+    let resultx = [];
+    for(let i = 0; i < result.length; i++){
+        // console.log(result[i]['doctor.name']);
+        //begin balance
+        query_begin.doctor_id = result[i].doctor_id;
+        query_end.doctor_id = result[i].doctor_id;
+        let kassa_register = await Register_kassaModel.findOne({
+            attributes : [
+                [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
+            ],
+            where : query_begin,
+            group: ['doctor_id'],
+        });
+        let kassa_registerx = await Register_kassaModel.findOne({
+            attributes : [
+                [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
+            ],
+            where : query_end,
+            group: ['doctor_id'],
+        });   
+        resultx.push(
+            {
+                'pay_type' : result[i].pay_type,
+                'begin_total' : (kassa_register != null ? kassa_register.total : 0),
+                'total' : result[i].total,
+                'total_kirim' : result[i].total_kirim,
+                'total_chiqim' : result[i].total_chiqim,
+                'end_total' : (kassa_registerx != null ? kassa_registerx.total : 0),
+                'doctor': result[i]['doctor.name']
+            }
+        );
+    }
+    console.log(resultx);
+    res.send(resultx);
+};
+
+kassaAll = async (req, res, next) =>{
+    const model = await Register_kassaModel.findAll({
+        include:[
+            {model: DoctorModel, as: 'doctor'}
+        ]
+    })
+    res.send({
+        error_code: 200,
+        error: false,
+        message: "malumotlar chiqdi",
+        data: model
+    })
+}
+
 delete = async (req, res, next) => {
   const model =  await RegistrationModel.destroy({
         where:{
@@ -599,6 +693,49 @@ delete = async (req, res, next) => {
         data: model
     });
 }
+ 
+queueAll = async (req, res, next) => {
+    const model = await QueueModel.findAll({
+        where:{
+            status:{[Op.not]:'complete'}
+        },
+        include:[
+            {model: RoomModel, as: 'room', attributes: ['name']},
+            {model: PatientModel, as: 'patient', attributes: ['fullname']}
+        ],
+        // group:['room_id'],
+        limit: 100,
+        order: [
+            ['number', 'ASC']
+        ],
+    });
+     res.send({
+        error_code: 200,
+        error: false,
+        message: "malumotlar chiqdi",
+        data: model
+     })
+    
+}
+
+registerAll = async (req, res, next) => {
+    const model = await Register_kassaModel.findAll({
+        include:[
+            {model: DoctorModel, as: 'doctor', attributes: ['name']}
+        ]
+    });
+
+    res.send({
+        error_code: 201,
+        error: false,
+        message: "malumotlar chiqdi",
+        data: model
+    })
+}
+register = async (req, res, next) => {
+    const model = await RegisterDoctorModel.create(req.body)
+}
+
     checkValidation = (req) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {

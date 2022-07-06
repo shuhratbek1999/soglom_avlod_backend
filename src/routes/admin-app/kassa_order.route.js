@@ -9,7 +9,7 @@ const  {districtValidate}  = require('../../middleware/validators/admin-app/kass
 
 router.get('/all', auth(),  awaitHandlerFactory(kassa_orderController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(kassa_orderController.getOne));
-router.post('/create',auth(), districtValidate, awaitHandlerFactory(kassa_orderController.create));
-router.patch('/update/:id', auth(), districtValidate, awaitHandlerFactory(kassa_orderController.update));
+router.post('/create',auth(), awaitHandlerFactory(kassa_orderController.create));
+router.patch('/update/:id', auth(), awaitHandlerFactory(kassa_orderController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(kassa_orderController.delete));
 module.exports = router;

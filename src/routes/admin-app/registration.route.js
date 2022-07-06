@@ -8,8 +8,12 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 const  {registrationValidate}  = require('../../middleware/validators/admin-app/RegistrationValidator.middleware');
 
 router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
+router.get('/register_kassa', auth(), awaitHandlerFactory(registrationControl.registerAll));
+router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
+router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
 router.post('/create', auth(), registrationValidate,  awaitHandlerFactory(registrationControl.create));
+router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.patch('/update/:id', auth(),registrationValidate, awaitHandlerFactory(registrationControl.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
 module.exports = router;

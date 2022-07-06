@@ -39,11 +39,6 @@ name: {
     },
   ],
   //findOne da yoki findAll da chaqirish kerak
-  scopes: {
-    withoutPassword: {
-      attributes: { exclude: ['password_hash'] },
-    }
-  }
 });
 districtModel.belongsTo(RegionModel, {as: 'region', foreignKey: 'region_id'})
 module.exports = districtModel;

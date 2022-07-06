@@ -1,18 +1,20 @@
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const { validationResult } = require('express-validator');
-const kassa_orderModel = require('../../models/kassa_order.model');
-const Register_kassaModel = require('../../models/register_kassa.model')
-const expenseModel = require('../../models/expense.model');
+const Register_DoctorModel = require('../../models/register_doctor.model');
+const DoctorModel = require('../../models/doctor.model');
+const register_doctorModel = require('../../models/register_doctor.model');
+const { Op } = require("sequelize");
+const sequelize = require('sequelize');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class Kassa_orderController {
+class RegisterDoctorController {
     getAll = async (req, res, next) => {
-        const model = await kassa_orderModel.findAll({
+        const model = await Register_DoctorModel.findAll({
             include:[
-                {model: expenseModel, as: 'expense'}
+                {model: DoctorModel, as: 'doctor'}
                ]
         });
         res.status(200).send({
@@ -25,12 +27,12 @@ class Kassa_orderController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await kassa_orderModel.findOne({
+        const model = await Register_DoctorModel.findOne({
            where:{
             id: req.params.id
            },
            include:[
-            {model: expenseModel, as: 'expense'}
+            {model: DoctorModel, as: 'doctor'}
            ]
         });
         if(!model){
@@ -43,34 +45,39 @@ class Kassa_orderController {
             data: model
         });
     }
-   create = async (req, res, next) => {
-       this.checkValidation(req);
-       var date_time = Math.floor(new Date().getTime() / 1000);
-       const model = await kassa_orderModel.create({
-        "expense_id": req.body.expense_id,
-        "date_time": date_time,
-        "type": req.body.type,
-        "pay_type": req.body.pay_type,
-        "price": req.body.price,
-        "comment": req.body.comment
-       });
-       Register_kassaModel.create({
-        "date_time": date_time,
-        "doctor_id": req.body.expense_id,
-        "pay_type": req.body.pay_type,
-        "price": req.body.price,    
-        "type": 'kirim'
-    })
-       res.status(200).send({
-        error: false,
-        error_code: 200,
-        message: 'Malumotlar qo\'shildi',
-        data: model
-    });
-   }
+    create = async (req, res, next) => {
+        this.checkValidation(req);
+        let query = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.doctor_id !== null){
+            query.id = {[Op.eq] : body.doctor_id }  
+        };
+
+        let result = await register_doctorModel.findAll({
+            attributes: [
+                 'id', 
+                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'begin_total'],
+                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 0 THEN register_doctor.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 1 THEN register_doctor.price ELSE 0 END)"), 'total_chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time <= " + datetime2 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'end_total'],
+            ],
+            include: [
+                { model: DoctorModel, as: 'doctor', attributes: ['name'], where: query},
+            ],
+            where: query,
+            group: ['id'],
+            order: [
+                ['id', 'ASC']
+            ],
+        })
+// console.log(result);
+        res.send(result);
+    };
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await kassa_orderModel.findOne({
+    const model = await Register_DoctorModel.findOne({
         where:{
             id: req.params.id
         }
@@ -83,18 +90,7 @@ class Kassa_orderController {
     model.price = req.body.price;
     model.comment = req.body.comment;
     model.save();
-    await Register_kassaModel.destroy({
-        where:{
-            id: req.params.id
-        }
-    })
-    Register_kassaModel.create({
-        "date_time": date_time,
-        "doctor_id": req.body.expense_id,
-        "pay_type": req.body.pay_type,
-        "price": req.body.price,    
-        "type": 'kirim'
-    })
+    
     res.status(200).send({
         error: false,
         error_code: 200,
@@ -103,7 +99,7 @@ class Kassa_orderController {
     });
 }
 delete = async (req, res, next) => {
-  const model = await kassa_orderModel.destroy({
+  const model = await Register_DoctorModel.destroy({
         where:{
           id: req.params.id
         }
@@ -133,4 +129,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new Kassa_orderController;
+module.exports = new RegisterDoctorController;

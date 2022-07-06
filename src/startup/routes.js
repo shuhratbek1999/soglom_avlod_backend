@@ -18,6 +18,8 @@ const registerRouter = require('../routes/admin-app/registration.route')
 const kassa_orderRouter = require('../routes/admin-app/kassa_order.route')
 const expenseRouter = require('../routes/admin-app/expense.route')
 const palataRouter = require('../routes/admin-app/palata.route')
+const RegDoctor = require('../routes/admin-app/registerDoctor.route')
+const UploadRouter = require('../routes/admin-app/upload.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -44,6 +46,8 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/kassa_order`, kassa_orderRouter);
         app.use(`/api/v1/admin-app/expense`, expenseRouter);
         app.use(`/api/v1/admin-app/palata`, palataRouter);
+        app.use(`/api/v1/admin-app/register_doctor`, RegDoctor);
+        app.use(`/api/v1/admin-app/upload`, UploadRouter);
 
         app.use(`/api/v1/uploads`, express.static('uploads'));
 

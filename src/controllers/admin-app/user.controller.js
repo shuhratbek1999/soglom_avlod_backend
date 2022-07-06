@@ -57,7 +57,7 @@ class UserController {
         res.status(200).send({
             error: false,
             error_code: 20,
-            message: 'Malumot keldi',
+            message: 'Malumot keldi', 
             data: model
         });
     }
