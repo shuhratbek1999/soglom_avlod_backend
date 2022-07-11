@@ -560,8 +560,6 @@ palata = async (req, res, next) => {
     query_end.date_time = {
         [Op.lte]: body.date_do
     }
-    
-      if(body.status == "bo'sh"){
         const model = await registration_palataModel.findAll({
             include:[
                 {model: palataModel, as: 'palata'},
@@ -570,20 +568,11 @@ palata = async (req, res, next) => {
           })
           res.status(200).send({
             error: false,
-            error_code: 200,
+            status: true,
             message: 'Malumot chiqdi',
             data: model
         });
-      }
-      else if(body.status == "bron"){
-       throw new HttpException(401, "bosh xonalar yo'q")
-      }
-      else{
-      throw  new HttpException(401, "bunday hizmatchi soz mavjud emas")
-      }
-  
-
-
+    
 }
 
 kassa = async (req, res, next) => {

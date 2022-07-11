@@ -4,6 +4,7 @@ const HttpException = require('../../utils/HttpException.utils');
 const DoctorModel = require('../../models/doctor.model')
 const { validationResult } = require('express-validator');
 const InspectionModel = require('../../models/inspector_category.model');
+const DoctorCategory = require('../../models/doctor_category.model')
 
 /******************************************************************************
  *                              Employer Controller
@@ -13,7 +14,7 @@ class DoctorController {
         const model = await DoctorModel.findAll({ 
             // include: InspectionModel
             include:[
-                {model: InspectionModel, as: 'inspection_category', attributes: ['name']}
+                {model: DoctorCategory, as: 'doctor_category'}
             ]
         }); 
         res.status(200).send({

@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const InspectionModel = require('./inspector_category.model');
+const DoctorCategory = require('../models/doctor_category.model')
 class DoctorModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -47,5 +47,5 @@ DoctorModel.init({
     }
   }
 });
-DoctorModel.belongsTo(InspectionModel, {as: 'inspection_category', foreignKey: 'category_id'})
+DoctorModel.belongsTo(DoctorCategory, {as: 'doctor_category', foreignKey: 'category_id'})
 module.exports = DoctorModel;
