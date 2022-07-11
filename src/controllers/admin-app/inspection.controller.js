@@ -5,6 +5,7 @@ const inspectionModel = require('../../models/inspection.model');
 const inspectionChildModel = require('../../models/inspectionChild.model');
 const UserModel = require('../../models/user.model');
 const inspector_categoryModel = require('../../models/inspector_category.model')
+const DoctorCategory = require('../../models/doctor_category.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -14,7 +15,7 @@ class InspectionController {
             include:[
                 {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
                     {model: inspectionChildModel, as: 'InspectionChild'},
-                    {model: inspector_categoryModel, as: 'inspector_category'}
+                    {model: DoctorCategory, as: 'doctor_category'}
             ]
         });
         res.status(200).send({
@@ -32,7 +33,8 @@ class InspectionController {
                 id: req.params.id
             },
             include:[
-                {model: inspectionChildModel, as: 'InspectionChild'}
+                {model: inspectionChildModel, as: 'InspectionChild'},
+                {model: DoctorCategory, as: 'doctor_category'}
             ]
         });
         if(!model){

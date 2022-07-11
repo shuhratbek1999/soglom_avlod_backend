@@ -6,10 +6,10 @@ const path = require('path');
 // const uploadController = require('../controllers/upload.controller');
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, './upload/');
+        cb(null, './upload/');  
     },
     filename: function(req, file, cb){
-        //console.log(req.body);
+        console.log(req.body);
         req.body.href = new Date().toISOString().replace(/:/g, '-') + path.extname(file.originalname);
         cb(null, req.body.href);
     }
@@ -21,18 +21,18 @@ const fileFilter = (req, file, cb) => {
     }else{
         cb(null, false);
         return cb(new Error('Only images are allowed'))
-    }
+    } 
 }
-const excelfilter = (req, file, cb) => {
-    if(file.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-    || file.mimetype == 'application/vnd.ms-excel'){
-        cb(null, true);
-    }else{
-        // throw new HttpException('Only excel files are allowed');
-        cb(new Error('excel_file'));
-        // cb(null, false);
-    }
-}
+// const excelfilter = (req, file, cb) => {
+//     if(file.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+//     || file.mimetype == 'application/vnd.ms-excel'){
+//         cb(null, true);
+//     }else{
+//         // throw new HttpException('Only excel files are allowed');
+//         cb(new Error('excel_file'));
+//         // cb(null, false);
+//     }
+// }
 
 var upload = multer({
     storage: storage,
@@ -41,13 +41,13 @@ var upload = multer({
     },
     fileFilter: fileFilter
 }).single('href');
-var uploadexcel = multer({
-    storage: storage,
-    limits:{
-        fileSize: 1024 * 1024 * 5
-    },
-    fileFilter: excelfilter
-}).single('href');
+// var uploadexcel = multer({
+//     storage: storage,
+//     limits:{
+//         fileSize: 1024 * 1024 * 5
+//     },
+//     fileFilter: excelfilter
+// }).single('href');
 
 router.post('/file', upload, awaitHandlerFactory(async (req, res, next) => {    
     res.status(201).send(req.body.href);

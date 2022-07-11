@@ -3,6 +3,7 @@ const UserModel = require('../models/user.model')
 const sequelize = require('../db/db-sequelize');
 const inspectionChildModel = require('./inspectionChild.model');
 const inspector_categoryModel = require('./inspector_category.model')
+const DoctorCategory = require('../models/doctor_category.model')
 class inspectionModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -60,5 +61,5 @@ percent_bonus:{
 });
 inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
 inspectionModel.belongsTo(inspectionChildModel, {as: 'InspectionChild', foreignKey: 'parent_id'})
-inspectionModel.belongsTo(inspector_categoryModel, {as: 'inspector_category', foreignKey: 'category_id'})
+inspectionModel.belongsTo(DoctorCategory, {as: 'doctor_category', foreignKey: 'category_id'})
 module.exports = inspectionModel;

@@ -1,5 +1,6 @@
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes, Model, VIRTUAL } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const palataModel = require('../models/palata.model')
 class registration_palataModel extends Model {
     // toJSON () {//Api da ishladi
     // var values = Object.assign({}, this.get());
@@ -39,8 +40,8 @@ date_to:{
 date_do:{
   type: DataTypes.INTEGER
 },
-comment:{
-  type: DataTypes.STRING(50)
+status: {
+  type: DataTypes.VIRTUAL()
 }
 
 }, {
@@ -60,4 +61,5 @@ comment:{
   ],
  
 });
+registration_palataModel.belongsTo(palataModel, {as: 'palata', foreignKey: 'palata_id'})
 module.exports = registration_palataModel;

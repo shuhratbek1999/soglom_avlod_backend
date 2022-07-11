@@ -1,5 +1,5 @@
 const HttpException = require('../../utils/HttpException.utils');
-const { validationResult } = require('express-validator');
+const { validationResult, query } = require('express-validator');
 const RegistrationModel = require('../../models/registration.model');
 const Registration_doctorModel = require('../../models/registration_doctor.model');
 const Registration_filesModel = require('../../models/registration_files.model');
@@ -19,6 +19,7 @@ const register_palataModel = require('../../models/register_palata.model');
 const {Op} = require('sequelize');
 const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
+const palataModel = require('../../models/palata.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -104,8 +105,6 @@ class RegistrationController {
     // console.log(miqdor);
        this.checkValidation(req);
        const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
-    //    const aa = await RegisterDoctorModel.sum('price');
-    // //    console.log(aa);
        let inspection_sum = await Registration_inspectionModel.sum('price');
        let doc_summa = await Registration_doctorModel.sum('price');
        let palata_sum = await registration_palataModel.sum('price');
@@ -549,6 +548,44 @@ class RegistrationController {
     });
 }
 
+palata = async (req, res, next) => {
+    let query = {}, query_begin = {}, query_end = {}, body = req.body, Status = {};
+    query.date_time = {
+        [Op.gte]: body.date_to,
+        [Op.lte]: body.date_do,
+    }
+    query_begin.date_time = {
+        [Op.lt]: body.date_to
+    }
+    query_end.date_time = {
+        [Op.lte]: body.date_do
+    }
+    
+      if(body.status == "bo'sh"){
+        const model = await registration_palataModel.findAll({
+            include:[
+                {model: palataModel, as: 'palata'},
+            ],
+            where: query
+          })
+          res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumot chiqdi',
+            data: model
+        });
+      }
+      else if(body.status == "bron"){
+       throw new HttpException(401, "bosh xonalar yo'q")
+      }
+      else{
+      throw  new HttpException(401, "bunday hizmatchi soz mavjud emas")
+      }
+  
+
+
+}
+
 kassa = async (req, res, next) => {
     this.checkValidation(req);
 
@@ -732,9 +769,7 @@ registerAll = async (req, res, next) => {
         data: model
     })
 }
-register = async (req, res, next) => {
-    const model = await RegisterDoctorModel.create(req.body)
-}
+
 
     checkValidation = (req) => {
         const errors = validationResult(req)

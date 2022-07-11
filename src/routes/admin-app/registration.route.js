@@ -13,6 +13,7 @@ router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
 router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
 router.post('/create', auth(), registrationValidate,  awaitHandlerFactory(registrationControl.create));
+router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.patch('/update/:id', auth(),registrationValidate, awaitHandlerFactory(registrationControl.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
