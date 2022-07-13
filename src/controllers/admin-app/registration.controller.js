@@ -562,7 +562,10 @@ palata = async (req, res, next) => {
     }
     let status = true;
         const model = await registration_palataModel.findAll({
-            raw: true
+            raw: true,
+            include:[
+                {model: palataModel, as: 'palata', attributes:['name']}
+            ]
         });
         model.forEach((value) => {
             console.log(value);
