@@ -43,9 +43,7 @@ date_to:{
 date_do:{
   type: DataTypes.INTEGER
 },
-comment:{
-  type: DataTypes.STRING(50)
-}
+
 
 }, {
   sequelize,

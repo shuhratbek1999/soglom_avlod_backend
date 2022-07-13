@@ -549,7 +549,7 @@ class RegistrationController {
 }
 
 palata = async (req, res, next) => {
-    let query = {}, query_begin = {}, query_end = {}, body = req.body, Status = {};
+    let query = {}, query_begin = {}, query_end = {}, body = req.body;
     query.date_time = {
         [Op.gte]: body.date_to,
         [Op.lte]: body.date_do,
@@ -560,19 +560,82 @@ palata = async (req, res, next) => {
     query_end.date_time = {
         [Op.lte]: body.date_do
     }
+    let status = true;
         const model = await registration_palataModel.findAll({
-            include:[
-                {model: palataModel, as: 'palata'},
-            ],
-            where: query
-          })
-          res.status(200).send({
-            error: false,
-            status: true,
-            message: 'Malumot chiqdi',
-            data: model
+            raw: true
         });
+        model.forEach((value) => {
+            console.log(value);
+            if(value.date_time >= body.date_to && value.date_time <= body.date_do){
+                value.status = status
+            }
+            else{
+                value.status = !status
+            }
+        })
+        // console.log(model);
+    res.send(model)
+}
+
+kassaSverka = async (req, res, next) => {
+    this.checkValidation(req);
+
+    let result = {begin: null, data : [], end: null};
+    let body = req.body; 
+    let query = {}, query_begin = {}, query_end = {};
+    query.date_time =  {
+        [Op.gte]: body.datetime1,
+        [Op.lte]: body.datetime2,
+    };
+    query_begin.date_time =  {
+        [Op.lt]: body.datetime1,
+    };
+    query_end.date_time =  {
+        [Op.lte]: body.datetime2,
+    };
     
+    result.data = await Register_kassaModel.findAll({
+        attributes : [
+            'doctor_id', 'pay_type', 'date_time', 'type',
+            [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+            [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+            [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+            [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+        ],
+        where : query,
+        include: [
+            { model: DoctorModel, as: 'doctor', attributes: ['name'] },
+        ],
+        order: [
+            ['date_time', 'ASC']
+        ],
+        group: ['doctor_id', 'pay_type'],
+    })
+    //begin naqd plastik
+    let kassa_register = await Register_kassaModel.findOne({
+        attributes : [
+            [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+            [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+            [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+            [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+        ],
+        where : query_begin,
+        // group: ['sklad_id'],
+    });
+    if(kassa_register != null) result.begin = kassa_register;
+    //end naqd plastik
+    kassa_register = await Register_kassaModel.findOne({
+        attributes : [
+            [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+            [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+            [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+            [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+        ],
+        where : query_end,
+        // group: ['sklad_id'],
+    });
+    if(kassa_register != null) result.end = kassa_register;
+    res.send(result);
 }
 
 kassa = async (req, res, next) => {

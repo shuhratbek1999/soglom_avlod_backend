@@ -40,9 +40,7 @@ date_to:{
 date_do:{
   type: DataTypes.INTEGER
 },
-status: {
-  type: DataTypes.VIRTUAL()
-}
+status: DataTypes.VIRTUAL
 
 }, {
   sequelize,

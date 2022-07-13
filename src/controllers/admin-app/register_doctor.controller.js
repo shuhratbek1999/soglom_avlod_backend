@@ -14,7 +14,7 @@ class RegisterDoctorController {
     getAll = async (req, res, next) => {
         const model = await Register_DoctorModel.findAll({
             include:[
-                {model: DoctorModel, as: 'doctor'}
+                {model: DoctorModel, as: 'doctor', attributes: ['name']}
                ]
         });
         res.status(200).send({
@@ -51,6 +51,7 @@ class RegisterDoctorController {
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
+        query.doctor_id
         if(body.doctor_id !== null){
             query.id = {[Op.eq] : body.doctor_id }  
         };
@@ -67,12 +68,16 @@ class RegisterDoctorController {
                 { model: DoctorModel, as: 'doctor', attributes: ['name'], where: query},
             ],
             where: query,
+            raw: true,
             group: ['id'],
             order: [
                 ['id', 'ASC']
             ],
         })
-// console.log(result);
+        // result.forEach((value, index) => {
+        //     console.log(value['doctor.name']);
+        //     if(value['doctor.name'] == )
+        // })
         res.send(result);
     };
 
