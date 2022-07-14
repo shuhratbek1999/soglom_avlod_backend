@@ -32,7 +32,6 @@ exports.up = function(db) {
     },
     patient_id:{
       type: 'int',
-      notNull: true
     },
     price:{
       type: "int",

@@ -29,7 +29,7 @@ exports.up = function(db) {
       type: 'int'
     },
     type:{
-      type: 'boolean',
+      type: 'int',
       notNull: true
     },
     price:{

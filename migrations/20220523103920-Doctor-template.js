@@ -51,16 +51,13 @@ exports.up = function(db) {
        notNull: true
      },
      procedure:{
-       type: 'string',
-       notNull: true
+       type: 'string'
      },
     recommended:{
-      type: 'string',
-      notNull: true
+      type: 'string'
     },
     concomitant:{
       type: 'string',
-      notNull: true
     }
   });
 };

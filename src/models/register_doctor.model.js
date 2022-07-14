@@ -49,5 +49,5 @@ register_doctorModel.init({
   ],
  
 });
-register_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'id'})
+register_doctorModel.hasMany(DoctorModel, {as: 'doctor', foreignKey: 'id'})
 module.exports = register_doctorModel;

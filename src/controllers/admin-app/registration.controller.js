@@ -95,14 +95,14 @@ class RegistrationController {
         });
     }
    create = async (req, res, next, insert = true) => {
-    const x = await UserModel.findOne({
-        where:{
-            id: 1
-        },
-        raw: true
-    })
-    let miqdor = x.percent;
-    // console.log(miqdor);
+    // const x = await UserModel.findOne({
+    //     where:{
+    //         id: 1
+    //     },
+    //     raw: true
+    // })
+    // let miqdor = x.percent;
+    // // console.log(miqdor);
        this.checkValidation(req);
        const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        let inspection_sum = await Registration_inspectionModel.sum('price');
@@ -243,7 +243,7 @@ class RegistrationController {
             Register_inspectionModel.create({
                 "date_time": date_time,
                 "type": value.type,
-                "price": value.price * miqdor,
+                "price": value.price,
                 "doc_id": value.registration_id,
                 "user_id": model.id,
                 "inspection_id": value.inspection_id
@@ -261,7 +261,7 @@ class RegistrationController {
             "date_time": date_time,
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,
-            "price": value.summa * miqdor,    
+            "price": value.summa,    
             "type": 'kirim'
         })
         
@@ -399,13 +399,13 @@ class RegistrationController {
         model.discount = registration.discount;
     model.save();
    
-    const x = await UserModel.findOne({
-        where:{
-            id: 1
-        },
-    })
-    let miqdor = x._previousDataValues.percent;
-    console.log(miqdor);
+    // const x = await UserModel.findOne({
+    //     where:{
+    //         id: 3
+    //     },
+    // })
+    // let miqdor = x._previousDataValues.percent;
+    // console.log(miqdor);
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
@@ -473,7 +473,7 @@ class RegistrationController {
             Register_inspectionModel.create({
                 "date_time": date_time,
                 "type": value.type,
-                "price": value.price * miqdor,
+                "price": value.price,
                 "doc_id": value.registration_id,
                 "user_id": value.id,
                 "inspection_id": value.inspection_id
@@ -486,7 +486,7 @@ class RegistrationController {
             "date_time": date_time,
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,
-            "price": value.summa * miqdor,    
+            "price": value.summa,    
             "type": 'kirim'
         })
         
@@ -564,7 +564,7 @@ palata = async (req, res, next) => {
         const model = await registration_palataModel.findAll({
             raw: true,
             include:[
-                {model: palataModel, as: 'palata', attributes:['name']}
+                {model: palataModel, as: 'palata'}
             ]
         });
         model.forEach((value) => {
@@ -595,6 +595,11 @@ kassaSverka = async (req, res, next) => {
     };
     query_end.date_time =  {
         [Op.lte]: body.datetime2,
+    };
+    if(body.doctor_id != null){
+        query.doctor_id = {[Op.eq] : body.doctor_id } 
+        query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
+        query_end.doctor_id = {[Op.eq] : body.doctor_id } 
     };
     
     result.data = await Register_kassaModel.findAll({
@@ -668,7 +673,7 @@ kassa = async (req, res, next) => {
     result = await Register_kassaModel.findAll({
         attributes : [
             //'doc_id', 'doc_type',
-            'id', 'doctor_id',
+            'id', 'doctor_id', "type", "date_time",
             [sequelize.literal('sum(`price` * power(-1, `register_kassa`.`type` + 1))'), 'total'],
             [sequelize.literal('sum(`price` * (-1  + `register_kassa`.`type`)) * (-1)'), 'total_chiqim'],
             [sequelize.literal('sum(`price` * `register_kassa`.`type`)'), 'total_kirim'],
@@ -712,7 +717,9 @@ kassa = async (req, res, next) => {
                 'total_kirim' : result[i].total_kirim,
                 'total_chiqim' : result[i].total_chiqim,
                 'end_total' : (kassa_registerx != null ? kassa_registerx.total : 0),
-                'doctor': result[i]['doctor.name']
+                'doctor': result[i]['doctor.name'],
+                'type': result[i].type,
+                'date_time': result[i].date_time
             }
         );
     }

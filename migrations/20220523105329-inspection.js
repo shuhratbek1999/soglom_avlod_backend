@@ -45,8 +45,7 @@ exports.up = function(db) {
       type: 'int'
     },
     percent_bonus:{
-      type: 'decimal(5, 2)',
-      notNull: true
+      type: 'decimal(5, 2)'
     }
   });
 };

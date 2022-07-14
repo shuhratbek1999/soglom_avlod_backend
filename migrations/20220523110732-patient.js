@@ -54,13 +54,10 @@ exports.up = function(db) {
       notNull: true
     },
     passport:{
-      type: 'string',
-      length: 9,
-      notNull: true
+      type: 'string'
     },
     addres:{
-      type: 'string',
-      notNull: true
+      type: 'string'
     },
     gender:{
       type: 'string',

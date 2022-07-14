@@ -26,7 +26,7 @@ exports.up = function(db) {
       type: 'int'
     },
     type:{
-      type: 'string',
+      type: 'int',
       notNull: true
     },
     price:{

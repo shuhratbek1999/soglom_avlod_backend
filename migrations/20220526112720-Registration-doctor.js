@@ -35,8 +35,7 @@ exports.up = function(db) {
     },
     price:{
       type: 'decimal',
-      notNull: true.valueOf,
-      length: (17, 2)
+      notNull: true
     },
     text:{
       type: 'string',

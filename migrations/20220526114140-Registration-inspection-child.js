@@ -49,8 +49,7 @@ exports.up = function(db) {
     },
     price:{
       type: 'decimal',
-      notNull: true,
-      length: (17, 2)
+      notNull: true
     },
     checked:{
       type: 'boolean',
@@ -58,8 +57,7 @@ exports.up = function(db) {
     },
     file:{
       type: 'string',
-      length: 100,
-      notNull: true
+      length: 100
     }
   });
 };

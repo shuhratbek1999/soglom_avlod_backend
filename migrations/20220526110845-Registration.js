@@ -26,12 +26,10 @@ exports.up = function(db) {
       type: 'int'
     },
     created_at:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     updated_at:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     status:{
       type: 'string',
@@ -52,22 +50,17 @@ exports.up = function(db) {
     summa:{
       type: 'decimal',
       notNull: true,
-      length: (11, 2)
     },
     pay_summa:{
       type: 'decimal',
       notNull: true,
-      length: (11, 2)
     },
     backlog:{
       type: 'decimal',
       notNull: true,
-      length: (11,2)
     },
     discount:{
-      type: 'decimal',
-      notNull: true,
-      length: (11,2)
+      type: 'decimal'
     },
     hospital_summa:{
       type: 'decimal'

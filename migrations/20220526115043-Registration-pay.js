@@ -29,9 +29,7 @@ exports.up = function(db) {
       type: 'int'
     },
     pay_type:{
-      type: 'string',
-      length: 20,
-      notNull: true
+      type: 'int',
     },
     summa:{
       type: 'decimal',
