@@ -43,7 +43,7 @@ exports.up = function(db) {
       type: 'string',
       notNull: true,
       length: 20
-    }
+    } 
   });
 };
 

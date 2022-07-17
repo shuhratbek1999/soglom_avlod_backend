@@ -167,7 +167,7 @@ class RegistrationController {
       function isHave(item){
         return item.room_id == user.room_id && item.patient_id == model.patient_id;
     }
-    var have = await this.massiv.find(isHave);
+    var have = await this.massiv.find(isHave); 
     if(have == undefined){
         this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
     }

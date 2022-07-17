@@ -7,7 +7,7 @@ class districtModel extends Model {
         delete values.password_hash;
         return values;
     }
-}
+} 
 
 districtModel.init({
   id: { 

@@ -39,7 +39,6 @@ exports.up = function(db) {
     },
     text:{
       type: 'string',
-      notNull: true
     },
   });
 };

@@ -45,19 +45,15 @@ exports.up = function(db) {
     },
     complaint:{
       type: 'int',
-      notNull: true
     },
     summa:{
       type: 'decimal',
-      notNull: true,
     },
     pay_summa:{
-      type: 'decimal',
-      notNull: true,
+      type: 'decimal'
     },
     backlog:{
       type: 'decimal',
-      notNull: true,
     },
     discount:{
       type: 'decimal'
