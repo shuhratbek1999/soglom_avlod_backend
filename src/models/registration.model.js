@@ -53,23 +53,18 @@ type_service : {
 },
 complaint : {
     type: DataTypes.STRING,
-    allowNull: false
 },
 summa : {
     type: DataTypes.DECIMAL(11,2),
-    allowNull: false
 },
 pay_summa : {
     type: DataTypes.DECIMAL(11,2),
-    allowNull: false
 },
 backlog : {
     type: DataTypes.DECIMAL(11,2),
-    allowNull: false
 },
 discount : {
-    type: DataTypes.DECIMAL(11,2),
-    allowNull: false
+    type: DataTypes.DECIMAL(11,2)
 },
 hospital_summa:{
     type: DataTypes.DECIMAL()

@@ -568,9 +568,11 @@ palata = async (req, res, next) => {
             ]
         });
         model.forEach((value) => {
-            console.log(value);
+            let days;
+            days = value.date_do - value.date_to;
+            console.log(days);
             if(value.date_time >= body.date_to && value.date_time <= body.date_do){
-                value.status = status
+                value.status = status;
             }
             else{
                 value.status = !status
@@ -679,7 +681,7 @@ kassa = async (req, res, next) => {
             [sequelize.literal('sum(`price` * `register_kassa`.`type`)'), 'total_kirim'],
         ],
         include: [
-            { model: DoctorModel, as: 'doctor', attributes: ['name'] },
+            { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
         ],
         where: query,
         group: ['id', 'doctor_id'],
@@ -688,11 +690,8 @@ kassa = async (req, res, next) => {
         ],
         raw: true
     })
-    // console.log(result);
     let resultx = [];
     for(let i = 0; i < result.length; i++){
-        // console.log(result[i]['doctor.name']);
-        //begin balance
         query_begin.doctor_id = result[i].doctor_id;
         query_end.doctor_id = result[i].doctor_id;
         let kassa_register = await Register_kassaModel.findOne({
@@ -701,6 +700,7 @@ kassa = async (req, res, next) => {
             ],
             where : query_begin,
             group: ['doctor_id'],
+            raw: true
         });
         let kassa_registerx = await Register_kassaModel.findOne({
             attributes : [
@@ -708,7 +708,9 @@ kassa = async (req, res, next) => {
             ],
             where : query_end,
             group: ['doctor_id'],
+            raw: true
         });   
+        console.log(kassa_register);
         resultx.push(
             {
                 'pay_type' : result[i].pay_type,
@@ -719,11 +721,12 @@ kassa = async (req, res, next) => {
                 'end_total' : (kassa_registerx != null ? kassa_registerx.total : 0),
                 'doctor': result[i]['doctor.name'],
                 'type': result[i].type,
-                'date_time': result[i].date_time
+                'date_time': result[i].date_time,
+                'id': result[i].id
+
             }
         );
     }
-    console.log(resultx);
     res.send(resultx);
 };
 
