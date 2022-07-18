@@ -167,7 +167,7 @@ class RegistrationController {
       function isHave(item){
         return item.room_id == user.room_id && item.patient_id == model.patient_id;
     }
-    var have = await this.massiv.find(isHave); 
+    var have = await this.massiv.find(isHave);  
     if(have == undefined){
         this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":registration_doctor.status})
     }
@@ -196,7 +196,8 @@ class RegistrationController {
            "type": value.id,
            "price": value.price,
            "doc_id": 1, 
-           "doctor_id": value.doctor_id
+           "doctor_id": value.doctor_id,
+           "doc_type": value.doc_type
        })
    }
     })
@@ -487,7 +488,8 @@ class RegistrationController {
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,
             "price": value.summa,    
-            "type": 'kirim'
+            "type": 'kirim',
+            "doc_type": "chiqim"
         })
         
     })
@@ -587,7 +589,7 @@ kassaSverka = async (req, res, next) => {
 
     let result = {begin: null, data : [], end: null};
     let body = req.body; 
-    let query = {}, query_begin = {}, query_end = {};
+    let query = {}, query_begin = {}, query_end = {}, queryx = {};
     query.date_time =  {
         [Op.gte]: body.datetime1,
         [Op.lte]: body.datetime2,
@@ -602,11 +604,12 @@ kassaSverka = async (req, res, next) => {
         query.doctor_id = {[Op.eq] : body.doctor_id } 
         query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
         query_end.doctor_id = {[Op.eq] : body.doctor_id } 
+        queryx.id = {[Op.eq] : body.doctor_id}
     };
     
     result.data = await Register_kassaModel.findAll({
         attributes : [
-            'doctor_id', 'pay_type', 'date_time', 'type',
+            'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
             [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
             [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
             [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
@@ -614,7 +617,7 @@ kassaSverka = async (req, res, next) => {
         ],
         where : query,
         include: [
-            { model: DoctorModel, as: 'doctor', attributes: ['name'] },
+            { model: DoctorModel, as: 'doctor', attributes: ['name'], where: queryx},
         ],
         order: [
             ['date_time', 'ASC']
@@ -684,7 +687,7 @@ kassa = async (req, res, next) => {
             { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
         ],
         where: query,
-        group: ['id', 'doctor_id'],
+        group: ['id'],
         order: [
             ['date_time', 'ASC']
         ],
@@ -720,6 +723,7 @@ kassa = async (req, res, next) => {
                 'total_chiqim' : result[i].total_chiqim,
                 'end_total' : (kassa_registerx != null ? kassa_registerx.total : 0),
                 'doctor': result[i]['doctor.name'],
+                "doctor_id": result[i]['doctor.id'],
                 'type': result[i].type,
                 'date_time': result[i].date_time,
                 'id': result[i].id

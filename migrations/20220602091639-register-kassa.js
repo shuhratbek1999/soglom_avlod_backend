@@ -34,8 +34,11 @@ exports.up = function(db) {
       notNull: true
     },
     pay_type:{
-      type: 'int',
+      type: 'string',
       notNull: true
+    },
+    doc_type:{
+      type: 'string'
     },
     doctor_id:{
       type: 'int'

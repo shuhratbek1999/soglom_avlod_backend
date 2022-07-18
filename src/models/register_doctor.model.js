@@ -30,6 +30,9 @@ register_doctorModel.init({
  },
  doctor_id:{
   type: DataTypes.INTEGER
+},
+doc_type: {
+  type: DataTypes.STRING()
 }
 
 }, {
@@ -49,5 +52,5 @@ register_doctorModel.init({
   ],
  
 });
-register_doctorModel.hasMany(DoctorModel, {as: 'doctor', foreignKey: 'id'})
+register_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 module.exports = register_doctorModel;

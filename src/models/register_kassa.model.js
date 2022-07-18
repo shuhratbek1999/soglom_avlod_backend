@@ -31,6 +31,9 @@ Register_kassaModel.init({
    type: DataTypes.STRING,
    allowNull: false
  },
+ doc_type:{
+  type: DataTypes.STRING
+ },
  doctor_id:{
    type: DataTypes.INTEGER
  }

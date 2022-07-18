@@ -35,6 +35,9 @@ exports.up = function(db) {
     doc_id:{
       type: 'int'
     },
+    doc_type:{
+      type: 'string'
+    },
     doctor_id: {
       type: 'int'
     }

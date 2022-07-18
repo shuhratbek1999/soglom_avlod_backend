@@ -47,14 +47,15 @@ class RegisterDoctorController {
     }
     create = async (req, res, next) => {
         this.checkValidation(req);
-        let query = {};
+        let query = {}, queryx = {};
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
         if(body.doctor_id !== null){
-            query.doctor_id = {[Op.eq] : body.doctor_id }  
+            query.id = {[Op.eq] : body.doctor_id }  
+            queryx.doctor_id = {[Op.eq]: body.doctor_id}
         };
-
+          
         let result = await register_doctorModel.findAll({
             attributes: [
                  'id', "type", "date_time",
@@ -64,9 +65,9 @@ class RegisterDoctorController {
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time <= " + datetime2 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'end_total'],
             ],
             include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name'] },
+                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], where: query},
             ],
-            where: query,
+            where: queryx,
             raw: true,
             group: ['id'],
             order: [
@@ -82,17 +83,18 @@ class RegisterDoctorController {
 
     sverka = async (req, res, next) => {
         this.checkValidation(req);
-        let query = {};
+        let query = {}, queryx = {};
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
         if(body.doctor_id !== 0){
-            query.doctor_id = {[Op.eq] : body.doctor_id }  
+            query.id = {[Op.eq] : body.doctor_id }
+            queryx.doctor_id = {[Op.eq]: body.doctor_id}
         };
 
         let result = await register_doctorModel.findAll({
             attributes: [
-                 'id', "doc_id", "date_time", "type",
+                 'id', "doc_id", "date_time", "type", "doc_type",
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 0 THEN register_doctor.price ELSE 0 END)"), 'kirim_summa'],
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 1 THEN register_doctor.price ELSE 0 END)"), 'chiqim_summa'],
@@ -101,7 +103,7 @@ class RegisterDoctorController {
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name']},
             ],
-            where: query, 
+            where: queryx, 
             group: ['id'],
             order: [
                 ['id', 'ASC']
