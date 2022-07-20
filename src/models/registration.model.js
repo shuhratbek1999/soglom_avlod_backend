@@ -1,13 +1,9 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const inspectionCategory = require('./inspector_category.model')
 const Registration_doctorModel = require('./registration_doctor.model');
-const Registration_filesModel = require('../models/registration_files.model')
 const Registration_inspectionModel = require('../models/registration_inspection.model')
-const Registration_inspection_childModel = require('../models/registration_inspection_child.model')
-const Registration_payModel = require('../models/registration_pay.model')
-const Registration_recipeModel = require('../models/registration_recipe.model');
 const UserModel = require('./user.model');
-const patientModel = require('./patient.model');
 const Register_kassaModel = require('./register_kassa.model');
 const PatientModel = require('./patient.model');
 const DoctorModel = require('./doctor.model');

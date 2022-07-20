@@ -25,6 +25,9 @@ exports.up = function(db) {
     user_id:{
       type: 'int'
     },
+    direct_id:{
+      type: 'int'
+    },
     created_at:{
       type: 'int'
     },

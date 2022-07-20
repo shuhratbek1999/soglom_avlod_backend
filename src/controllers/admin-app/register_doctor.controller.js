@@ -74,10 +74,6 @@ class RegisterDoctorController {
                 ['id', 'ASC']
             ],
         })
-        // result.forEach((value, index) => {
-        //     console.log(value['doctor.name']);
-        //     if(value['doctor.name'] == )
-        // })
         res.send(result);
     };
 

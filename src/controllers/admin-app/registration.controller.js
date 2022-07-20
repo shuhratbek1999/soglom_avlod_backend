@@ -13,6 +13,7 @@ const Register_inspectionModel = require('../../models/register_inspection.model
 const UserModel = require('../../models/user.model');
 const QueueModel = require('../../models/queue.model')
 const { sequelize, sum } = require('../../models/user.model');
+const inspectionCategory = require('../../models/inspector_category.model')
 const PatientModel = require('../../models/patient.model');
 const registration_palataModel = require('../../models/registration_palata.model');
 const register_palataModel = require('../../models/register_palata.model');
@@ -106,6 +107,7 @@ class RegistrationController {
        let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
        const model = await RegistrationModel.create({
         "user_id": req.body.user_id,
+        "direct_id": req.body.direct_id,
         "status": req.body.status,
         "patient_id": req.body.patient_id,
         "type_service": req.body.type_service,
@@ -236,14 +238,16 @@ class RegistrationController {
             }
             var date_time = Math.floor(new Date().getTime() / 1000);
             // console.log(date_time);
-            Register_inspectionModel.create({
-                "date_time": date_time,
-                "type": value.type,
-                "price": value.price,
-                "doc_id": value.registration_id,
-                "user_id": model.id,
-                "inspection_id": value.inspection_id
-              })
+            if(value.status == "complete"){
+                Register_inspectionModel.create({
+                    "date_time": date_time,
+                    "type": value.type,
+                    "price": value.price,
+                    "doc_id": value.registration_id,
+                    "user_id": model.id,
+                    "inspection_id": value.inspection_id
+                  })
+            }
     })
     registration_pay.forEach((value, index)=>{
         Registration_payModel.create({
@@ -385,6 +389,7 @@ class RegistrationController {
             res.status(404).send("not found")
         }
         model.user_id = registration.user_id;
+        model.direct_id = registration.direct_id;
         model.status = registration.status;
         model.patient_id = registration.patient_id;
         model.type_service = registration.type_service;
@@ -651,17 +656,19 @@ kassa = async (req, res, next) => {
 
     let result;
     let body = req.body; 
+    let datetime1 = body.datetime1;
+    let datetime2 = body.datetime2;
     let query = {}, query_begin = {}, query_end = {};
-    query.date_time =  {
-        [Op.gte]: body.datetime1,
-        [Op.lte]: body.datetime2,
-    };
-    query_begin.date_time =  {
-        [Op.lt]: body.datetime1,
-    };
-    query_end.date_time =  {
-        [Op.lte]: body.datetime2,
-    };
+    // query.date_time =  {
+    //     [Op.gte]: body.datetime1,
+    //     [Op.lte]: body.datetime2,
+    // };
+    // query_begin.date_time =  {
+    //     [Op.lt]: body.datetime1,
+    // };
+    // query_end.date_time =  {
+    //     [Op.lte]: body.datetime2,
+    // };
     if(body.doctor_id != null){
         query.doctor_id= {[Op.eq] : body.doctor_id } 
         query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
@@ -675,8 +682,8 @@ kassa = async (req, res, next) => {
             //'doc_id', 'doc_type',
             'id', 'doctor_id', "type", "date_time",
             [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'total'],
-            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
-            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time <= " + datetime2 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'end_total'],
+            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 1 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
             // [sequelize.literal('sum(`price` * power(-1, `register_kassa`.`type` + 1))'), 'total'],
             // [sequelize.literal('sum(`price` * (-1  + `register_kassa`.`type`)) * (-1)'), 'total_chiqim'],
             // [sequelize.literal('sum(`price` * `register_kassa`.`type`)'), 'total_kirim'],
@@ -730,6 +737,37 @@ kassa = async (req, res, next) => {
         );
     }
     res.send(resultx);
+};
+inspection = async (req, res, next) => {
+    this.checkValidation(req);
+    let query = {}, queryx = {};
+    let body = req.body;
+    let datetime1 = body.datetime1;
+    let datetime2 = body.datetime2;
+    if(body.inspection_id !== null){
+        query.id = {[Op.eq] : body.inspection_id }  
+        queryx.inspection_id = {[Op.eq]: body.inspection_id}
+    };
+      
+    let result = await Register_inspectionModel.findAll({
+        attributes: [
+             'id', "type", "date_time",
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'begin_total'],
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'end_total'],
+        ],
+        include: [
+            { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
+        ],
+        where: queryx,
+        raw: true,
+        group: ['inspection_id'],
+        order: [
+            ['id', 'ASC']
+        ],
+    })
+    res.send(result);
 };
 
 kassaAll = async (req, res, next) =>{
