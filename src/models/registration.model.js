@@ -90,6 +90,7 @@ hospital_summa:{
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})
-RegistrationModel.hasMany(PatientModel, {as: 'patient', foreignKey: 'id'})
+RegistrationModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 RegistrationModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'id'})
+RegistrationModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
 module.exports = RegistrationModel;

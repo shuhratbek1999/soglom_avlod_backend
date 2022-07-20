@@ -29,7 +29,10 @@ class RegistrationController {
         const model = await RegistrationModel.findAll({
             include:[
                 {
-                    model: PatientModel, as: 'patient'
+                    model: UserModel, as: 'user', attributes: ['user_name']
+                },
+                {
+                    model: PatientModel, as: 'patient', attributes: ['fullname']
                 },
 
                 {
@@ -95,14 +98,6 @@ class RegistrationController {
         });
     }
    create = async (req, res, next, insert = true) => {
-    // const x = await UserModel.findOne({
-    //     where:{
-    //         id: 1
-    //     },
-    //     raw: true
-    // })
-    // let miqdor = x.percent;
-    // // console.log(miqdor);
        this.checkValidation(req);
        const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        let inspection_sum = await Registration_inspectionModel.sum('price');
@@ -676,18 +671,21 @@ kassa = async (req, res, next) => {
 
     
     result = await Register_kassaModel.findAll({
-        attributes : [
+        attributes : [ 
             //'doc_id', 'doc_type',
             'id', 'doctor_id', "type", "date_time",
-            [sequelize.literal('sum(`price` * power(-1, `register_kassa`.`type` + 1))'), 'total'],
-            [sequelize.literal('sum(`price` * (-1  + `register_kassa`.`type`)) * (-1)'), 'total_chiqim'],
-            [sequelize.literal('sum(`price` * `register_kassa`.`type`)'), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'total'],
+            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
+            [sequelize.literal("SUM(CASE WHEN register_kassa.date_time <= " + datetime2 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'end_total'],
+            // [sequelize.literal('sum(`price` * power(-1, `register_kassa`.`type` + 1))'), 'total'],
+            // [sequelize.literal('sum(`price` * (-1  + `register_kassa`.`type`)) * (-1)'), 'total_chiqim'],
+            // [sequelize.literal('sum(`price` * `register_kassa`.`type`)'), 'total_kirim'],
         ],
         include: [
             { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
         ],
         where: query,
-        group: ['id'],
+        group: ['doctor_id'],
         order: [
             ['date_time', 'ASC']
         ],

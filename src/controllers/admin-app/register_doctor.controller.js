@@ -69,7 +69,7 @@ class RegisterDoctorController {
             ],
             where: queryx,
             raw: true,
-            group: ['id'],
+            group: ['doctor_id'],
             order: [
                 ['id', 'ASC']
             ],
@@ -87,7 +87,7 @@ class RegisterDoctorController {
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
-        if(body.doctor_id !== 0){
+        if(body.doctor_id !== null){
             query.id = {[Op.eq] : body.doctor_id }
             queryx.doctor_id = {[Op.eq]: body.doctor_id}
         };
@@ -104,7 +104,7 @@ class RegisterDoctorController {
                 { model: DoctorModel, as: 'doctor', attributes: ['name']},
             ],
             where: queryx, 
-            group: ['id'],
+            group: ['doctor_id'],
             order: [
                 ['id', 'ASC']
             ],
