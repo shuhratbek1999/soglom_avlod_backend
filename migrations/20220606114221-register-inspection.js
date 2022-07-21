@@ -41,6 +41,10 @@ exports.up = function(db) {
     },
     inspection_id:{
       type: 'int'
+    },
+    inspection_category:{
+      type: 'int',
+      notNull: true
     }
   });
 };

@@ -35,6 +35,10 @@ Register_inspectionModel.init({
 },
 inspection_id:{
   type: DataTypes.INTEGER
+},
+inspection_category:{
+  type: DataTypes.INTEGER,
+  allowNull: false
 }
 
 }, {
@@ -54,5 +58,5 @@ inspection_id:{
   ],
  
 });
-Register_inspectionModel.belongsTo(InspectionCategory, {as: 'inspection', foreignKey: 'inspection_id'})
+Register_inspectionModel.belongsTo(InspectionCategory, {as: 'inspection', foreignKey: 'inspection_category'})
 module.exports = Register_inspectionModel;

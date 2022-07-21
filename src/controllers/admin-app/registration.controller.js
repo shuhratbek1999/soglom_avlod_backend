@@ -21,6 +21,7 @@ const {Op} = require('sequelize');
 const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
 const palataModel = require('../../models/palata.model');
+const directModel = require('../../models/direct.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -100,11 +101,11 @@ class RegistrationController {
     }
    create = async (req, res, next, insert = true) => {
        this.checkValidation(req);
-       const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
-       let inspection_sum = await Registration_inspectionModel.sum('price');
-       let doc_summa = await Registration_doctorModel.sum('price');
-    //    let palata_sum = await registration_palataModel.sum('price');
-       let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
+       const {registration_files, registration_palata,queue, direct, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
+    //    let inspection_sum = await Registration_inspectionModel.sum('price');
+    //    let doc_summa = await Registration_doctorModel.sum('price');
+    // //    let palata_sum = await registration_palataModel.sum('price');
+    // //    let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
        const model = await RegistrationModel.create({
         "user_id": req.body.user_id,
         "direct_id": req.body.direct_id,
@@ -112,12 +113,17 @@ class RegistrationController {
         "patient_id": req.body.patient_id,
         "type_service": req.body.type_service,
         "complaint": req.body.complaint,
-        "summa": reg_summa,
+        "summa": req.body.summa,
         "pay_summa": req.body.pay_summa,
         "backlog": req.body.backlog,
         "discount": req.body.discount,
         "hospital_summa": req.body.hospital_summa
        });
+       if(req.body.status == "complete"){
+        for(let i = 0; i < direct.length; i++){
+            directModel.create(direct[i])
+        }
+    }
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
@@ -194,7 +200,7 @@ class RegistrationController {
            "price": value.price,
            "doc_id": 1, 
            "doctor_id": value.doctor_id,
-           "doc_type": value.doc_type
+           "doc_type": 'kirim'
        })
    }
     })
@@ -212,7 +218,6 @@ class RegistrationController {
               }
               var a = await this.massiv.find(isHave);
             //   console.log(a);
-              console.log(value.status);
               if(a == undefined){
                   this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
               }
@@ -233,6 +238,11 @@ class RegistrationController {
             "category_id": value.category_id,
             "status": value.status,
             });
+            // if(value.status == "complete"){
+            //     for(let i = 0; i < direct.length; i++){
+            //         directModel.create(direct[i])
+            //     }
+            // }
             for(let i = 0; i < registration_inspection_child.length; i++){
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
             }
@@ -245,7 +255,8 @@ class RegistrationController {
                     "price": value.price,
                     "doc_id": value.registration_id,
                     "user_id": model.id,
-                    "inspection_id": value.inspection_id
+                    "inspection_id": value.inspection_id,
+                    "inspection_category": value.category_id
                   })
             }
     })
@@ -263,7 +274,8 @@ class RegistrationController {
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,
             "price": value.summa,    
-            "type": 'kirim'
+            "type": value.pay_type,
+            "doc_type": 'kirim'
         })
         
     })
@@ -412,7 +424,6 @@ class RegistrationController {
         return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
     }
     var a = this.massiv.find(isHave)
-    console.log(a);
     if(a == undefined){
         this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
     }
@@ -445,7 +456,7 @@ class RegistrationController {
                   return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
               }
               var a = this.massiv.find(isHave)
-              console.log(a);
+              
               if(a == undefined){
                   this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
               }
@@ -463,14 +474,15 @@ class RegistrationController {
                 Registration_inspection_childModel.create(registration_inspection_child[i]);
             }
             var date_time = Math.floor(new Date().getTime() / 1000);
-            console.log(date_time);
+            console.log(value);
             Register_inspectionModel.create({
                 "date_time": date_time,
                 "type": value.type,
                 "price": value.price,
                 "doc_id": value.registration_id,
                 "user_id": value.id,
-                "inspection_id": value.inspection_id
+                "inspection_id": value.inspection_id,
+                "inspection_category": value.category_id
               })
     })
     registration_pay.forEach((value, index)=>{
@@ -737,25 +749,25 @@ inspection = async (req, res, next) => {
     let body = req.body;
     let datetime1 = body.datetime1;
     let datetime2 = body.datetime2;
-    if(body.inspection_id !== null){
-        query.id = {[Op.eq] : body.inspection_id }  
-        queryx.inspection_id = {[Op.eq]: body.inspection_id}
+    if(body.inspection_category !== null){
+        query.id = {[Op.eq] : body.inspection_category }  
+        queryx.inspection_category = {[Op.eq]: body.inspection_category}
+        
     };
       
     let result = await Register_inspectionModel.findAll({
         attributes: [
-             'id', "type", "date_time",
-            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'begin_total'],
+             'id', "type", "date_time", "inspection_category",
             [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
             [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
-            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'end_total'],
+            [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.type = 1 then register_inspection.inspection_id else 0 end)"), 'count']
         ],
         include: [
             { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
         ],
         where: queryx,
         raw: true,
-        group: ['inspection_id'],
+        group: ['inspection_category'],
         order: [
             ['id', 'ASC']
         ],

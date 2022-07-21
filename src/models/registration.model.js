@@ -64,6 +64,9 @@ discount : {
 },
 hospital_summa:{
     type: DataTypes.DECIMAL()
+},
+direct_id:{
+    type: DataTypes.INTEGER
 }
 
 }, {

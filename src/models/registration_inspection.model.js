@@ -62,6 +62,6 @@ Registration_inspectionModel.init({
   }
 });
 // Registration_inspection_childModel.belongsTo(Registration_inspectionModel, {as: 'registration_inspection_child', foreignKey: 'parent_id'})
-Registration_inspectionModel.belongsTo(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'inspection_id'})
-// Registration_inspectionModel.belongsTo(Inspection_categoryModel, {as: 'inspection_category', foreignKey: 'category_id'})
+// Registration_inspectionModel.belongsTo(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'inspection_category'})
+// Registration_inspectionModel.belongsTo(Inspection_categoryModel, {as: 'inspection', foreignKey: 'inspection_category'})
 module.exports = Registration_inspectionModel;

@@ -20,7 +20,6 @@ const expenseRouter = require('../routes/admin-app/expense.route')
 const palataRouter = require('../routes/admin-app/palata.route')
 const RegDoctor = require('../routes/admin-app/registerDoctor.route')
 const UploadRouter = require('../routes/admin-app/upload.route')
-const directRoute = require('../routes/admin-app/direct.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -49,7 +48,6 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/palata`, palataRouter);
         app.use(`/api/v1/admin-app/register_doctor`, RegDoctor);
         app.use(`/api/v1/admin-app/upload`, UploadRouter);
-        app.use(`/api/v1/admin-app/direct`, directRoute);
 
         app.use(`/api/v1/uploads`, express.static('uploads'));
 
