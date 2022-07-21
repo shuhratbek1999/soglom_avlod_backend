@@ -32,6 +32,9 @@ summa:{
   date_time:{
       type: DataTypes.INTEGER,
       defaultValue: Math.floor(new Date().getTime() / 1000)
+    },
+    discount:{
+      type: DataTypes.DECIMAL
     }
 }, {
   sequelize,

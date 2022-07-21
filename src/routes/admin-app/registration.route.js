@@ -14,6 +14,7 @@ router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
 router.post('/create', auth(),  awaitHandlerFactory(registrationControl.create));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
+router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
 router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.post('/kassasverka', auth(),  awaitHandlerFactory(registrationControl.kassaSverka));

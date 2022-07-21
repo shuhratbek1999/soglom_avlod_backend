@@ -103,7 +103,7 @@ class RegistrationController {
        const {registration_files, registration_palata,queue, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        let inspection_sum = await Registration_inspectionModel.sum('price');
        let doc_summa = await Registration_doctorModel.sum('price');
-       let palata_sum = await registration_palataModel.sum('price');
+    //    let palata_sum = await registration_palataModel.sum('price');
        let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
        const model = await RegistrationModel.create({
         "user_id": req.body.user_id,
@@ -116,7 +116,7 @@ class RegistrationController {
         "pay_summa": req.body.pay_summa,
         "backlog": req.body.backlog,
         "discount": req.body.discount,
-        "hospital_summa": palata_sum
+        "hospital_summa": req.body.hospital_summa
        });
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
@@ -254,7 +254,8 @@ class RegistrationController {
             "user_id": value.user_id,
             "registration_id": model.id,
             "pay_type": value.pay_type,
-            "summa": value.summa
+            "summa": value.summa,
+            "discount": value.discount
         });
         var date_time = Math.floor(new Date().getTime() / 1000);
         Register_kassaModel.create({
@@ -399,14 +400,6 @@ class RegistrationController {
         model.backlog = registration.backlog;
         model.discount = registration.discount;
     model.save();
-   
-    // const x = await UserModel.findOne({
-    //     where:{
-    //         id: 3
-    //     },
-    // })
-    // let miqdor = x._previousDataValues.percent;
-    // console.log(miqdor);
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
@@ -769,7 +762,37 @@ inspection = async (req, res, next) => {
     })
     res.send(result);
 };
+insSverka = async (req, res, next) => {
+    this.checkValidation(req);
+    let query = {}, queryx = {};
+    let body = req.body;
+    let datetime1 = body.datetime1;
+    let datetime2 = body.datetime2;
+    if(body.inspection_id !== null){
+        query.id = {[Op.eq] : body.inspection_id }
+        queryx.inspection_id = {[Op.eq]: body.inspection_id}
+    };
 
+    let result = await Register_inspectionModel.findAll({
+        attributes: [
+             'id', "doc_id", "date_time", "type",
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'begin_total'],
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'kirim_summa'],
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'chiqim_summa'],
+            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'end_total'],
+        ],
+        include: [
+            { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
+        ],
+        where: queryx, 
+        group: ['inspection_id'],
+        order: [
+            ['id', 'ASC']
+        ],
+    })
+// console.log(result);
+    res.send(result);
+};
 kassaAll = async (req, res, next) =>{
     const model = await Register_kassaModel.findAll({
         include:[

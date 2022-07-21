@@ -25,6 +25,9 @@ exports.up = function(db) {
     user_id:{
       type: 'int'
     },
+    discount:{
+      type: 'decimal'
+    },
     registration_id:{
       type: 'int'
     },
