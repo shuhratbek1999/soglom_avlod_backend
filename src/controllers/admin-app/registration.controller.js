@@ -827,6 +827,76 @@ direct = async (req, res, next) => {
     })
 }
 
+directAll = async (req, res, next) => {
+    const model = await directModel.findAll();
+    res.send({
+        error_code: 200,
+        error: false,
+        message: "malumotlar chiqdi",
+        data: model
+    })
+}
+
+directDelete = async (req, res, next) =>{
+    const model  = await directModel.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.send({
+        error_code: 200,
+        error: false,
+        message: "malumot o'chirildi",
+        data: model
+    })
+}
+
+directUpdate = async (req, res, next) =>{
+    const model = await directModel.findOne({
+        where:{
+            id: req.params.id
+        }
+    })
+    model.name = req.body.name,
+    model.bonus = req.body.bonus
+    model.save();
+    res.send({
+        error_code: 200,
+        error: false,
+        message: "malumotlar tahrirlandi",
+        data: model
+    })
+}
+
+directHisobot = async (req, res, next) => {
+    this.checkValidation(req);
+    let query = {}, queryx = {};
+    let body = req.body;
+    let datetime1 = body.datetime1;
+    let datetime2 = body.datetime2;
+    if(body.direct_id !== null){
+        query.id = {[Op.eq] : body.direct_id }  
+        queryx.direct_id = {[Op.eq]: body.direct_id}
+    };
+      
+    let result = await RegistrationModel.findAll({
+        attributes: [
+             'id', "type_service", "created_at", "direct_id",
+            [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN direct.bonus ELSE 0 END)"), 'tushum'],
+            [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.type_service = 1 then registration.direct_id else 0 end)"), 'count']
+        ],
+        include: [
+            { model: directModel, as: 'direct', where: query},
+        ],
+        where: queryx,
+        raw: true,
+        group: ['direct_id'],
+        order: [
+            ['id', 'ASC']
+        ],
+    })
+    res.send(result);
+};
 
 delete = async (req, res, next) => {
   const model =  await RegistrationModel.destroy({

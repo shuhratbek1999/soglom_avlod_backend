@@ -11,6 +11,7 @@ router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
 router.get('/register_kassa', auth(), awaitHandlerFactory(registrationControl.registerAll));
 router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
 router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll));
+router.get('/directAll', auth(), awaitHandlerFactory(registrationControl.directAll));
 router.post('/direct', auth(), awaitHandlerFactory(registrationControl.direct));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
 router.post('/create', auth(),  awaitHandlerFactory(registrationControl.create));
@@ -19,6 +20,9 @@ router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSv
 router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.post('/kassasverka', auth(),  awaitHandlerFactory(registrationControl.kassaSverka));
+router.post('/directhisobot', auth(),  awaitHandlerFactory(registrationControl.directHisobot));
 router.patch('/update/:id', auth(), awaitHandlerFactory(registrationControl.update));
+router.patch('/directUpdate/:id', auth(), awaitHandlerFactory(registrationControl.directUpdate));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
+router.delete('/direct/:id', auth(), awaitHandlerFactory(registrationControl.directDelete));
 module.exports = router;

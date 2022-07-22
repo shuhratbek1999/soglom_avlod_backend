@@ -7,6 +7,8 @@ const UserModel = require('./user.model');
 const Register_kassaModel = require('./register_kassa.model');
 const PatientModel = require('./patient.model');
 const DoctorModel = require('./doctor.model');
+const directModel = require('./direct.model');
+const Registration_inspection_childModel = require('./registration_inspection_child.model');
 class RegistrationModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -88,8 +90,10 @@ direct_id:{
 });
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})
 RegistrationModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 RegistrationModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'id'})
 RegistrationModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
+RegistrationModel.belongsTo(directModel, {as: 'direct', foreignKey: 'direct_id'})
 module.exports = RegistrationModel;
