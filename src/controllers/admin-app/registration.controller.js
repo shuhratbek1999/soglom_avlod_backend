@@ -868,6 +868,23 @@ directUpdate = async (req, res, next) =>{
     })
 }
 
+directOne = async (req, res, next) =>{
+    const model = await directModel.getOne({
+        where:{
+            id: req.params.id
+        }
+    })
+    if(!model){
+        throw new HttpException(401, "bu id da malumot topilmadi")
+    }
+    res.send({
+        error_code: 200,
+        error: false,
+        message: "malumot chiqdi",
+        data: model
+    })
+}
+
 directHisobot = async (req, res, next) => {
     this.checkValidation(req);
     let query = {}, queryx = {};
