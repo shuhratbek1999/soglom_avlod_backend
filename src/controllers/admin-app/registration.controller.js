@@ -119,11 +119,11 @@ class RegistrationController {
         "discount": req.body.discount,
         "hospital_summa": req.body.hospital_summa
        });
-       if(req.body.status == "complete"){
-        for(let i = 0; i < direct.length; i++){
-            directModel.create(direct[i])
-        }
-    }
+    //    if(req.body.status == "complete"){
+    //     for(let i = 0; i < direct.length; i++){
+    //         directModel.create(direct[i])
+    //     }
+    // }
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
@@ -166,7 +166,6 @@ class RegistrationController {
         },
         raw: true
       })
-      console.log(user);
       function isHave(item){
         return item.room_id == user.room_id && item.patient_id == model.patient_id;
     }
@@ -760,7 +759,7 @@ inspection = async (req, res, next) => {
              'id', "type", "date_time", "inspection_category",
             [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
             [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
-            [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.type = 1 then register_inspection.inspection_id else 0 end)"), 'count']
+            [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.type = 1 then register_inspection.inspection_category else 0 end)"), 'count']
         ],
         include: [
             { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
@@ -780,24 +779,22 @@ insSverka = async (req, res, next) => {
     let body = req.body;
     let datetime1 = body.datetime1;
     let datetime2 = body.datetime2;
-    if(body.inspection_id !== null){
-        query.id = {[Op.eq] : body.inspection_id }
-        queryx.inspection_id = {[Op.eq]: body.inspection_id}
+    if(body.inspection_category !== null){
+        query.id = {[Op.eq] : body.inspection_category }
+        queryx.inspection_category = {[Op.eq]: body.inspection_category}
     };
 
     let result = await Register_inspectionModel.findAll({
         attributes: [
              'id', "doc_id", "date_time", "type",
-            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'begin_total'],
             [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'kirim_summa'],
             [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'chiqim_summa'],
-            [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN register_inspection.price * power(-1, register_inspection.type) ELSE 0 END)"), 'end_total'],
         ],
         include: [
             { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
         ],
         where: queryx, 
-        group: ['inspection_id'],
+        group: ['inspection_category'],
         order: [
             ['id', 'ASC']
         ],
@@ -818,6 +815,18 @@ kassaAll = async (req, res, next) =>{
         data: model
     })
 }
+
+direct = async (req, res, next) => {
+    const model = await directModel.create(req.body);
+
+    res.send({
+        error_code: 200,
+        error: false,
+        message: "malumotlar qoshildi",
+        data: model
+    })
+}
+
 
 delete = async (req, res, next) => {
   const model =  await RegistrationModel.destroy({
