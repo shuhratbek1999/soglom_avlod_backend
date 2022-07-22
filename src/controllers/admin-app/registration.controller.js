@@ -869,7 +869,7 @@ directUpdate = async (req, res, next) =>{
 }
 
 directOne = async (req, res, next) =>{
-    const model = await directModel.getOne({
+    const model = await directModel.findOne({
         where:{
             id: req.params.id
         }
