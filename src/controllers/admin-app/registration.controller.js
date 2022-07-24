@@ -129,7 +129,7 @@ class RegistrationController {
        }
        registration_palata.forEach((value, index) =>{
         let day = new Date();
-        let date = Math.floor(new Date().getTime() / 1000);
+        let date = Math.floor(new Date().getDate() / 1000);
             registration_palataModel.create({
                 "palata_id": value.palata_id,
                 "registration_id": model.id,
@@ -142,7 +142,7 @@ class RegistrationController {
             register_palataModel.create({
                 "palata_id": value.palata_id,
                 "patient_id": model.id,
-                "registration_id": value.registration_id,
+                "registration_id": model.id,
                 "price": value.price,
                 "day": value.day,
                 "date_to": value.date_to,
@@ -899,7 +899,7 @@ directHisobot = async (req, res, next) => {
     let result = await RegistrationModel.findAll({
         attributes: [
              'id', "type_service", "created_at", "direct_id",
-            [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN direct.bonus ELSE 0 END)"), 'tushum'],
+            [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN registration.summa ELSE 0 END)"), 'tushum'],
             [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.type_service = 1 then registration.direct_id else 0 end)"), 'count']
         ],
         include: [
