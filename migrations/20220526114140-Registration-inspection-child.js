@@ -27,15 +27,12 @@ exports.up = function(db) {
     },
     text:{
       type: 'string',
-      notNull: true
     },
     norm:{
       type: 'string',
-      notNull: true,
     },
     name:{
       type: 'string',
-      notNull: true,
     },
     registration_id:{
       type: 'int'
@@ -50,7 +47,6 @@ exports.up = function(db) {
     },
     checked:{
       type: 'boolean',
-      notNull: true
     },
     file:{
       type: 'string',
