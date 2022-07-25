@@ -22,7 +22,7 @@ Registration_payModel.init({
       type: DataTypes.INTEGER
   },
   pay_type : {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(),
       allowNull: false
   },
 summa:{

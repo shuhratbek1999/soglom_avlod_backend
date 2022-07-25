@@ -24,7 +24,6 @@ exports.up = function(db) {
     },
     norm:{
       type: 'string',
-      length: 20,
     },
     parent_id:{
       type: 'int'
@@ -35,7 +34,6 @@ exports.up = function(db) {
     },
     name:{
       type: 'string',
-      length: 100,
       notNull: true
     },
     file:{

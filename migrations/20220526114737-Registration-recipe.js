@@ -42,7 +42,6 @@ exports.up = function(db) {
     comment:{
       type: 'string',
       notNull: true,
-      length: 20
     }
   });
 };

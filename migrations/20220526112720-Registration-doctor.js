@@ -31,7 +31,6 @@ exports.up = function(db) {
     status:{
       type: 'string',
       notNull: true,
-      length: 20
     },
     price:{
       type: 'decimal',

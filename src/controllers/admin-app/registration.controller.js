@@ -166,6 +166,7 @@ class RegistrationController {
         },
         raw: true
       })
+      console.log(user);
       function isHave(item){
         return item.room_id == user.room_id && item.patient_id == model.patient_id;
     }
@@ -684,7 +685,7 @@ kassa = async (req, res, next) => {
     result = await Register_kassaModel.findAll({
         attributes : [ 
             //'doc_id', 'doc_type',
-            'id', 'doctor_id', "type", "date_time",
+            'id', 'doctor_id', "type", "date_time", "doc_type",
             [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'total'],
             [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
             [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 1 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
@@ -735,7 +736,8 @@ kassa = async (req, res, next) => {
                 "doctor_id": result[i]['doctor.id'],
                 'type': result[i].type,
                 'date_time': result[i].date_time,
-                'id': result[i].id
+                'id': result[i].id,
+                "doc_type": result[i].doc_type
 
             }
         );
@@ -886,6 +888,36 @@ directOne = async (req, res, next) =>{
 }
 
 directHisobot = async (req, res, next) => {
+    this.checkValidation(req);
+    let query = {}, queryx = {};
+    let body = req.body;
+    let datetime1 = body.datetime1;
+    let datetime2 = body.datetime2;
+    if(body.direct_id !== null){
+        query.id = {[Op.eq] : body.direct_id }  
+        queryx.direct_id = {[Op.eq]: body.direct_id}
+    };
+      
+    let result = await RegistrationModel.findAll({
+        attributes: [
+             'id', "type_service", "created_at", "direct_id",
+            [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN registration.summa ELSE 0 END)"), 'tushum'],
+            [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.type_service = 1 then registration.direct_id else 0 end)"), 'count']
+        ],
+        include: [
+            { model: directModel, as: 'direct', where: query},
+        ],
+        where: queryx,
+        raw: true,
+        group: ['direct_id'],
+        order: [
+            ['id', 'ASC']
+        ],
+    })
+    res.send(result);
+};
+
+directSverka = async (req, res, next) => {
     this.checkValidation(req);
     let query = {}, queryx = {};
     let body = req.body;

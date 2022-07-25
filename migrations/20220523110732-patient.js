@@ -29,7 +29,6 @@ exports.up = function(db) {
     },
     name: {
       type: 'string',
-      length: 30,
       notNull: true
     },
     lastname: {
@@ -39,8 +38,7 @@ exports.up = function(db) {
     },
     patronymic: {
       type: 'string',
-      length: 40,
-      notNull: true
+            notNull: true
     },
     region_id:{
       type: 'int'
@@ -50,7 +48,6 @@ exports.up = function(db) {
     },
     phone:{
       type: 'string',
-      length: 20,
       notNull: true
     },
     passport:{
@@ -61,7 +58,6 @@ exports.up = function(db) {
     },
     gender:{
       type: 'string',
-      length: 10,
       notNull: true
     },
     birthday:{

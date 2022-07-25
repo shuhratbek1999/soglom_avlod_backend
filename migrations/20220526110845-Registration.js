@@ -37,7 +37,6 @@ exports.up = function(db) {
     status:{
       type: 'string',
       notNull: true,
-      length: 20
     },
     patient_id:{
       type: 'int'

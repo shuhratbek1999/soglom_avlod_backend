@@ -24,18 +24,18 @@ Registration_inspection_childModel.init({
       allowNull: false
   },
   norm:{
-      type: DataTypes.STRING(60),
+      type: DataTypes.STRING(),
       allowNull: false
   },
   name:{
-      type: DataTypes.STRING(60),
+      type: DataTypes.STRING(),
       allowNull: false
   },
   registration_id:{
       type: DataTypes.INTEGER
   },
   status:{
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(),
       allowNull: false
   },
   price:{

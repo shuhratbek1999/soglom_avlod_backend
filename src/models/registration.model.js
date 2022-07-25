@@ -39,14 +39,14 @@ updated_at : {
     defaultValue: Math.floor(new Date().getTime() / 1000)
 },
 status : {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(),
     allowNull: false
 },
 patient_id : {
     type: DataTypes.INTEGER
 },
 type_service : {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(),
     allowNull: false
 },
 complaint : {

@@ -36,8 +36,7 @@ exports.up = function(db) {
     },
     summa:{
       type: 'decimal',
-      notNull: true,
-      length: (17, 2)
+      notNull: true
     },
     date_time:{
       type: 'int'

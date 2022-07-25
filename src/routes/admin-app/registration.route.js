@@ -22,6 +22,7 @@ router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata))
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.post('/kassasverka', auth(),  awaitHandlerFactory(registrationControl.kassaSverka));
 router.post('/directhisobot', auth(),  awaitHandlerFactory(registrationControl.directHisobot));
+router.post('/directSverka', auth(),  awaitHandlerFactory(registrationControl.directSverka));
 router.patch('/update/:id', auth(), awaitHandlerFactory(registrationControl.update));
 router.patch('/directUpdate/:id', auth(), awaitHandlerFactory(registrationControl.directUpdate));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
