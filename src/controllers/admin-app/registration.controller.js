@@ -55,7 +55,7 @@ class RegistrationController {
                 }
              ],
         });
-        res.status(200).send({
+        res.status(200).send({  
             error: false,
             error_code: 200,
             message: 'Malumotlar chiqdi',
@@ -101,7 +101,7 @@ class RegistrationController {
     }
    create = async (req, res, next, insert = true) => {
        this.checkValidation(req);
-       const {registration_files, registration_palata,queue, direct, registration_doctor, registration_inspection, registration_inspection_child, registration_pay, ...registration} = req.body;
+       const {registration_files, registration_palata,queue, direct, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
        const model = await RegistrationModel.create({
         "user_id": req.body.user_id,
         "direct_id": req.body.direct_id,
@@ -197,8 +197,8 @@ class RegistrationController {
     })
 
     registration_inspection.forEach( async (value, index) => {
-        console.log(value);
-            const {registration_inspection_child, ...registration_inspection} = req.body;
+            const {registration_inspection_child, ...registration_inspection} = value;
+            // console.log(registration_inspection_child);
             var user = await UserModel.findOne({  
                 where:{
                     id: value.inspection_id
@@ -232,7 +232,6 @@ class RegistrationController {
             });
 
             for(let i = 0; i < registration_inspection_child.length; i++){
-                registration_inspection_child[i].parent_id = model.id;
               await  Registration_inspection_childModel.create(registration_inspection_child[i])
             } 
            
@@ -327,7 +326,7 @@ class RegistrationController {
    update = async (req, res, next, insert = true) => {
        this.checkValidation(req);
        const id = req.params.id;
-       const {registration_files, registration_doctor,registration_inspection_child, registration_inspection, registration_pay, ...registration} = req.body;
+       const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
     const model = await RegistrationModel.findOne({
         where:{
             id: id
@@ -568,26 +567,33 @@ palata = async (req, res, next) => {
     query_end.date_time = {
         [Op.lte]: body.date_do
     }
+   if(body.date_do && body.date_to){
     let status = true;
-        const model = await registration_palataModel.findAll({
-            raw: true,
-            include:[
-                {model: palataModel, as: 'palata'}
-            ]
-        });
-        model.forEach((value) => {
-            let days;
-            days = value.date_do - value.date_to;
-            console.log(days);
-            if(value.date_time >= body.date_to && value.date_time <= body.date_do){
-                value.status = status;
-            }
-            else{
-                value.status = !status
-            }
-        })
-        // console.log(model);
+    const model = await registration_palataModel.findAll({
+        raw: true,
+        include:[
+            {model: palataModel, as: 'palata'}
+        ]
+    });
+    model.forEach((value) => {
+        let days;
+        days = value.date_do - value.date_to;
+        console.log(days);
+        if(value.date_time >= body.date_to && value.date_time <= body.date_do){
+            value.status = status;
+        }
+        else{
+            value.status = !status
+        }
+    })
     res.send(model)
+   }
+        if(!body.date_do && !body.date_do){
+            const model = await palataModel.findAll();
+            res.send(model)
+        }
+        // console.log(model);
+   
 }
 
 kassaSverka = async (req, res, next) => {
