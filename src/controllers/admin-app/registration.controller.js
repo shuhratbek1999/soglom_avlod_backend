@@ -567,8 +567,18 @@ palata = async (req, res, next) => {
     query_end.date_time = {
         [Op.lte]: body.date_do
     }
-   if(body.date_do && body.date_to){
-    let status = true;
+    const models = await registration_palataModel.findAll({
+                raw: true,
+                include:[
+                    {model: palataModel, as: 'palata'}
+                ]
+            });
+            if(models.length == 0){
+                const model = await palataModel.findAll();
+                res.send(model);
+            }
+            else{
+                let status = true;
     const model = await registration_palataModel.findAll({
         raw: true,
         include:[
@@ -578,7 +588,6 @@ palata = async (req, res, next) => {
     model.forEach((value) => {
         let days;
         days = value.date_do - value.date_to;
-        console.log(days);
         if(value.date_time >= body.date_to && value.date_time <= body.date_do){
             value.status = status;
         }
@@ -586,12 +595,36 @@ palata = async (req, res, next) => {
             value.status = !status
         }
     })
-    res.send(model)
-   }
-        if(!body.date_do && !body.date_do){
-            const model = await palataModel.findAll();
-            res.send(model)
-        }
+    res.send(model);
+            }
+//    if(body.date_do && body.date_to){
+//     let status = true;
+//     const model = await registration_palataModel.findAll({
+//         raw: true,
+//         include:[
+//             {model: palataModel, as: 'palata'}
+//         ]
+//     });
+//     // if(!model){
+//     //     const model = await palataModel.findAll();
+//     //     res.send(model)
+//     // }
+//     model.forEach((value) => {
+//         let days;
+//         days = value.date_do - value.date_to;
+//         if(value.date_time >= body.date_to && value.date_time <= body.date_do){
+//             value.status = status;
+//         }
+//         else{
+//             value.status = !status
+//         }
+//     })
+//     res.send(model);
+//    }
+//         if(!body.date_do && !body.date_do){
+//             const model = await palataModel.findAll();
+//             res.send(model);
+//         }
         // console.log(model);
    
 }
