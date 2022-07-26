@@ -21,7 +21,6 @@ Registration_inspection_childModel.init({
   },
   text : {
       type: DataTypes.STRING,
-      allowNull: false
   },
   norm:{
       type: DataTypes.STRING(),
@@ -36,19 +35,15 @@ Registration_inspection_childModel.init({
   },
   status:{
       type: DataTypes.STRING(),
-      allowNull: false
   },
   price:{
       type: DataTypes.DECIMAL(17,2),
-      allowNull: false
   },
   checked:{
       type: DataTypes.BOOLEAN,
-      allowNull: false
   },
   file:{
       type: DataTypes.STRING(100),
-      allowNull: false
   }
 }, {
   sequelize,

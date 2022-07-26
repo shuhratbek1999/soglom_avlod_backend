@@ -101,11 +101,7 @@ class RegistrationController {
     }
    create = async (req, res, next, insert = true) => {
        this.checkValidation(req);
-       const {registration_files, registration_palata,queue, direct, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
-    //    let inspection_sum = await Registration_inspectionModel.sum('price');
-    //    let doc_summa = await Registration_doctorModel.sum('price');
-    // //    let palata_sum = await registration_palataModel.sum('price');
-    // //    let reg_summa = inspection_sum *1 + doc_summa * 1 + palata_sum * 1;
+       const {registration_files, registration_palata,queue, direct, registration_doctor, registration_inspection, registration_inspection_child, registration_pay, ...registration} = req.body;
        const model = await RegistrationModel.create({
         "user_id": req.body.user_id,
         "direct_id": req.body.direct_id,
@@ -119,11 +115,6 @@ class RegistrationController {
         "discount": req.body.discount,
         "hospital_summa": req.body.hospital_summa
        });
-    //    if(req.body.status == "complete"){
-    //     for(let i = 0; i < direct.length; i++){
-    //         directModel.create(direct[i])
-    //     }
-    // }
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
@@ -162,7 +153,7 @@ class RegistrationController {
     //   console.log(value);
       var user = await UserModel.findOne({
         where:{
-         doctor_id: value.doctor_id  
+         id: value.doctor_id 
         },
         raw: true
       })
@@ -206,8 +197,9 @@ class RegistrationController {
     })
 
     registration_inspection.forEach( async (value, index) => {
-            var {registration_inspection_child, ...registration_inspection} = value;
-            var user = await UserModel.findOne({
+        console.log(value);
+            const {registration_inspection_child, ...registration_inspection} = req.body;
+            var user = await UserModel.findOne({  
                 where:{
                     id: value.inspection_id
                 },
@@ -238,27 +230,23 @@ class RegistrationController {
             "category_id": value.category_id,
             "status": value.status,
             });
-            // if(value.status == "complete"){
-            //     for(let i = 0; i < direct.length; i++){
-            //         directModel.create(direct[i])
-            //     }
-            // }
+
             for(let i = 0; i < registration_inspection_child.length; i++){
-                Registration_inspection_childModel.create(registration_inspection_child[i]);
-            }
+                registration_inspection_child[i].parent_id = model.id;
+              await  Registration_inspection_childModel.create(registration_inspection_child[i])
+            } 
+           
             var date_time = Math.floor(new Date().getTime() / 1000);
-            // console.log(date_time);
-            if(value.status == "complete"){
+            // console.log(date_time
                 Register_inspectionModel.create({
                     "date_time": date_time,
-                    "type": value.type,
+                    "type": 'kirim',
                     "price": value.price,
                     "doc_id": value.registration_id,
                     "user_id": model.id,
                     "inspection_id": value.inspection_id,
                     "inspection_category": value.category_id
                   })
-            }
     })
     registration_pay.forEach((value, index)=>{
         Registration_payModel.create({
@@ -339,7 +327,7 @@ class RegistrationController {
    update = async (req, res, next, insert = true) => {
        this.checkValidation(req);
        const id = req.params.id;
-       const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
+       const {registration_files, registration_doctor,registration_inspection_child, registration_inspection, registration_pay, ...registration} = req.body;
     const model = await RegistrationModel.findOne({
         where:{
             id: id
@@ -418,14 +406,20 @@ class RegistrationController {
        registration_files.forEach((value, index) => {
            Registration_filesModel.create(value)
        })
-       registration_doctor.forEach((value, index) =>{
+       registration_doctor.forEach(async(value, index) =>{
       var {registration_recipe, ...registration_doctor} = value;
+      const user = await UserModel.findOne({
+        where: {
+            id: value.doctor_id
+        },
+        raw:true
+      })
       function isHave(item){
-        return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+        return item.room_id == user.room_id && item.patient_id == model.patient_id;
     }
     var a = this.massiv.find(isHave)
     if(a == undefined){
-        this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+        this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
     }
     else if(value.status!=a.status){
       if(value.status!='complete'){
@@ -450,15 +444,21 @@ class RegistrationController {
    }
     })
 
-    registration_inspection.forEach((value, index) => {
+    registration_inspection.forEach(async(value, index) => {
             var {registration_inspection_child, ...registration_inspection} = value;
+            const user = await UserModel.findOne({
+                where:{
+                    id: value.inspection_id
+                },
+                raw: true
+            })
               function isHave(item){
-                  return item.room_id == x._previousDataValues.room_id && item.patient_id == model.patient_id;
+                  return item.room_id == user.room_id && item.patient_id == model.patient_id;
               }
               var a = this.massiv.find(isHave)
               
               if(a == undefined){
-                  this.massiv.push({"room_id":x._previousDataValues.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
+                  this.massiv.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":value.status})
               }
               else if(value.status!=a.status){
                 if(value.status!='complete'){
@@ -471,10 +471,11 @@ class RegistrationController {
             }
             Registration_inspectionModel.create(registration_inspection);
             for(let i = 0; i < registration_inspection_child.length; i++){
-                Registration_inspection_childModel.create(registration_inspection_child[i]);
+                registration_inspection_child[i].parent_id = model.id;
+              await  Registration_inspection_childModel.create(registration_inspection_child[i])
             }
             var date_time = Math.floor(new Date().getTime() / 1000);
-            console.log(value);
+            // console.log(value);
             Register_inspectionModel.create({
                 "date_time": date_time,
                 "type": value.type,

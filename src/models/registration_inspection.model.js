@@ -61,5 +61,5 @@ Registration_inspectionModel.init({
     }
   }
 });
-Registration_inspectionModel.belongsTo(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'inspection_id'})
+Registration_inspectionModel.hasMany(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'id'})
 module.exports = Registration_inspectionModel;

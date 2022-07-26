@@ -26,12 +26,10 @@ exports.up = function(db) {
       type: 'int'
     },
     type:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     },
     price:{
-      type: 'decimal',
-      notNull: true
+      type: 'decimal'
     },
     doc_id:{
       type: 'int'
@@ -43,8 +41,7 @@ exports.up = function(db) {
       type: 'int'
     },
     inspection_category:{
-      type: 'int',
-      notNull: true
+      type: 'int'
     }
   });
 };

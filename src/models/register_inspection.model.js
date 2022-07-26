@@ -20,12 +20,10 @@ Register_inspectionModel.init({
    type: DataTypes.INTEGER
  },
  type: {
-   type: DataTypes.STRING(40),
-   allowNull: false
+   type: DataTypes.STRING(40)
  },
  price:{
-   type: DataTypes.DECIMAL(12, 2),
-   allowNull: false
+   type: DataTypes.DECIMAL(12, 2)
  },
  doc_id:{
    type: DataTypes.INTEGER
@@ -38,7 +36,6 @@ inspection_id:{
 },
 inspection_category:{
   type: DataTypes.INTEGER,
-  allowNull: false
 }
 
 }, {
@@ -56,7 +53,7 @@ inspection_category:{
       ]
     },
   ],
- 
+  
 });
 Register_inspectionModel.belongsTo(InspectionCategory, {as: 'inspection', foreignKey: 'inspection_category'})
 module.exports = Register_inspectionModel;
