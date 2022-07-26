@@ -22,6 +22,9 @@ palataModel.init({
   price:{
     type: DataTypes.INTEGER
   },
+  status:{
+    type: DataTypes.VIRTUAL
+  }
 
 }, {
   sequelize,

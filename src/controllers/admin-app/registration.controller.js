@@ -575,6 +575,9 @@ palata = async (req, res, next) => {
             });
             if(models.length == 0){
                 const model = await palataModel.findAll();
+                model.forEach((value) =>{
+                    value.status = 'false'
+                })
                 res.send(model);
             }
             else{
