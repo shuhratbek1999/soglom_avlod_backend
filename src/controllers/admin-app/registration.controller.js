@@ -69,10 +69,10 @@ class RegistrationController {
         const model = await RegistrationModel.findOne({
             include:[
                 {
-                    model: UserModel, as: 'user', attributes: ['user_name']
+                    model: UserModel, as: 'user', attributes: ['id', 'user_name']
                 },
                 {
-                    model: PatientModel, as: 'patient', attributes: ['fullname']
+                    model: PatientModel, as: 'patient'
                 },
 
                 {
@@ -80,6 +80,9 @@ class RegistrationController {
                     include:[
                         {
                             model: Registration_recipeModel, as: 'registration_recipe'
+                        },
+                        {
+                            model: DoctorModel, as: 'doctor', attributes:['id', 'name']
                         }
                     ]
                 },
@@ -90,7 +93,7 @@ class RegistrationController {
                             model: Registration_inspection_childModel, as: 'registration_inspection_child'
                         },
                         {
-                            model: inspection, as: 'inspection'
+                            model: inspection, as: 'inspection', attributes: ['id', 'name']
                         }
                     ]
                 }
@@ -337,7 +340,7 @@ class RegistrationController {
    update = async (req, res, next, insert = true) => {
        this.checkValidation(req);
        const id = req.params.id;
-       const {registration_files, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
+       const {registration_files,registration_palata, registration_doctor, registration_inspection, registration_pay, ...registration} = req.body;
     const model = await RegistrationModel.findOne({
         where:{
             id: id

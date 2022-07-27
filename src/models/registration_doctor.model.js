@@ -58,4 +58,5 @@ Registration_doctorModel.init({
 });
 // Registration_recipeModel.hasOne(Registration_doctorModel, {as: 'registration_recipe', foreignKey: 'registration_doctor_id'})
 Registration_doctorModel.hasMany(Registration_recipeModel, {as: 'registration_recipe', foreignKey: 'id'})
+Registration_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 module.exports = Registration_doctorModel;
