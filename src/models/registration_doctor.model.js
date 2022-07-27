@@ -1,6 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const DoctorModel = require('./doctor.model');
+const DoctorCategory = require('../models/doctor_category.model');
 const Registration_recipeModel = require('./registration_recipe.model');
 class Registration_doctorModel extends Model {
     toJSON () {//Api da ishladi
@@ -59,4 +60,5 @@ Registration_doctorModel.init({
 // Registration_recipeModel.hasOne(Registration_doctorModel, {as: 'registration_recipe', foreignKey: 'registration_doctor_id'})
 Registration_doctorModel.hasMany(Registration_recipeModel, {as: 'registration_recipe', foreignKey: 'id'})
 Registration_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
+Registration_doctorModel.belongsTo(DoctorCategory, {as: 'doctor_category', foreignKey: 'id'});
 module.exports = Registration_doctorModel;

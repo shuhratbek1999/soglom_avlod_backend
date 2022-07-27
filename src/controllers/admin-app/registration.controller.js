@@ -21,8 +21,9 @@ const {Op} = require('sequelize');
 const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
 const palataModel = require('../../models/palata.model');
-const directModel = require('../../models/direct.model')
-const inspection = require('../../models/inspection.model')
+const directModel = require('../../models/direct.model');
+const inspection = require('../../models/inspection.model');
+const DoctorCategory = require('../../models/doctor_category.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -83,6 +84,9 @@ class RegistrationController {
                         },
                         {
                             model: DoctorModel, as: 'doctor', attributes:['id', 'name']
+                        },
+                        {
+                            model: DoctorCategory, as: 'doctor_category', attributes: ['name']
                         }
                     ]
                 },

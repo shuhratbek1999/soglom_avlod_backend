@@ -32,6 +32,9 @@ class UserController {
                 user_name: login
             }
         });
+        if(!model){
+            throw new HttpException(401, 'name xato berilgan qaytadan yozing')
+        }
         const isMatch = await bcrypt.compare(password, model.password)
         delete model['password'];
         console.log(isMatch);
