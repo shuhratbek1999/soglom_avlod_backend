@@ -73,7 +73,7 @@ class RegistrationController {
                     model: UserModel, as: 'user', attributes: ['id', 'user_name']
                 },
                 {
-                    model: palataModel, as: 'registration_palata'
+                    model: registration_palataModel, as: 'registration_palata', attributes: ['id','date_time', 'palata_id', 'price', 'total_price','registration_id', 'day']
                 },
                 {
                     model: PatientModel, as: 'patient'
@@ -140,16 +140,17 @@ class RegistrationController {
            throw new HttpException(500, 'model mavjud emas');
        }
        registration_palata.forEach((value, index) =>{
-        let day = new Date();
+        console.log(value);
         let date = Math.floor(new Date().getDate() / 1000);
             registration_palataModel.create({
-                "palata_id": model.id,
+                "palata_id": value.palata_id,
                 "registration_id": model.id,
                 "price": value.price,
-                "day": day.getDay(),
+                "day": value.day,
                 "date_to": date,
                 "date_do": date,
-                "date_time": date
+                "date_time": value.date_time,
+                "total_price": value.total_price
             });
             register_palataModel.create({
                 "palata_id": value.palata_id,

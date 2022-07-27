@@ -45,6 +45,9 @@ exports.up = function(db) {
      },
      date_time:{
       type: 'int'
+     },
+     total_price:{
+      type: 'decimal'
      }
   });
 };

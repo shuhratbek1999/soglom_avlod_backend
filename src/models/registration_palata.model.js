@@ -39,7 +39,10 @@ date_to:{
 date_do:{
   type: DataTypes.INTEGER
 },
-status: DataTypes.VIRTUAL
+status: DataTypes.VIRTUAL,
+total_price:{
+  type: DataTypes.DECIMAL
+}
 
 }, {
   sequelize,
