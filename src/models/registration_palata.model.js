@@ -21,7 +21,6 @@ registration_palataModel.init({
  },
  palata_id: {
    type: DataTypes.INTEGER(40),
-   allowNull: false
  },
  price:{
    type: DataTypes.DECIMAL(12, 2),
@@ -59,5 +58,5 @@ status: DataTypes.VIRTUAL
   ],
  
 });
-registration_palataModel.belongsTo(palataModel, {as: 'palata', foreignKey: 'palata_id'})
+registration_palataModel.hasMany(palataModel, {as: 'palata', foreignKey: 'id'})
 module.exports = registration_palataModel;

@@ -24,18 +24,15 @@ exports.up = function(db) {
     },
     palata_id:{
       type: 'int',
-      notNull: true
     },
     registration_id:{
       type: 'int',
-      notNull: true
     },
     patient_id:{
       type: 'int',
     },
     price:{
       type: "int",
-      notNull: true
     },
     day:{
       type:"int"

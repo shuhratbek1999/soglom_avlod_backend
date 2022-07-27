@@ -22,6 +22,7 @@ const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
 const palataModel = require('../../models/palata.model');
 const directModel = require('../../models/direct.model')
+const inspection = require('../../models/inspection.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -49,7 +50,7 @@ class RegistrationController {
                     model: Registration_inspectionModel, as: 'registration_inspection',
                     include:[
                         {
-                            model: Registration_inspection_childModel, as: 'registration_Child'
+                            model: Registration_inspection_childModel, as: 'registration_inspection_child'
                         }
                     ]
                 }
@@ -86,7 +87,10 @@ class RegistrationController {
                     model: Registration_inspectionModel, as: 'registration_inspection',
                     include:[
                         {
-                            model: Registration_inspection_childModel, as: 'registration_Child'
+                            model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                        },
+                        {
+                            model: inspection, as: 'inspection'
                         }
                     ]
                 }
@@ -129,7 +133,7 @@ class RegistrationController {
         let day = new Date();
         let date = Math.floor(new Date().getDate() / 1000);
             registration_palataModel.create({
-                "palata_id": value.palata_id,
+                "palata_id": model.id,
                 "registration_id": model.id,
                 "price": value.price,
                 "day": day.getDay(),
@@ -392,6 +396,16 @@ class RegistrationController {
                 id: id
              }
            })
+           await registration_palataModel.destroy({
+            where:{
+                id: id
+            }
+           })
+           await register_palataModel.destroy({
+            where:{
+                id: id
+            }
+           })
         if(model === null){
             res.status(404).send("not found")
         }
@@ -409,6 +423,29 @@ class RegistrationController {
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
+       registration_palata.forEach((value, index) =>{
+        let day = new Date();
+        let date = Math.floor(new Date().getDate() / 1000);
+            registration_palataModel.create({
+                "palata_id": model.id,
+                "registration_id": model.id,
+                "price": value.price,
+                "day": day.getDay(),
+                "date_to": date,
+                "date_do": date,
+                "date_time": date
+            });
+            register_palataModel.create({
+                "palata_id": value.palata_id,
+                "patient_id": model.id,
+                "registration_id": model.id,
+                "price": value.price,
+                "day": value.day,
+                "date_to": value.date_to,
+                "date_do": value.date_do,
+                "date_time": value.date_time
+            })
+       })
        registration_files.forEach((value, index) => {
            Registration_filesModel.create(value)
        })

@@ -19,20 +19,16 @@ register_palataModel.init({
    type: DataTypes.INTEGER
  },
  palata_id: {
-   type: DataTypes.INTEGER(40),
-   allowNull: false
+   type: DataTypes.INTEGER(40)
  },
  price:{
    type: DataTypes.DECIMAL(12, 2),
-   allowNull: false
  },
  registration_id:{
    type: DataTypes.INTEGER,
-   allowNull: false
  },
  patient_id:{
   type: DataTypes.INTEGER,
-  allowNull: false
 },
  day:{
   type: DataTypes.INTEGER

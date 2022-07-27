@@ -13,7 +13,7 @@ class InspectionController {
         const model = await inspectionModel.findAll({
             include:[
                 {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
-                    {model: inspectionChildModel, as: 'InspectionChild'},
+                    {model: inspectionChildModel, as: 'inspectionChild', attributes:['norm', 'parent_id','price', 'name', 'file']},
                     {model: inspector_categoryModel, as: 'inspector_category'}
             ]
         });
@@ -32,7 +32,7 @@ class InspectionController {
                 id: req.params.id
             },
             include:[
-                {model: inspectionChildModel, as: 'InspectionChild'}
+                {model: inspectionChildModel, as: 'inspectionChild'}
             ]
         });
         if(!model){
@@ -77,7 +77,7 @@ class InspectionController {
         }
         await inspectionChildModel.destroy({
             where:{
-                parent_id: model.id
+                id: model.id
             }
         })
         if(model === null){
@@ -92,7 +92,7 @@ class InspectionController {
         model.percent_bonus = inspection.percent_bonus;
         model.save();
         for(let i = 0; i < inspectionChild.length; i++){
-            inspectionChild[i].parent_id = model.id;
+            inspectionChild[i].id = model.id;
             await inspectionChildModel.create(inspectionChild[i])
         }
         res.status(200).send({
