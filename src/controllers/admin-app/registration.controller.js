@@ -67,23 +67,30 @@ class RegistrationController {
         this.checkValidation(req);
         const model = await RegistrationModel.findOne({
             include:[
-               {
-                   model: Registration_doctorModel, as: 'registration_doctor',
-                   include:[
-                       {
-                           model: Registration_recipeModel, as: 'registration_recipe'
-                       }
-                   ]
-               },
-               {
-                   model: Registration_inspectionModel, as: 'registration_inspection',
-                   include:[
-                       {
-                           model: Registration_inspection_childModel, as: 'registration_Child'
-                       }
-                   ]
-               }
-            ],
+                {
+                    model: UserModel, as: 'user', attributes: ['user_name']
+                },
+                {
+                    model: PatientModel, as: 'patient', attributes: ['fullname']
+                },
+
+                {
+                    model: Registration_doctorModel, as: 'registration_doctor',
+                    include:[
+                        {
+                            model: Registration_recipeModel, as: 'registration_recipe'
+                        }
+                    ]
+                },
+                {
+                    model: Registration_inspectionModel, as: 'registration_inspection',
+                    include:[
+                        {
+                            model: Registration_inspection_childModel, as: 'registration_Child'
+                        }
+                    ]
+                }
+             ],
             
             where:{
                 id: req.params.id

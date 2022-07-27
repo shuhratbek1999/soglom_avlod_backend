@@ -88,9 +88,9 @@ direct_id:{
   ],
    
 });
-RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
-RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
-RegistrationModel.hasMany(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'registration_id'})
+RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'id'})
+RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'id'})
+RegistrationModel.hasMany(Registration_inspection_childModel, {as: 'registration_Child', foreignKey: 'id'})
 RegistrationModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})
 RegistrationModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 RegistrationModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'id'})
