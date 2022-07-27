@@ -73,6 +73,9 @@ class RegistrationController {
                     model: UserModel, as: 'user', attributes: ['id', 'user_name']
                 },
                 {
+                    model: palataModel, as: 'registration_palata'
+                },
+                {
                     model: PatientModel, as: 'patient'
                 },
 
