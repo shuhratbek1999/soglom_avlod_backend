@@ -59,6 +59,6 @@ percent_bonus:{
   
 });
 inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
-inspectionModel.hasMany(inspectionChildModel, {as: 'inspectionChild', foreignKey: 'id'})
+inspectionModel.hasMany(inspectionChildModel, {as: 'inspectionChild', foreignKey: 'parent_id'})
 inspectionModel.belongsTo(inspector_categoryModel, {as: 'inspector_category', foreignKey: 'category_id'})
 module.exports = inspectionModel;

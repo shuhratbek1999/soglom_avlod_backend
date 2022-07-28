@@ -48,16 +48,22 @@ class InspectionController {
   
     create = async (req, res, next) => {
         this.checkValidation(req);
-        // for(var element of req.body){
-        //     var {inspection, inspectionChild, ...data} = element;
-        //     console.log(data);
-        // }
        const {inspectionChild, ...inspection} = req.body;
        const model = await inspectionModel.create(inspection);
-       for(let i = 0; i < inspectionChild.length; i++){
-           inspectionChild[i].parent_id = model.id;
-           await inspectionChildModel.create(inspectionChild[i])
-       }
+       inspectionChild.forEach(value => {
+        value.id = model.id;
+        inspectionChildModel.create({
+            "norm": value.norm,
+            "parent_id": value.id,
+            "price": value.price,
+            "name": value.name,
+            "file": value.file
+        })
+       })
+    //    for(let i = 0; i < inspectionChild.length; i++){
+    //        inspectionChild[i].parent_id = model.id;
+    //        await inspectionChildModel.create(inspectionChild[i])
+    //    }
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -80,6 +86,16 @@ class InspectionController {
                 id: model.id
             }
         })
+        inspectionChild.forEach(value => {
+            value.id = model.id;
+            inspectionChildModel.create({
+                "norm": value.norm,
+                "parent_id": model.id,
+                "price": value.price,
+                "name": value.name,
+                "file": value.file 
+            })
+           })
         if(model === null){
             res.status(404).send("not found")
         }
@@ -91,10 +107,7 @@ class InspectionController {
         model.category_id = inspection.category_id;
         model.percent_bonus = inspection.percent_bonus;
         model.save();
-        for(let i = 0; i < inspectionChild.length; i++){
-            inspectionChild[i].id = model.id;
-            await inspectionChildModel.create(inspectionChild[i])
-        }
+       
         res.status(200).send({
             error: false,
             error_code: 200,

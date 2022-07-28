@@ -204,18 +204,23 @@ class RegistrationController {
         "price": value.price,
         "text": value.text,
      });
-   for(let i = 0; i < registration_recipe.length; i++){
-       Registration_recipeModel.create(registration_recipe[i]);
-       var date_time = Math.floor(new Date().getTime() / 1000);
-       RegisterDoctorModel.create({
+     registration_recipe.forEach(values => {
+        Registration_recipeModel.create({
+            "registration_doctor_id": values.registration_doctor_id,
+            "registration_id": values.registration_id,
+            "pill_id": values.pill_id,
+            "time": values.time,
+            "day": values.day,
+            "comment": values.comment
+        }),
+        RegisterDoctorModel.create({
            "date_time": date_time,
-           "type": value.id,
+           "type": value.text,
            "price": value.price,
            "doc_id": 1, 
-           "doctor_id": value.doctor_id,
-           "doc_type": 'kirim'
-       })
-   }
+           "doctor_id": value.doctor_id
+        })
+     })
     })
 
     registration_inspection.forEach( async (value, index) => {
@@ -253,11 +258,19 @@ class RegistrationController {
             "status": value.status,
             });
 
-            for(let i = 0; i < registration_inspection_child.length; i++){
-                registration_inspection_child[i].registration_id = model.id;
-                registration_inspection_child[i].patient_id = model.id;
-              await  Registration_inspection_childModel.create(registration_inspection_child[i])
-            } 
+            registration_inspection_child.forEach(value => {
+                Registration_inspection_childModel.create({
+                    "parent_id": value.parent_id,
+                    "text": value.text,
+                    "norm": value.norm,
+                    "name": value.name,
+                    "registration_id": value.registration_id,
+                    "status": value.status,
+                    "price": value.price,
+                    "checked": value.checked,
+                    "file": value.file
+                })
+            })
            
             var date_time = Math.floor(new Date().getTime() / 1000);
             // console.log(date_time
@@ -443,13 +456,13 @@ class RegistrationController {
                 "palata_id": model.id,
                 "registration_id": model.id,
                 "price": value.price,
-                "day": day.getDay(),
+                "day": value.day,
                 "date_to": date,
                 "date_do": date,
-                "date_time": date
+                "date_time": value.date_time
             });
             register_palataModel.create({
-                "palata_id": value.palata_id,
+                "palata_id": model.id,
                 "patient_id": model.id,
                 "registration_id": model.id,
                 "price": value.price,
@@ -487,21 +500,28 @@ class RegistrationController {
       }
   }
      Registration_doctorModel.create(registration_doctor);
-   for(let i = 0; i < registration_recipe.length; i++){
-       Registration_recipeModel.create(registration_recipe[i]);
-       var date_time = Math.floor(new Date().getTime() / 1000);
-       RegisterDoctorModel.create({
+     registration_recipe.forEach(values => {
+        Registration_recipeModel.create({
+            "registration_doctor_id": values.registration_doctor_id,
+            "registration_id": values.registration_id,
+            "pill_id": values.pill_id,
+            "time": values.time,
+            "day": values.day,
+            "comment": values.comment
+        }),
+        RegisterDoctorModel.create({
            "date_time": date_time,
            "type": value.text,
            "price": value.price,
            "doc_id": 1, 
            "doctor_id": value.doctor_id
-       })
-   }
+        })
+     })
     })
 
     registration_inspection.forEach(async(value, index) => {
             var {registration_inspection_child, ...registration_inspection} = value;
+            console.log(registration_inspection_child);
             const user = await UserModel.findOne({
                 where:{
                     id: value.inspection_id
@@ -526,11 +546,19 @@ class RegistrationController {
                 }
             }
             Registration_inspectionModel.create(registration_inspection);
-            for(let i = 0; i < registration_inspection_child.length; i++){
-                registration_inspection_child[i].parent_id = model.id;
-                registration_inspection_child[i].registration_id = model.id;
-              await  Registration_inspection_childModel.create(registration_inspection_child[i])
-            }
+            registration_inspection_child.forEach(value => {
+                Registration_inspection_childModel.create({
+                    "parent_id": value.parent_id,
+                    "text": value.text,
+                    "norm": value.norm,
+                    "name": value.name,
+                    "registration_id": value.registration_id,
+                    "status": value.status,
+                    "price": value.price,
+                    "checked": value.checked,
+                    "file": value.file
+                })
+            })
             var date_time = Math.floor(new Date().getTime() / 1000);
             // console.log(value);
             Register_inspectionModel.create({
