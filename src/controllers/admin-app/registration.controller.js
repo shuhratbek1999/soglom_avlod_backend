@@ -374,62 +374,62 @@ class RegistrationController {
      }
     await Registration_doctorModel.destroy({
          where:{
-            id: id
+            id: model.id
          }
         })
         await Registration_recipeModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
         await Registration_filesModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await Registration_inspectionModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await Registration_inspection_childModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await Registration_payModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await RegisterDoctorModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await Register_inspectionModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await Register_kassaModel.destroy({
             where:{
-                id: id
+                id: model.id
              }
            })
            await QueueModel.destroy({ 
             where:{
-                id: id
+                id: model.id
              }
            })
            await registration_palataModel.destroy({
             where:{
-                id: id
+                id: model.id
             }
            })
            await register_palataModel.destroy({
             where:{
-                id: id
+                id: model.id
             }
            })
         if(model === null){
@@ -449,10 +449,11 @@ class RegistrationController {
        if(!model){
            throw new HttpException(500, 'model mavjud emas');
        }
-       registration_palata.forEach((value, index) =>{
+      await registration_palata.forEach((value, index) =>{
+        value.id = model.id;
         let day = new Date();
         let date = Math.floor(new Date().getDate() / 1000);
-            registration_palataModel.create({
+          registration_palataModel.create({
                 "palata_id": model.id,
                 "registration_id": model.id,
                 "price": value.price,
@@ -472,10 +473,12 @@ class RegistrationController {
                 "date_time": value.date_time
             })
        })
-       registration_files.forEach((value, index) => {
+      await registration_files.forEach((value, index) => {
+        value.id = model.id;
            Registration_filesModel.create(value)
        })
-       registration_doctor.forEach(async(value, index) =>{
+      await registration_doctor.forEach(async(value, index) =>{
+        value.id = model.id;
       var {registration_recipe, ...registration_doctor} = value;
       const user = await UserModel.findOne({
         where: {
@@ -499,8 +502,9 @@ class RegistrationController {
           this.massiv[index].status=a.status;
       }
   }
-     Registration_doctorModel.create(registration_doctor);
-     registration_recipe.forEach(values => {
+    await Registration_doctorModel.create(registration_doctor);
+    await registration_recipe.forEach(values => {
+        values.id = model.id;
         Registration_recipeModel.create({
             "registration_doctor_id": values.registration_doctor_id,
             "registration_id": values.registration_id,
@@ -519,7 +523,8 @@ class RegistrationController {
      })
     })
 
-    registration_inspection.forEach(async(value, index) => {
+   await registration_inspection.forEach(async(value, index) => {
+        value.id = model.id;
             var {registration_inspection_child, ...registration_inspection} = value;
             console.log(registration_inspection_child);
             const user = await UserModel.findOne({
@@ -545,8 +550,9 @@ class RegistrationController {
                     this.massiv[index].status=a.status;
                 }
             }
-            Registration_inspectionModel.create(registration_inspection);
+          await  Registration_inspectionModel.create(registration_inspection);
             registration_inspection_child.forEach(value => {
+                value.id = model.id;
                 Registration_inspection_childModel.create({
                     "parent_id": value.parent_id,
                     "text": value.text,
@@ -561,7 +567,7 @@ class RegistrationController {
             })
             var date_time = Math.floor(new Date().getTime() / 1000);
             // console.log(value);
-            Register_inspectionModel.create({
+           await Register_inspectionModel.create({
                 "date_time": date_time,
                 "type": value.type,
                 "price": value.price,
@@ -571,10 +577,11 @@ class RegistrationController {
                 "inspection_category": value.category_id
               })
     })
-    registration_pay.forEach((value, index)=>{
+   await registration_pay.forEach((value, index)=>{
+        value.id = model.id;
         Registration_payModel.create(value);
         var date_time = Math.floor(new Date().getTime() / 1000);
-        Register_kassaModel.create({
+            Register_kassaModel.create({
             "date_time": date_time,
             "doctor_id": value.user_id,
             "pay_type": value.pay_type,

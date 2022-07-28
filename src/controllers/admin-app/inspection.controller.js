@@ -86,16 +86,25 @@ class InspectionController {
                 id: model.id
             }
         })
-        inspectionChild.forEach(value => {
-            value.id = model.id;
-            inspectionChildModel.create({
-                "norm": value.norm,
-                "parent_id": model.id,
-                "price": value.price,
-                "name": value.name,
-                "file": value.file 
-            })
-           })
+        for(let key of inspectionChild){
+           await inspectionChildModel.create({
+            "norm": key.norm,
+            "parent_id": key.id,
+            "price": key.price,
+            "name": key.name,
+            "file": key.file 
+           })   
+        }
+    //    await inspectionChild.forEach(value => {
+    //         value.id = model.id;
+    //         inspectionChildModel.create({
+    //             "norm": value.norm,
+    //             "parent_id": model.id,
+    //             "price": value.price,
+    //             "name": value.name,
+    //             "file": value.file 
+    //         })
+    //        })
         if(model === null){
             res.status(404).send("not found")
         }
