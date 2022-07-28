@@ -654,37 +654,7 @@ palata = async (req, res, next) => {
         }
     })
     res.send(model);
-            }
-//    if(body.date_do && body.date_to){
-//     let status = true;
-//     const model = await registration_palataModel.findAll({
-//         raw: true,
-//         include:[
-//             {model: palataModel, as: 'palata'}
-//         ]
-//     });
-//     // if(!model){
-//     //     const model = await palataModel.findAll();
-//     //     res.send(model)
-//     // }
-//     model.forEach((value) => {
-//         let days;
-//         days = value.date_do - value.date_to;
-//         if(value.date_time >= body.date_to && value.date_time <= body.date_do){
-//             value.status = status;
-//         }
-//         else{
-//             value.status = !status
-//         }
-//     })
-//     res.send(model);
-//    }
-//         if(!body.date_do && !body.date_do){
-//             const model = await palataModel.findAll();
-//             res.send(model);
-//         }
-        // console.log(model);
-   
+}
 }
 
 kassaSverka = async (req, res, next) => {
