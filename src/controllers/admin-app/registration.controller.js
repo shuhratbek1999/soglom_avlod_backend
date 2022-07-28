@@ -143,7 +143,7 @@ class RegistrationController {
         console.log(value);
         let date = Math.floor(new Date().getDate() / 1000);
             registration_palataModel.create({
-                "palata_id": value.palata_id,
+                "palata_id": model.id,
                 "registration_id": model.id,
                 "price": value.price,
                 "day": value.day,
@@ -254,6 +254,8 @@ class RegistrationController {
             });
 
             for(let i = 0; i < registration_inspection_child.length; i++){
+                registration_inspection_child[i].registration_id = model.id;
+                registration_inspection_child[i].patient_id = model.id;
               await  Registration_inspection_childModel.create(registration_inspection_child[i])
             } 
            
@@ -526,6 +528,7 @@ class RegistrationController {
             Registration_inspectionModel.create(registration_inspection);
             for(let i = 0; i < registration_inspection_child.length; i++){
                 registration_inspection_child[i].parent_id = model.id;
+                registration_inspection_child[i].registration_id = model.id;
               await  Registration_inspection_childModel.create(registration_inspection_child[i])
             }
             var date_time = Math.floor(new Date().getTime() / 1000);
