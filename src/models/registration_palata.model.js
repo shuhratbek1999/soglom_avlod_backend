@@ -61,5 +61,5 @@ total_price:{
   ],
  
 });
-registration_palataModel.hasMany(palataModel, {as: 'palata', foreignKey: 'id'})
+registration_palataModel.belongsTo(palataModel, {as: 'palata', foreignKey: 'palata_id'})
 module.exports = registration_palataModel;

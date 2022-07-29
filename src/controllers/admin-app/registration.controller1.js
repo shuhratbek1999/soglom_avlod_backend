@@ -1,5 +1,6 @@
 const ModelModel = require('../../models/registration.model');
 const HttpException = require('../../utils/HttpException.utils');
+const Register_kassaModel = require('../../models/register_kassa.model')
 const { validationResult } = require('express-validator');
 const registration_palataModel = require('../../models/registration_palata.model');
 const Registration_inspectionModel = require('../../models/registration_inspection.model');
@@ -7,6 +8,9 @@ const Registration_inspection_childModel = require('../../models/registration_in
 const Registration_doctorModel = require('../../models/registration_doctor.model');
 const Registration_recipeModel = require('../../models/registration_recipe.model');
 const Registration_filesModel = require('../../models/registration_files.model');
+const register_palataModel = require('../../models/register_palata.model');
+const Register_inspectionModel = require('../../models/register_inspection.model');
+const RegisterDoctorModel = require('../../models/register_doctor.model');
 const UserModel = require('../../models/user.model');
 const PatientModel = require('../../models/patient.model');
 const QueueModel = require('../../models/queue.model');
@@ -20,7 +24,8 @@ const db = require("../../db/db-sequelize");
 const { Op, where } = require("sequelize");
 const directModel = require('../../models/direct.model')
 const palataModel = require('../../models/palata.model')
-const PillModel = require('../../models/pill.model')
+const PillModel = require('../../models/pill.model');
+const Registration_payModel = require('../../models/registration_pay.model');
 class RegistrationController {
     q=[];
     getAll = async (req, res, next) => {
@@ -181,7 +186,7 @@ class RegistrationController {
     create = async (req, res, next) => {
         this.checkValidation(req);
         
-        var {registration_inspection,registration_doctor,registration_files,registration_palata, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
         
@@ -192,6 +197,7 @@ class RegistrationController {
         await this.#doctoradd(model, registration_doctor);
         await this.#filesadd(model, registration_files);
         await this.#palataadd(model, registration_palata);
+        await this.#payAdd(model, registration_pay);
         await this.#queue();
         res.status(200).send({
             error: false,
@@ -204,7 +210,7 @@ class RegistrationController {
 
     update = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, ...data} = req.body;
         var id = parseInt(req.params.id);
         var model = await ModelModel.findOne({where : {id: id}})
 
@@ -225,11 +231,12 @@ class RegistrationController {
             model.discount = data.discount;
             await model.validate();
             await model.save();
-            await this.#inspectionadd(model, registration_inspection);
-            await this.#doctoradd(model, registration_doctor);
-            await this.#filesadd(model, registration_files);
-            await this.#palataadd(model, registration_palata);
-            await this.#queue();
+            await this.#inspectionadd(model, registration_inspection,false);
+            await this.#doctoradd(model, registration_doctor,false);
+            await this.#filesadd(model, registration_files,false);
+            await this.#palataadd(model, registration_palata,false);
+            await this.#payAdd(model, registration_pay,false);
+            await this.#queue(false);
             res.status(200).send({
                 error: false,
                 error_code: 200,
@@ -254,6 +261,7 @@ class RegistrationController {
         await this.#deleteInspection(id);
         await this.#deleteFiles(id);
         await this.#deletePalata(id);
+        await this.#deletepay(id);
         if (!result) {
             throw new HttpException(404, 'Not found');
         }
@@ -276,14 +284,19 @@ class RegistrationController {
         var dds;
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
-            console.log(data);
             data.registration_id=model.id;
             dds={"inspection_id":data.inspection_id,"registration_id":model.id,"type":data.type,"price":data.price,"category_id":data.category_id,'status':data.status}
             const models = await Registration_inspectionModel.create(dds);
-                var user=await UserModel.findOne({
-                    where:{id:data.inspection_id},
-                    raw: true
-                });
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            Register_inspectionModel.create({
+                "date_time": date_time,
+                "type": 'kirim',
+                "price": data.price,
+                "doc_id": data.registration_id,
+                "user_id": model.id,
+                "inspection_id": data.inspection_id,
+                "inspection_category": data.category_id
+              })
                 function isHave(item) { 
                     return item.room_id == model.id&&item.patient_id == model.patient_id;
                   }
@@ -326,27 +339,67 @@ class RegistrationController {
                 "day":element.day,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            register_palataModel.create({
+                "palata_id": element.palata_id,
+                "patient_id": model.id,
+                "registration_id": model.id,
+                "price": element.price,
+                "day": element.day,
+                "date_to": element.date_to,
+                "date_do": element.date_do,
+                "date_time": element.date_time
+            })
         }
     }
+      
+    #payAdd = async(model, registration_pay, insert = true) =>{
+        if(!insert){
+            await this.#deletepay(model.id);
+        }
+        for(var element of registration_pay){
+            var pay = {
+                "user_id": element.user_id,
+                "registration_id": model.id,
+                "pay_type": element.pay_type,
+                "summa": element.summa,
+                "discount": element.discount
+            }
+            await Registration_payModel.create(pay);
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            Register_kassaModel.create({
+                "date_time": date_time,
+                "doctor_id": element.user_id,
+                "pay_type": element.pay_type,
+                "price": element.summa,    
+                "type": element.pay_type,
+                "doc_type": 'kirim'
+            })
+        }
+    }
+
     #doctoradd = async(model, registration_doctor, insert = true) => {
         if(!insert){
             await this.#deletedoctor(model.id);
         }
         for(var element of registration_doctor){
             var {Registration_recipe,...data} = element;
-            console.log(data);
+            console.log(element);
             var news={
-                "doctor_id":data.doctor_id,
+                "doctor_id":element.doctor_id,
                 "registration_id":model.id,
                 "price":data.price,
                 "status":data.status,
                 "text":data.text};
             const models = await Registration_doctorModel.create(news);
-            var user=await UserModel.findOne({
-                where:{doctor_id:data.doctor_id},
-                raw: true
-            });
-            console.log(user);
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            RegisterDoctorModel.create({
+                "date_time": date_time,
+                "type": data.text,
+                "price": data.price,
+                "doc_id": 1, 
+                "doctor_id": data.doctor_id
+             })
             function isHave(item) { 
                 return item.room_id == model.id&&item.patient_id == model.patient_id;
               }
@@ -450,6 +503,9 @@ class RegistrationController {
     #deletePalata = async(doc_id) => {
         await registration_palataModel.destroy({where: {registration_id: doc_id}})
     }
+    #deletepay = async(doc_id) => {
+        await Registration_payModel.destroy({where: {registration_id: doc_id}})
+    }
     #deleteFiles = async(doc_id) => {
         await Registration_filesModel.destroy({where: {registration_id: doc_id}})
     }
@@ -487,7 +543,7 @@ class RegistrationController {
                 {model: palataModel, as: 'palata'}
             ]
         });
-        model.forEach((value) => {
+        models.forEach((value) => {
             let days;
             days = value.date_do - value.date_to;
             if(value.date_time >= body.date_to && value.date_time <= body.date_do){
@@ -496,8 +552,8 @@ class RegistrationController {
             else{
                 value.status = !status
             }
+            res.send(model);
         })
-        res.send(model);
     }
     }
     
@@ -635,7 +691,6 @@ class RegistrationController {
                 group: ['doctor_id'],
                 raw: true
             });   
-            console.log(kassa_register);
             resultx.push(
                 {
                     'pay_type' : result[i].pay_type,
