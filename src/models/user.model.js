@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const RoomModel  = require('../models/room.model')
-const DoctorModel  = require('../models/doctor.model')
+const DoctorModel = require('../models/doctor.model')
 const InspectionModel  = require('../models/inspector_category.model')
 class UserModel extends Model {
     toJSON () {//Api da ishladi

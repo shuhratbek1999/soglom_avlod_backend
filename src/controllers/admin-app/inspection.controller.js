@@ -60,10 +60,6 @@ class InspectionController {
             "file": value.file
         })
        })
-    //    for(let i = 0; i < inspectionChild.length; i++){
-    //        inspectionChild[i].parent_id = model.id;
-    //        await inspectionChildModel.create(inspectionChild[i])
-    //    }
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -73,6 +69,7 @@ class InspectionController {
     }
     update = async (req, res, next) => {
         const { inspectionChild, ...inspection } = req.body;
+        console.log(inspectionChild);
      const model = await inspectionModel.findOne({
             where:{
                id: req.params.id
@@ -81,30 +78,16 @@ class InspectionController {
         if(model === null){ 
             res.status(404).send("model mavjud emas")
         }
-        await inspectionChildModel.destroy({
-            where:{
-                id: model.id
-            }
-        })
-        for(let key of inspectionChild){
-           await inspectionChildModel.create({
-            "norm": key.norm,
-            "parent_id": key.id,
-            "price": key.price,
-            "name": key.name,
-            "file": key.file 
-           })   
-        }
-    //    await inspectionChild.forEach(value => {
-    //         value.id = model.id;
-    //         inspectionChildModel.create({
-    //             "norm": value.norm,
-    //             "parent_id": model.id,
-    //             "price": value.price,
-    //             "name": value.name,
-    //             "file": value.file 
-    //         })
-    //        })
+        // await inspectionChild.forEach(value => {
+        //     value.id = model.id;
+        //     inspectionChildModel.create({
+        //         "norm": value.norm,
+        //         "parent_id": model.id,
+        //         "price": value.price,
+        //         "name": value.name,
+        //         "file": value.file 
+        //     })
+        //    })
         if(model === null){
             res.status(404).send("not found")
         }
@@ -116,7 +99,22 @@ class InspectionController {
         model.category_id = inspection.category_id;
         model.percent_bonus = inspection.percent_bonus;
         model.save();
-       
+        await inspectionChildModel.destroy({
+            where:{
+                id: model.id
+            }
+        })
+        for(let key in inspectionChild){
+            console.log('shuhratbek' + inspectionChild);
+            inspectionChildModel.create({
+            "norm": key.norm,
+            "parent_id": model.id,
+            "price": key.price,
+            "name": key.name, 
+            "file": key.file 
+           })   
+        }
+
         res.status(200).send({
             error: false,
             error_code: 200,

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const registrationControl = require('../../controllers/admin-app/registration.controller');
+// const registrationControl = require('../../controllers/admin-app/registration.controller');
+const registrationControl = require('../../controllers/admin-app/registration.controller1');
 const auth = require('../../middleware/auth.middleware');
 const Role = require('../../utils/roles.utils');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
@@ -25,6 +26,6 @@ router.post('/directhisobot', auth(),  awaitHandlerFactory(registrationControl.d
 router.post('/directSverka', auth(),  awaitHandlerFactory(registrationControl.directSverka));
 router.patch('/update/:id', auth(), awaitHandlerFactory(registrationControl.update));
 router.patch('/directUpdate/:id', auth(), awaitHandlerFactory(registrationControl.directUpdate));
-router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
+router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.deleted));
 router.delete('/direct/:id', auth(), awaitHandlerFactory(registrationControl.directDelete));
 module.exports = router;

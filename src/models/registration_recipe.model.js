@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const pillModel = require('./pill.model')
 class Registration_recipeModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -58,5 +59,5 @@ registration_doctor_id: {
     }
   }
 });
-
+Registration_recipeModel.hasMany(pillModel, {as: 'pill', foreignKey: 'id'})
 module.exports = Registration_recipeModel;

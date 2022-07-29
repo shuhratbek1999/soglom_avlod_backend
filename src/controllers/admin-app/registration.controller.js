@@ -24,6 +24,7 @@ const palataModel = require('../../models/palata.model');
 const directModel = require('../../models/direct.model');
 const inspection = require('../../models/inspection.model');
 const DoctorCategory = require('../../models/doctor_category.model');
+const inspectionChildModel = require('../../models/inspectionChild.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -54,7 +55,7 @@ class RegistrationController {
                             model: Registration_inspection_childModel, as: 'registration_inspection_child'
                         }
                     ]
-                }
+                } 
              ],
         });
         res.status(200).send({  
@@ -171,7 +172,7 @@ class RegistrationController {
        })
        registration_doctor.forEach( async (value, index) =>{
       var {registration_recipe, ...registration_doctor} = value;
-      value.registration_id = model.id;
+      
     //   console.log(value);
       var user = await UserModel.findOne({
         where:{
@@ -205,6 +206,7 @@ class RegistrationController {
         "text": value.text,
      });
      registration_recipe.forEach(values => {
+        values.registration_id = model.id;
         Registration_recipeModel.create({
             "registration_doctor_id": values.registration_doctor_id,
             "registration_id": values.registration_id,
@@ -259,6 +261,7 @@ class RegistrationController {
             });
 
             registration_inspection_child.forEach(value => {
+                value.parent_id = model.id;
                 Registration_inspection_childModel.create({
                     "parent_id": value.parent_id,
                     "text": value.text,
@@ -374,12 +377,12 @@ class RegistrationController {
      }
     await Registration_doctorModel.destroy({
          where:{
-            id: model.id
+            registration_id: model.id
          }
         })
         await Registration_recipeModel.destroy({
             where:{
-                id: model.id
+                registration_id: model.id
              }
            })
         await Registration_filesModel.destroy({
@@ -389,17 +392,17 @@ class RegistrationController {
            })
            await Registration_inspectionModel.destroy({
             where:{
-                id: model.id
+                registration_id: model.id
              }
            })
            await Registration_inspection_childModel.destroy({
             where:{
-                id: model.id
+                parent_id: model.id
              }
            })
            await Registration_payModel.destroy({
             where:{
-                id: model.id
+                registration_id: model.id
              }
            })
            await RegisterDoctorModel.destroy({
@@ -424,7 +427,7 @@ class RegistrationController {
            })
            await registration_palataModel.destroy({
             where:{
-                id: model.id
+                registration_id: model.id
             }
            })
            await register_palataModel.destroy({
@@ -504,7 +507,7 @@ class RegistrationController {
   }
     await Registration_doctorModel.create(registration_doctor);
     await registration_recipe.forEach(values => {
-        values.id = model.id;
+        values.registration_id = model.id;
         Registration_recipeModel.create({
             "registration_doctor_id": values.registration_doctor_id,
             "registration_id": values.registration_id,
@@ -552,7 +555,7 @@ class RegistrationController {
             }
           await  Registration_inspectionModel.create(registration_inspection);
             registration_inspection_child.forEach(value => {
-                value.id = model.id;
+                value.parent_id = model.id;
                 Registration_inspection_childModel.create({
                     "parent_id": value.parent_id,
                     "text": value.text,
