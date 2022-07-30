@@ -29,6 +29,9 @@ exports.up = function(db) {
     price:{
       type: 'decimal',
       notNull: true
+    },
+    status:{
+      type: 'boolean'
     }
   });
 };

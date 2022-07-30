@@ -58,7 +58,8 @@ class palataController {
         }
     });
     model.name = req.body.name;
-    model.price = req.body.price
+    model.price = req.body.price,
+    model.status = req.body.status
     model.save();
     res.status(200).send({
         error: false,

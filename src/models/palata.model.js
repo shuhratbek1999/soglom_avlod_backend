@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const registration_palataModel = require('./registration_palata.model');
 class palataModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -22,8 +23,8 @@ palataModel.init({
   price:{
     type: DataTypes.INTEGER
   },
-  status:{
-    type: DataTypes.VIRTUAL
+  status: {
+    type: DataTypes.BOOLEAN
   }
 
 }, {
@@ -49,4 +50,5 @@ palataModel.init({
     }
   }
 });
+// palataModel.hasMany(registration_palataModel, {as: 'registration_palata', foreignKey: 'palata_id'});
 module.exports = palataModel;

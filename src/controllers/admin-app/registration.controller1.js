@@ -1,6 +1,8 @@
 const ModelModel = require('../../models/registration.model');
 const HttpException = require('../../utils/HttpException.utils');
 const Register_kassaModel = require('../../models/register_kassa.model')
+const inspectionCategory = require('../../models/inspector_category.model')
+const { sequelize, sum } = require('../../models/user.model');
 const { validationResult } = require('express-validator');
 const registration_palataModel = require('../../models/registration_palata.model');
 const Registration_inspectionModel = require('../../models/registration_inspection.model');
@@ -327,6 +329,7 @@ class RegistrationController {
     }
     #palataadd = async(model, registration_palata, insert = true) =>{
         var palata;
+        var date_time = Math.floor(new Date().getTime() / 1000);
         if(!insert){
             await this.#deletePalata(model.id);
         }
@@ -335,7 +338,7 @@ class RegistrationController {
                 "palata_id":model.id,
                 "registration_id":model.id,
                 'price':element.price,
-                "date_time":element.date_time,
+                "date_time":date_time,
                 "day":element.day,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
@@ -398,7 +401,8 @@ class RegistrationController {
                 "type": data.text,
                 "price": data.price,
                 "doc_id": 1, 
-                "doctor_id": data.doctor_id
+                "doctor_id": data.doctor_id,
+                "doc_type": 'kirim'
              })
             function isHave(item) { 
                 return item.room_id == model.id&&item.patient_id == model.patient_id;
@@ -512,6 +516,8 @@ class RegistrationController {
 
     palata = async (req, res, next) => {
         let query = {}, query_begin = {}, query_end = {}, body = req.body;
+        let data1 = body.date_to;
+        let data2 = body.date_do;
         query.date_time = {
             [Op.gte]: body.date_to,
             [Op.lte]: body.date_do,
@@ -522,39 +528,23 @@ class RegistrationController {
         query_end.date_time = {
             [Op.lte]: body.date_do
         }
-        const models = await registration_palataModel.findAll({
-                    raw: true,
-                    include:[
-                        {model: palataModel, as: 'palata'}
-                    ]
-                });
-                if(models.length == 0){
-                    const model = await palataModel.findAll();
-                    model.forEach((value) =>{
-                        value.status = 'false'
-                    })
-                    res.send(model);
+
+        let result = await palataModel.findAll({
+                include:[
+                    {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time']}
+                ],
+                raw: true
+        })
+        for(let key of result){
+            console.log(key);
+                if(key['palatas.date_time'] >= data1 && key['palatas.date_time'] <= data2){
+                    key.status = true
                 }
                 else{
-                    let status = true;
-        const model = await registration_palataModel.findAll({
-            raw: true,
-            include:[
-                {model: palataModel, as: 'palata'}
-            ]
-        });
-        models.forEach((value) => {
-            let days;
-            days = value.date_do - value.date_to;
-            if(value.date_time >= body.date_to && value.date_time <= body.date_do){
-                value.status = status;
+                    key.status = false;
+                }
             }
-            else{
-                value.status = !status
-            }
-            res.send(model);
-        })
-    }
+            res.send(result);
     }
     
     kassaSverka = async (req, res, next) => {
@@ -865,7 +855,7 @@ class RegistrationController {
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
-        let result = await RegistrationModel.findAll({
+        let result = await ModelModel.findAll({
             attributes: [
                  'id', "type_service", "created_at", "direct_id",
                 [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN registration.summa ELSE 0 END)"), 'tushum'],
@@ -895,7 +885,7 @@ class RegistrationController {
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
-        let result = await RegistrationModel.findAll({
+        let result = await ModelModel.findAll({
             attributes: [
                  'id', "type_service", "created_at", "direct_id",
                 [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN registration.summa ELSE 0 END)"), 'tushum'],
@@ -915,7 +905,7 @@ class RegistrationController {
     };
     
     deleted = async (req, res, next) => {
-      const model =  await RegistrationModel.destroy({
+      const model =  await ModelModel.destroy({ 
             where:{
               id: req.params.id
             }

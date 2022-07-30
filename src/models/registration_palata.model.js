@@ -1,4 +1,5 @@
 const { DataTypes, Model, VIRTUAL } = require('sequelize');
+const { palata } = require('../controllers/admin-app/registration.controller1');
 const sequelize = require('../db/db-sequelize');
 const palataModel = require('../models/palata.model')
 class registration_palataModel extends Model {
@@ -36,13 +37,13 @@ registration_palataModel.init({
 date_to:{
   type: DataTypes.INTEGER
 },
+total_price:{
+  type: DataTypes.DECIMAL
+},
 date_do:{
   type: DataTypes.INTEGER
 },
 status: DataTypes.VIRTUAL,
-total_price:{
-  type: DataTypes.DECIMAL
-}
 
 }, {
   sequelize,
@@ -59,7 +60,7 @@ total_price:{
       ]
     },
   ],
- 
+
 });
-registration_palataModel.belongsTo(palataModel, {as: 'palata', foreignKey: 'palata_id'})
+palataModel.hasMany(registration_palataModel, {as: 'palatas', foreignKey: 'palata_id'});
 module.exports = registration_palataModel;
