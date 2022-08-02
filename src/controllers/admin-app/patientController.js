@@ -44,7 +44,19 @@ class PatientController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await PatientModel.create(req.body);
+       const model = await PatientModel.create({
+        'fullname': req.body.fullname,
+        'name': req.body.name,
+        'lastname': req.body.lastname,
+        'patronymic': req.body.patronymic,
+        'region_id': req.body.region_id,
+        'district_id': req.body.district_id,
+        'phone': req.body.phone,
+        'passpord': req.body.passpord,
+        'addres': req.body.addres,
+        'gender': req.body.gender,
+        'birtday': req.body.birtday
+       });
        res.status(200).send({
         error: false,
         error_code: 200,

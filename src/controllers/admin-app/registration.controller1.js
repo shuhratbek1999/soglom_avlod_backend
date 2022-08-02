@@ -178,8 +178,21 @@ class RegistrationController {
         
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
-        const model = await ModelModel.create(data);
-        
+        const model = await ModelModel.create({
+            'user_id': data.user_id,
+            'direct_id': data.direct_id,
+            'created_at': data.created_at,
+            'updated_at': data.updated_at,
+            'status': data.status,
+            'patient_id': model.id,
+            'type_service': data.type_service,
+            'complaint': data.complaint,
+            'summa': data.summa,
+            'pay_summa': data.pay_summa,
+            'backlog': data.backlog,
+            'discount': data.discount,
+            'hospital_summa': data.hospital_summa
+        });
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
@@ -572,10 +585,10 @@ class RegistrationController {
         result.data = await Register_kassaModel.findAll({
             attributes : [
                 'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query,
             include: [
@@ -589,10 +602,10 @@ class RegistrationController {
         //begin naqd plastik
         let kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_begin,
             // group: ['sklad_id'],
@@ -601,10 +614,10 @@ class RegistrationController {
         //end naqd plastik
         kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_end,
             // group: ['sklad_id'],
