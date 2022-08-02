@@ -1,5 +1,4 @@
 const { DataTypes, Model, VIRTUAL } = require('sequelize');
-const { palata } = require('../controllers/admin-app/registration.controller1');
 const sequelize = require('../db/db-sequelize');
 const palataModel = require('../models/palata.model')
 class registration_palataModel extends Model {
@@ -62,5 +61,6 @@ status: DataTypes.VIRTUAL,
   ],
 
 });
-palataModel.hasMany(registration_palataModel, {as: 'palatas', foreignKey: 'palata_id'});
+palataModel.hasMany(registration_palataModel, {as: 'palatas', foreignKey: 'id'});
+registration_palataModel.belongsTo(palataModel, {as:'palatas', foreignKey: 'palata_id'});
 module.exports = registration_palataModel;

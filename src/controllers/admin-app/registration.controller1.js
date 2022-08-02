@@ -75,7 +75,10 @@ class RegistrationController {
                   model: UserModel, as: 'user', attributes:['user_name']
                 }, 
                 {
-                  model: registration_palataModel, as: 'registration_palata'
+                  model: registration_palataModel, as: 'registration_palata',
+                  include:[
+                    {model: palataModel, as: 'palatas', attributes: ['name']}
+                  ]
                 },  
                 { model: Registration_doctorModel,as: 'registration_doctor', 
                     include : [
@@ -101,6 +104,7 @@ class RegistrationController {
                 },
                 { model: Registration_filesModel,as: 'registration_files'},
                 { model: PatientModel,as: 'patient'},
+                {model: Registration_payModel, as: 'registration_pay'}
             ],
         });
         if (Prixod === null) {
@@ -118,23 +122,7 @@ class RegistrationController {
         await QueueModel.destroy({where:{datetime:{[Op.lte]:time}}});
         res.send('deleted');
     };
-    setArchive=async (req, res, next) => {
-        await db.query("INSERT INTO registration_inspection_child_history SELECT * FROM registration_inspection_child");
-        await db.query("DELETE from registration_inspection_child");
-        await db.query("INSERT INTO registration_inspection_history SELECT * FROM registration_inspection");        
-        await db.query("DELETE from registration_inspection");
-        await db.query("INSERT INTO registration_files_history SELECT * FROM registration_files");
-        await db.query("DELETE from registration_files");
-        await db.query("INSERT INTO register_doctor_diagnos_history SELECT * FROM register_doctor_diagnos");
-        await db.query("DELETE from register_doctor_diagnos");
-        await db.query("INSERT INTO registration_recipe_history SELECT * FROM registration_recipe");
-        await db.query("DELETE from registration_recipe");
-        await db.query("INSERT INTO registration_doctor_history SELECT * FROM registration_doctor");
-        await db.query("DELETE from registration_doctor");
-        await db.query("INSERT INTO registration_history SELECT * FROM registration");
-        await db.query("DELETE from registration");
-        res.send('okey');
-    };
+    
    
     getPechat = async (req, res, next) => {
         const Prixod = await QueueModel.findAll({
@@ -299,13 +287,19 @@ class RegistrationController {
                 "inspection_id": data.inspection_id,
                 "inspection_category": data.category_id
               })
+              let user = await UserModel.findOne({
+                  where:{
+                    id: data.inspection_id
+                  },
+                  raw: true
+              })
                 function isHave(item) { 
-                    return item.room_id == model.id&&item.patient_id == model.patient_id;
+                    return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
                   
                 var have=await this.q.find(isHave);
                 if(have==undefined){
-                    this.q.push({"room_id":model.id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":data.status});
+                    this.q.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":data.status});
                 }
                 else if(data.status!=have.status){
                     if(data.status!='complete'){
@@ -335,7 +329,7 @@ class RegistrationController {
         }
         for(let element of registration_palata){
             palata={
-                "palata_id":model.id,
+                "palata_id": element.palata_id,
                 "registration_id":model.id,
                 'price':element.price,
                 "date_time":date_time,
@@ -387,7 +381,12 @@ class RegistrationController {
         }
         for(var element of registration_doctor){
             var {Registration_recipe,...data} = element;
-            console.log(element);
+            let user = await UserModel.findOne({
+                where:{
+                    doctor_id: element.doctor_id
+                },
+                raw: true
+            })
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -405,11 +404,11 @@ class RegistrationController {
                 "doc_type": 'kirim'
              })
             function isHave(item) { 
-                return item.room_id == model.id&&item.patient_id == model.patient_id;
+                return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
             var have=await this.q.find(isHave);
             if(have==undefined){
-                this.q.push({"room_id":model.id,"patient_id":model.patient_id,"number":0,"datetime":Math.floor(new Date().getTime() / 1000),"status":data.status});
+                this.q.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"datetime":Math.floor(new Date().getTime() / 1000),"status":data.status});
             }else if(data.status!=have.status){
                 if(data.status!='complete'){
                     var index=this.q.findIndex(isHave);
@@ -535,15 +534,15 @@ class RegistrationController {
                 ],
                 raw: true
         })
-        for(let key of result){
-            console.log(key);
-                if(key['palatas.date_time'] >= data1 && key['palatas.date_time'] <= data2){
-                    key.status = true
-                }
-                else{
-                    key.status = false;
-                }
+                console.log(result);
+        for(let i =0; i < result.length; i++){
+            if(result[i]['palatas.date_time'] != null){
+                result[i].status = true
             }
+            else{
+                result[i].status = false
+            }
+        }
             res.send(result);
     }
     

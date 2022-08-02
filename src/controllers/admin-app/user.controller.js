@@ -105,6 +105,7 @@ class UserController {
     }
     create = async(req, res, next) => {
         this.checkValidation(req);
+        console.log(req.body);
         // console.log(req.body);
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 8);
@@ -132,10 +133,12 @@ class UserController {
             })
         model.user_name = req.body.user_name;
         model.room_id = req.body.room_id;
+        model.doctor_id = req.body.doctor_id;
         model.role = req.body.role;
         model.inspection_category_id = req.body.inspection_category_id;
         model.pay_type = req.body.pay_type;
         model.salary = req.body.salary;
+        model.percent = req.body.percent;
         model.save();
         res.status(200).send({
             error: false,
