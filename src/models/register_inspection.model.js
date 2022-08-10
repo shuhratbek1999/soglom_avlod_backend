@@ -36,7 +36,8 @@ inspection_id:{
 },
 inspection_category:{
   type: DataTypes.INTEGER,
-}
+},
+doc_type: DataTypes.VIRTUAL
 
 }, {
   sequelize,

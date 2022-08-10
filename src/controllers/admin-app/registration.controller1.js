@@ -178,21 +178,7 @@ class RegistrationController {
         
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
-        const model = await ModelModel.create({
-            'user_id': data.user_id,
-            'direct_id': data.direct_id,
-            'created_at': data.created_at,
-            'updated_at': data.updated_at,
-            'status': data.status,
-            'patient_id': model.id,
-            'type_service': data.type_service,
-            'complaint': data.complaint,
-            'summa': data.summa,
-            'pay_summa': data.pay_summa,
-            'backlog': data.backlog,
-            'discount': data.discount,
-            'hospital_summa': data.hospital_summa
-        });
+        const model = await ModelModel.create(data);
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
@@ -293,12 +279,12 @@ class RegistrationController {
             var date_time = Math.floor(new Date().getTime() / 1000);
             Register_inspectionModel.create({
                 "date_time": date_time,
-                "type": 'kirim',
+                "type": data.type,
                 "price": data.price,
                 "doc_id": data.registration_id,
                 "user_id": model.id,
                 "inspection_id": data.inspection_id,
-                "inspection_category": data.category_id
+                "inspection_category": data.category_id,
               })
               let user = await UserModel.findOne({
                   where:{
@@ -306,6 +292,7 @@ class RegistrationController {
                   },
                   raw: true
               })
+              console.log(user);
                 function isHave(item) { 
                     return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
@@ -377,13 +364,32 @@ class RegistrationController {
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
+            let type = 0, doc_type = '';
+            if(element.pay_type == 'Plastik'){
+                element.pay_type = 2,
+                type = 0,
+                doc_type = 'kirim'
+            }
+            else if(element.pay_type == 'Naqt'){
+                element.pay_type = 1,
+                type = 0,
+                doc_type = 'kirim'
+            }
+            else if(!element.summa){
+                 type = 1,
+                 doc_type = 'chiqim'
+            }
+            else{
+                doc_type = 'kirim'
+            }
+            console.log(element)
             Register_kassaModel.create({
                 "date_time": date_time,
                 "doctor_id": element.user_id,
                 "pay_type": element.pay_type,
                 "price": element.summa,    
-                "type": element.pay_type,
-                "doc_type": 'kirim'
+                "type": type,
+                "doc_type": doc_type
             })
         }
     }
@@ -400,11 +406,12 @@ class RegistrationController {
                 },
                 raw: true
             })
+            console.log(user);
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
                 "price":data.price,
-                "status":data.status,
+                "status": model.status,
                 "text":data.text};
             const models = await Registration_doctorModel.create(news);
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -421,7 +428,7 @@ class RegistrationController {
               }
             var have=await this.q.find(isHave);
             if(have==undefined){
-                this.q.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"datetime":Math.floor(new Date().getTime() / 1000),"status":data.status});
+                this.q.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":data.status});
             }else if(data.status!=have.status){
                 if(data.status!='complete'){
                     var index=this.q.findIndex(isHave);
@@ -547,9 +554,9 @@ class RegistrationController {
                 ],
                 raw: true
         })
-                console.log(result);
+                // console.log(result);
         for(let i =0; i < result.length; i++){
-            if(result[i]['palatas.date_time'] != null){
+            if(result[i]['palatas.date_time'] != null && result[i]['palatas.date_time'] >= data1 && result[i]['palatas.date_time'] <= data2){
                 result[i].status = true
             }
             else{
@@ -585,10 +592,10 @@ class RegistrationController {
         result.data = await Register_kassaModel.findAll({
             attributes : [
                 'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
                 [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query,
             include: [
@@ -602,10 +609,10 @@ class RegistrationController {
         //begin naqd plastik
         let kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
                 [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_begin,
             // group: ['sklad_id'],
@@ -614,10 +621,10 @@ class RegistrationController {
         //end naqd plastik
         kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
                 [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 0 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_end,
             // group: ['sklad_id'],
@@ -757,7 +764,7 @@ class RegistrationController {
     
         let result = await Register_inspectionModel.findAll({
             attributes: [
-                 'id', "doc_id", "date_time", "type",
+                 'id', "doc_id", "date_time", "type", "doc_type",
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'kirim_summa'],
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'chiqim_summa'],
             ],
