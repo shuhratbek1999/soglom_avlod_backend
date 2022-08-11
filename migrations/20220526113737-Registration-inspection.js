@@ -25,6 +25,9 @@ exports.up = function(db) {
     inspection_id:{
       type: 'int'
     },
+    user_id:{
+      type: 'int'
+    },
     registration_id:{
       type: 'int'
     },

@@ -21,6 +21,9 @@ Registration_inspectionModel.init({
   inspection_id: {
       type: DataTypes.INTEGER
   },
+  user_id:{
+    type: DataTypes.INTEGER
+  },
   registration_id : {
       type: DataTypes.INTEGER
   },
