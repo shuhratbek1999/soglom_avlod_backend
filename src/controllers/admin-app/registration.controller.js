@@ -663,37 +663,12 @@ palata = async (req, res, next) => {
     query_end.date_time = {
         [Op.lte]: body.date_do
     }
-    const models = await registration_palataModel.findAll({
-                raw: true,
-                include:[
-                    {model: palataModel, as: 'palata'}
-                ]
-            });
-            if(models.length == 0){
-                const model = await palataModel.findAll();
-                model.forEach((value) =>{
-                    value.status = 'false'
-                })
-                res.send(model);
-            }
-            else{
-                let status = true;
-    const model = await registration_palataModel.findAll({
-        raw: true,
-        include:[
-            {model: palataModel, as: 'palata'}
-        ]
-    });
-    model.forEach((value) => {
-        let days;
-        days = value.date_do - value.date_to;
-        if(value.date_time >= body.date_to && value.date_time <= body.date_do){
-            value.status = status;
-        }
-        else{
-            value.status = !status
-        }
-    })
+    const model = await palataModel.findAll(
+        { include:[
+            {model: registration_palataModel, as: 'palatas',where{[Op.gte]: body.date_to,
+                [Op.lte]: body.date_do}}
+        ]}
+    );
     res.send(model);
 }
 }

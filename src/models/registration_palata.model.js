@@ -61,6 +61,6 @@ status: DataTypes.VIRTUAL,
   ],
 
 });
-palataModel.hasMany(registration_palataModel, {as: 'palatas', foreignKey: 'id'});
+palataModel.hasMany(registration_palataModel, {as: 'palatas', foreignKey: 'palata_id'});
 registration_palataModel.belongsTo(palataModel, {as:'palatas', foreignKey: 'palata_id'});
 module.exports = registration_palataModel;
