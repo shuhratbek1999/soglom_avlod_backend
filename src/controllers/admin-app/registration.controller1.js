@@ -554,9 +554,8 @@ class RegistrationController {
                 ],
                 raw: true
         })
-                // console.log(result);
         for(let i =0; i < result.length; i++){
-            if(result[i]['palatas.date_time'] != null && (result[i]['palatas.date_time'] >= data1 && result[i]['palatas.date_time'] <= data2)){
+            if(result[i]['palatas.date_time'] != null && result[i]['palatas.date_time'] >= data1 && result[i]['palatas.date_time'] <= data2){
                 result[i].status = true  
             }
             else{
