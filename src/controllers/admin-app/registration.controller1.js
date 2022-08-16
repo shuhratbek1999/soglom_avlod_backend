@@ -562,6 +562,7 @@ class RegistrationController {
                 result[i].status = false
             }
         }
+        console.log(result);
             res.send(result);
     }
     

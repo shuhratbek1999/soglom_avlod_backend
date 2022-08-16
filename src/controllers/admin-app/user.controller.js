@@ -33,13 +33,13 @@ class UserController {
             }
         });
         if(!model){
-            throw new HttpException(401, 'Name tanlanmagan')
+            throw new HttpException(404, 'Name tanlanmagan')
         }
         const isMatch = await bcrypt.compare(password, model.password)
         delete model['password'];
         console.log(isMatch);
         if(!isMatch){
-            throw new HttpException(401, "Parol noto'g'ri kiritildi")
+            throw new HttpException(404, "Parol noto'g'ri kiritildi")
         }
 
         const token = jwt.sign({ user_id: model.id.toString() }, secret_jwt, {
