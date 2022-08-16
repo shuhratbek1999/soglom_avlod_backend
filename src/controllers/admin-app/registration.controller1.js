@@ -853,7 +853,7 @@ class RegistrationController {
             }
         })
         if(!model){
-            throw new HttpException(401, "bu id da malumot topilmadi")
+            throw new HttpException(404, "bu id da malumot topilmadi")
         }
         res.send({
             error_code: 200,

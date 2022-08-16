@@ -45,6 +45,9 @@ class UserController {
         const token = jwt.sign({ user_id: model.id.toString() }, secret_jwt, {
             expiresIn: '24h'
         });
+        if(!token){
+            new HttpException(401, "token mavjude emas")
+        }
         model.token = token
         res.status(200).send({
             error: false,
