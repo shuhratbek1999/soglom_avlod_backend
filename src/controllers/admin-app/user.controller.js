@@ -46,7 +46,7 @@ class UserController {
             expiresIn: '24h'
         });
         if(!token){
-            new HttpException(401, "token mavjude emas")
+           throw new HttpException(404, "token mavjud emas")
         }
         model.token = token
         res.status(200).send({

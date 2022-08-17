@@ -20,7 +20,7 @@ const auth = (...roles) => {
             const user = await UserModel.findOne({where:{ id: decoded.user_id }});
 
             if (!user) {
-                throw new HttpException(401, 'Autentifikatsiya amalga oshmadi!');
+                throw new HttpException(402, 'Autentifikatsiya amalga oshmadi!');
             }
 
             // check if the current user is the owner user
@@ -30,7 +30,7 @@ const auth = (...roles) => {
             // if the user role don't have the permission to do this action.
             // the user will get this error
             if (!ownerAuthorized && roles.length && !roles.includes(user.role)) {
-                throw new HttpException(401, 'Unauthorized');
+                throw new HttpException(403, 'Unauthorized');
             }
 
             // if the user has permissions

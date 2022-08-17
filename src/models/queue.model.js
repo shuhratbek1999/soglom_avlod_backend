@@ -1,7 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const PatientModel = require('./patient.model');
-const RoomModel = require('../models/room.model')
+const RoomModel = require('../models/room.model');
+const DoctorModel = require('./doctor.model');
 class QueueModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -53,4 +54,5 @@ status: {
 });
 QueueModel.belongsTo(RoomModel, {as: 'room', foreignKey: 'room_id'})
 QueueModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
+QueueModel.belongsTo(DoctorModel, {as: "doctor", foreignKey: 'id'})
 module.exports = QueueModel;

@@ -982,7 +982,8 @@ class RegistrationController {
             },
             include:[
                 {model: RoomModel, as: 'room', attributes: ['name']},
-                {model: PatientModel, as: 'patient', attributes: ['fullname']}
+                {model: PatientModel, as: 'patient', attributes: ['fullname']},
+                {model: DoctorModel, as: 'doctor', attributes: ['name']}
             ],
             // group:['room_id'],
             limit: 100,
