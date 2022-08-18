@@ -46,7 +46,7 @@ exports.up = function(db) {
       notNull: true
     },
     complaint:{
-      type: 'int',
+      type: 'string',
     },
     summa:{
       type: 'decimal',
