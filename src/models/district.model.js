@@ -40,5 +40,5 @@ name: {
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-districtModel.belongsTo(RegionModel, {as: 'region', foreignKey: 'region_id'})
+RegionModel.hasMany(districtModel, {as: 'district', foreignKey: 'region_id'});
 module.exports = districtModel;

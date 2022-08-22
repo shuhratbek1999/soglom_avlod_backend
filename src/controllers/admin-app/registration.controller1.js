@@ -641,16 +641,16 @@ class RegistrationController {
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
         let query = {}, query_begin = {}, query_end = {};
-        // query.date_time =  {
-        //     [Op.gte]: body.datetime1,
-        //     [Op.lte]: body.datetime2,
-        // };
-        // query_begin.date_time =  {
-        //     [Op.lt]: body.datetime1,
-        // };
-        // query_end.date_time =  {
-        //     [Op.lte]: body.datetime2,
-        // };
+        query.date_time =  {
+            [Op.gte]: body.datetime1,
+            [Op.lte]: body.datetime2,
+        };
+        query_begin.date_time =  {
+            [Op.lt]: body.datetime1,
+        };
+        query_end.date_time =  {
+            [Op.lte]: body.datetime2,
+        };
         if(body.doctor_id != null){
             query.doctor_id= {[Op.eq] : body.doctor_id } 
             query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
@@ -673,7 +673,6 @@ class RegistrationController {
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
             ],
-            where: query,
             group: ['doctor_id'],
             order: [
                 ['date_time', 'ASC']

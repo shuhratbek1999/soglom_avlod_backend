@@ -27,8 +27,4 @@ exports.patientValidate = [
          .optional()
          .isInt()
          .withMessage('Int tipida kiriting'),
-     body('gender')
-         .exists()
-         .isString()
-         .withMessage('string tipida kiriting'),
 ];
