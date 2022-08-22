@@ -18,13 +18,5 @@ exports.patientValidate = [
      body('patronymic')
          .exists()
          .isString()
-         .withMessage('string tipida kiriting'),
-     body('region_id')
-         .optional()
-         .isInt()
-         .withMessage('Int tipida kiriting'),
-     body('district_id')
-         .optional()
-         .isInt()
-         .withMessage('Int tipida kiriting'),
+         .withMessage('string tipida kiriting')
 ];
