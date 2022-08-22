@@ -10,11 +10,7 @@ const { validationResult } = require('express-validator');
  ******************************************************************************/
 class DistrictController {
     getAll = async (req, res, next) => {
-        const model = await DistrictModel.findAll({
-            include:[
-                {model: RegionModel, as: 'region', attributes: ['id', 'name']}
-            ]
-        });
+        const model = await DistrictModel.findAll(req.body);
         res.status(200).send({
             error: false,
             error_code: 200,
