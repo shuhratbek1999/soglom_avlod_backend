@@ -38,5 +38,5 @@ RegionModel.init({
   ],
  
 });
-// RegionModel.belongsTo(DistrictModel, {as: 'district', foreignKey: 'region_id'});
+// RegionModel.has(DistrictModel, {as: 'district', foreignKey: 'region_id'});
 module.exports = RegionModel;

@@ -3,13 +3,18 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const RegionModel = require('../../models/region.model')
 const { validationResult } = require('express-validator');
+const districtModel = require('../../models/district.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class RegionController {
     getAll = async (req, res, next) => {
-        const model = await RegionModel.findAll();
+        const model = await RegionModel.findAll({
+            include:[
+                {model: districtModel, as: 'district', attributes:['id', 'name']}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,
