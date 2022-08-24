@@ -292,7 +292,6 @@ class RegistrationController {
                   },
                   raw: true
               })
-              console.log(user);
                 function isHave(item) { 
                     return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
@@ -328,14 +327,17 @@ class RegistrationController {
             await this.#deletePalata(model.id);
         }
         for(let element of registration_palata){
+            console.log(element);
             palata={
                 "palata_id": element.palata_id,
                 "registration_id":model.id,
                 'price':element.price,
                 "date_time":date_time,
+                "date_do": element.date_do,
                 "day":element.day,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
+            console.log('salom', palata)
             var date_time = Math.floor(new Date().getTime() / 1000);
             register_palataModel.create({
                 "palata_id": element.palata_id,
@@ -402,7 +404,7 @@ class RegistrationController {
             var {Registration_recipe,...data} = element;
             let user = await UserModel.findOne({
                 where:{
-                    doctor_id: element.doctor_id
+                    id: element.doctor_id
                 },
                 raw: true
             })
@@ -535,6 +537,7 @@ class RegistrationController {
 
     palata = async (req, res, next) => {
         let query = {}, query_begin = {}, query_end = {}, body = req.body;
+        console.log('salom', req.body);
         let data1 = body.date_to;
         let data2 = body.date_do;
         query.date_time = {
@@ -550,19 +553,29 @@ class RegistrationController {
 
         let result = await palataModel.findAll({
                 include:[
-                    {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time']}
+                    {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time', 'date_do']}
                 ],
                 raw: true
         })
-        for(let i =0; i < result.length; i++){
-            if(result[i]['palatas.date_time'] != null && result[i]['palatas.date_time'] >= data1 && result[i]['palatas.date_time'] <= data2){
-                result[i].status = true  
+        console.log(result[0]['palatas.date_time']);
+        result.forEach(value => {
+            if(value['palatas.date_time'] !== null && value['palatas.date_time'] <= data1 && value['palatas.date_do'] >= data2 ){
+                value.status = true
+                console.log('hello');
+            }
+            else if(value['palatas.date_do'] <= data2 && value['palatas.do'] <= data1){
+                value.status = false
+                console.log('goodmorning');
+            }
+            else if(value['palatas.date_do'] >= data1 && value['palatas.date_time'] <= data1){
+                 value.status = true
+                 console.log('true');
             }
             else{
-                result[i].status = false
+                console.log('salom');
+                value.status = false
             }
-        }
-        console.log(result);
+        })
             res.send(result);
     }
     

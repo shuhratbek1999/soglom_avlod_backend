@@ -9,7 +9,7 @@ const  {doctorValidate}  = require('../../middleware/validators/admin-app/doctor
 
 router.get('/all', auth(), awaitHandlerFactory(doctorController.getAll));
 router.get('/byName', auth(), awaitHandlerFactory(doctorController.byName));
-router.get('/one/:id', auth(), awaitHandlerFactory(doctorController.getOne));
+router.get('/one/:id', awaitHandlerFactory(doctorController.getOne));
 router.post('/create',auth(), doctorValidate, awaitHandlerFactory(doctorController.create));
 router.patch('/update/:id', doctorValidate, auth(), awaitHandlerFactory(doctorController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(doctorController.delete));

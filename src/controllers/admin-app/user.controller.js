@@ -36,6 +36,7 @@ class UserController {
             throw new HttpException(404, 'Name tanlanmagan')
         }
         const isMatch = await bcrypt.compare(password, model.password)
+        console.log(isMatch);
         delete model['password'];
         console.log(isMatch);
         if(!isMatch){
@@ -109,7 +110,6 @@ class UserController {
     create = async(req, res, next) => {
         this.checkValidation(req);
         console.log(req.body);
-        // console.log(req.body);
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 8);
             console.log(req.body.password);
