@@ -49,11 +49,11 @@ UserModel.init({
     allowNull: true
   },
   salary:{
-    type: DataTypes.DECIMAL(10, 2), 
+    type: DataTypes.DECIMAL(), 
     allowNull: true
   },
   percent:{
-    type: DataTypes.DECIMAL(10,2)
+    type: DataTypes.DECIMAL()
   }
  
 }, {

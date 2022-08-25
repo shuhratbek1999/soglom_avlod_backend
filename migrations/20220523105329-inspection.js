@@ -31,7 +31,7 @@ exports.up = function(db) {
       type: 'int'
     },
     price:{
-      type: 'decimal(17,2)',
+      type: 'decimal',
       notNull: true
     },
     type:{
@@ -45,7 +45,7 @@ exports.up = function(db) {
       type: 'int'
     },
     percent_bonus:{
-      type: 'decimal(5, 2)'
+      type: 'int'
     }
   });
 };

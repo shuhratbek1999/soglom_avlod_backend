@@ -29,7 +29,7 @@ exports.up = function(db) {
       type: 'int'
     },
     price:{
-      type: 'decimal(17,2)',
+      type: 'decimal',
       notNull: true
     },
     name:{

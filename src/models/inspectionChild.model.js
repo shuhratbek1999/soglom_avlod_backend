@@ -22,7 +22,7 @@ parent_id : {
     type: DataTypes.INTEGER,
 },
 price:{
-    type:DataTypes.DECIMAL(17,2)
+    type:DataTypes.DECIMAL()
 },
 name: {
     type: DataTypes.STRING(100),

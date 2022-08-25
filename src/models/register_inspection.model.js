@@ -23,7 +23,7 @@ Register_inspectionModel.init({
    type: DataTypes.STRING(40)
  },
  price:{
-   type: DataTypes.DECIMAL(12, 2)
+   type: DataTypes.DECIMAL()
  },
  doc_id:{
    type: DataTypes.INTEGER

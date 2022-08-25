@@ -57,16 +57,16 @@ complaint : {
     type: DataTypes.STRING,
 },
 summa : {
-    type: DataTypes.DECIMAL(11,2),
+    type: DataTypes.DECIMAL(30),
 },
 pay_summa : {
-    type: DataTypes.DECIMAL(11,2),
+    type: DataTypes.DECIMAL(30),
 },
 backlog : {
-    type: DataTypes.DECIMAL(11,2),
+    type: DataTypes.DECIMAL(30),
 },
 discount : {
-    type: DataTypes.DECIMAL(11,2)
+    type: DataTypes.DECIMAL(30)
 },
 hospital_summa:{
     type: DataTypes.DECIMAL()

@@ -26,7 +26,7 @@ Registration_payModel.init({
       allowNull: false
   },
 summa:{
-      type: DataTypes.DECIMAL(17.2),
+      type: DataTypes.DECIMAL(),
       allowNull: false
   },
   date_time:{

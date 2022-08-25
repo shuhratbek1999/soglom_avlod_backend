@@ -37,7 +37,7 @@ Registration_inspection_childModel.init({
       type: DataTypes.STRING(),
   },
   price:{
-      type: DataTypes.DECIMAL(17,2),
+      type: DataTypes.DECIMAL()
   },
   checked:{
       type: DataTypes.BOOLEAN,

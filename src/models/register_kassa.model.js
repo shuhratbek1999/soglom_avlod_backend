@@ -24,7 +24,7 @@ Register_kassaModel.init({
    allowNull: false
  },
  price:{
-   type: DataTypes.DECIMAL(12, 2),
+   type: DataTypes.DECIMAL(),
    allowNull: false
  },
  pay_type:{

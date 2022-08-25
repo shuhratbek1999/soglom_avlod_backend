@@ -24,7 +24,7 @@ kassaOrderModel.init({
    allowNull: false
  },
  price:{
-   type: DataTypes.DECIMAL(12, 2),
+   type: DataTypes.DECIMAL(),
    allowNull: false
  },
  expense_id:{

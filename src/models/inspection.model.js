@@ -25,7 +25,7 @@ parent_id : {
     type: DataTypes.INTEGER,
 },
 price:{
-    type: DataTypes.DECIMAL(17,2)
+    type: DataTypes.DECIMAL
 },
 type:{
     type: DataTypes.BOOLEAN
@@ -37,7 +37,7 @@ category_id:{
     type: DataTypes.INTEGER
 },
 percent_bonus:{
-    type: DataTypes.DECIMAL(5,2)
+    type: DataTypes.INTEGER
 }
 
 }, {

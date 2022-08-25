@@ -23,7 +23,7 @@ registration_palataModel.init({
    type: DataTypes.INTEGER(40),
  },
  price:{
-   type: DataTypes.DECIMAL(12, 2),
+   type: DataTypes.DECIMAL(),
    allowNull: false
  },
  registration_id:{

@@ -28,7 +28,7 @@ exports.up = function(db) {
       notNull: true
     },
     price : {
-      type: 'decimal(15,2)',
+      type: 'decimal',
       notNull: true
     }
   });

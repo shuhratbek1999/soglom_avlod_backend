@@ -42,7 +42,7 @@ exports.up = function(db) {
       type: 'int'
     },
     type_service:{
-      type: 'int',
+      type: 'string',
       notNull: true
     },
     complaint:{

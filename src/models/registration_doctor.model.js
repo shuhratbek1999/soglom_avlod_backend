@@ -28,7 +28,7 @@ Registration_doctorModel.init({
       allowNull: false
   },
   price:{
-      type: DataTypes.DECIMAL(17,2),
+      type: DataTypes.DECIMAL(),
       allowNull: false
   },
   text:{
