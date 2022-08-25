@@ -78,16 +78,6 @@ class InspectionController {
         if(model === null){ 
             res.status(404).send("model mavjud emas")
         }
-        // await inspectionChild.forEach(value => {
-        //     value.id = model.id;
-        //     inspectionChildModel.create({
-        //         "norm": value.norm,
-        //         "parent_id": model.id,
-        //         "price": value.price,
-        //         "name": value.name,
-        //         "file": value.file 
-        //     })
-        //    })
         if(model === null){
             res.status(404).send("not found")
         }
@@ -101,11 +91,11 @@ class InspectionController {
         model.save();
         await inspectionChildModel.destroy({
             where:{
-                id: model.id
+                parent_id: model.id
             }
         })
-        for(let key in inspectionChild){
-            console.log('shuhratbek' + inspectionChild);
+        for(let key of inspectionChild){
+            console.log('salom', key);
             inspectionChildModel.create({
             "norm": key.norm,
             "parent_id": model.id,

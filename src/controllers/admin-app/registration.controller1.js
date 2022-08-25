@@ -557,22 +557,17 @@ class RegistrationController {
                 ],
                 raw: true
         })
-        console.log(result[0]['palatas.date_time']);
         result.forEach(value => {
             if(value['palatas.date_time'] !== null && value['palatas.date_time'] <= data1 && value['palatas.date_do'] >= data2 ){
                 value.status = true
-                console.log('hello');
             }
             else if(value['palatas.date_do'] <= data2 && value['palatas.do'] <= data1){
                 value.status = false
-                console.log('goodmorning');
             }
             else if(value['palatas.date_do'] >= data1 && value['palatas.date_time'] <= data1){
                  value.status = true
-                 console.log('true');
             }
             else{
-                console.log('salom');
                 value.status = false
             }
         })
