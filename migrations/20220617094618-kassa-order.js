@@ -30,11 +30,11 @@ exports.up = function(db) {
       type: 'int'
     },
     type:{
-      type: 'int',
+      type: 'string',
       notNull: true
     },
     pay_type:{
-      type: 'int',
+      type: 'string',
       notNull: true
     },
     price:{
