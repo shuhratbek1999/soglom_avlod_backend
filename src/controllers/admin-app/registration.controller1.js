@@ -590,12 +590,9 @@ class RegistrationController {
         query_end.date_time =  {
             [Op.lte]: body.datetime2,
         };
-        if(body.doctor_id != null){
-            query.doctor_id = {[Op.eq] : body.doctor_id } 
-            query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
-            query_end.doctor_id = {[Op.eq] : body.doctor_id } 
-            queryx.id = {[Op.eq] : body.doctor_id}
-        };
+        query.doctor_id = {[Op.eq] : body.doctor_id } 
+        query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
+        query_end.doctor_id = {[Op.eq] : body.doctor_id } 
         
         result.data = await Register_kassaModel.findAll({
             attributes : [
@@ -611,8 +608,7 @@ class RegistrationController {
             ],
             order: [
                 ['date_time', 'ASC']
-            ],
-            group: ['doctor_id', 'pay_type'],
+            ]
         })
         //begin naqd plastik
         let kassa_register = await Register_kassaModel.findOne({
@@ -626,7 +622,6 @@ class RegistrationController {
             raw: true
             // group: ['sklad_id'],
         });
-        console.log('kassa-1', kassa_register);
         if(kassa_register != null) result.begin = kassa_register;
         //end naqd plastik
         kassa_register = await Register_kassaModel.findOne({
@@ -640,7 +635,6 @@ class RegistrationController {
             raw: true
             // group: ['sklad_id'],
         });
-        console.log('kassa-2', kassa_register);
         if(kassa_register != null) result.end = kassa_register;
         res.send(result);
     }
@@ -664,7 +658,7 @@ class RegistrationController {
             [Op.lte]: body.datetime2,
         };
         if(body.doctor_id != null){
-            query.doctor_id= {[Op.eq] : body.doctor_id } 
+            query.doctor_id = {[Op.eq] : body.doctor_id } 
             query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
             query_end.doctor_id = {[Op.eq] : body.doctor_id }
         };

@@ -49,7 +49,7 @@ gender:{
     type:DataTypes.STRING(10)
 },
 birthday:{
-    type:DataTypes.INTEGER
+    type:DataTypes.STRING
 }
 
 }, {

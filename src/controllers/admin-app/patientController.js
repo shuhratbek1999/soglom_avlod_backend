@@ -55,7 +55,7 @@ class PatientController {
         'passpord': req.body.passpord,
         'addres': req.body.addres,
         'gender': req.body.gender,
-        'birtday': req.body.birtday
+        'birthday': req.body.birthday
        });
        res.status(200).send({
         error: false,
