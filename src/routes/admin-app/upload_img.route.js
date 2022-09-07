@@ -1,4 +1,5 @@
 const express = require('express');
+const {port} = require('../../startup/config');
 const router = express.Router();
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
 const multer = require('multer');
@@ -26,7 +27,7 @@ router.post('/img', upload, awaitHandlerFactory(async (req, res, next) => {
 }));
 router.post("/imgs", upload, function(request, response) {
     response.json({
-        img: `http://localhost:4000/href/${request.file.filename}`
+        img: `http://localhost:${port}/href/${request.file.filename}`
     })
     });
 

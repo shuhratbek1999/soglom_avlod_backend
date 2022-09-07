@@ -30,6 +30,9 @@ name: {
 file: {
     type: DataTypes.STRING,
     // defaultValue:""
+},
+status: {
+  type: DataTypes.VIRTUAL
 }
 
 }, {
