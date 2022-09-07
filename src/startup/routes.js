@@ -20,6 +20,7 @@ const expenseRouter = require('../routes/admin-app/expense.route')
 const palataRouter = require('../routes/admin-app/palata.route')
 const RegDoctor = require('../routes/admin-app/registerDoctor.route')
 const UploadRouter = require('../routes/admin-app/upload.route')
+const imgRouter = require('../routes/admin-app/upload_img.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -48,8 +49,9 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/palata`, palataRouter);
         app.use(`/api/v1/admin-app/register_doctor`, RegDoctor);
         app.use(`/api/v1/admin-app/upload`, UploadRouter);
+        app.use(`/api/v1/admin-app/uploads`, imgRouter);
 
-        app.use(`/api/v1/uploads`, express.static('uploads'));
+        app.use(`/href`, express.static('upload'));
 
         // 404 error
         app.all('*', (req, res, next) => {

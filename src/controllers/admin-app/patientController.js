@@ -90,6 +90,29 @@ class PatientController {
         data: model
     });
 }
+   search = async (req, res, next) => {
+    console.log(req.params.key);
+    let data = await PatientModel.find(
+        {
+            "$or": [
+                {"name": {$regex: req.params.key}}
+            ]
+        }
+    )
+    //   const filters = req.query;
+    
+    //   const FilteredUser = Patient.filter(user => {
+    //       let isInvalid = true;
+    //        for(let key in filters){
+    //         console.log(key, user[key], filters[key]);
+    //         isInvalid = isInvalid && user[key] == filters[key]
+    //        }
+    //        return isInvalid
+    //   })
+    //   res.send(FilteredUser)
+    res.send(data)
+   }
+
 delete = async (req, res, next) => {
 const model =    await PatientModel.destroy({
         where:{
