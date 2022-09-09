@@ -590,9 +590,6 @@ class RegistrationController {
         query_end.date_time =  {
             [Op.lte]: body.datetime2,
         };
-        query.doctor_id = {[Op.eq] : body.doctor_id } 
-        query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
-        query_end.doctor_id = {[Op.eq] : body.doctor_id } 
         
         result.data = await Register_kassaModel.findAll({
             attributes : [
@@ -602,9 +599,9 @@ class RegistrationController {
                 [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
                 [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
-            where : query,
+            where: query,
             include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name']},
+                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
             ],
             order: [
                 ['date_time', 'ASC']
@@ -641,7 +638,6 @@ class RegistrationController {
     
     kassa = async (req, res, next) => {
         this.checkValidation(req);
-    
         let result;
         let body = req.body; 
         let datetime1 = body.datetime1;
@@ -656,15 +652,7 @@ class RegistrationController {
         };
         query_end.date_time =  {
             [Op.lte]: body.datetime2,
-        };
-        if(body.doctor_id != null){
-            query.doctor_id = {[Op.eq] : body.doctor_id } 
-            query_begin.doctor_id = {[Op.eq] : body.doctor_id } 
-            query_end.doctor_id = {[Op.eq] : body.doctor_id }
-        };
-        
-    
-        
+        }
         result = await Register_kassaModel.findAll({
             attributes : [ 
                 'id', 'doctor_id', "type", "date_time", "doc_type",
@@ -672,25 +660,22 @@ class RegistrationController {
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 1 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
             ],
+            where: query,
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
             ],
-            group: ['doctor_id'],
             order: [
                 ['date_time', 'ASC']
             ],
             raw: true
-        })
+        }) 
         let resultx = [];
         for(let i = 0; i < result.length; i++){
-            query_begin.doctor_id = result[i].doctor_id;
-            query_end.doctor_id = result[i].doctor_id;
             let kassa_register = await Register_kassaModel.findOne({
                 attributes : [
                     [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
                 ],
                 where : query_begin,
-                group: ['doctor_id'],
                 raw: true
             });
             let kassa_registerx = await Register_kassaModel.findOne({
@@ -698,7 +683,6 @@ class RegistrationController {
                     [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
                 ],
                 where : query_end,
-                group: ['doctor_id'],
                 raw: true
             });   
             resultx.push(
@@ -758,7 +742,7 @@ class RegistrationController {
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
-        if(body.inspection_category !== null){
+        if(body.inspection_category != null){
             query.id = {[Op.eq] : body.inspection_category }
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
         };
@@ -770,13 +754,10 @@ class RegistrationController {
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'chiqim_summa'],
             ],
             include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
+                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
             ],
             where: queryx, 
             group: ['inspection_category'],
-            order: [
-                ['id', 'ASC']
-            ],
         })
     // console.log(result);
         res.send(result);

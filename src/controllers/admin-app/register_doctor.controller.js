@@ -97,7 +97,7 @@ class RegisterDoctorController {
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time <= " + datetime2 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'end_total'],
             ],
             include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name']},
+                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
             ],
             where: queryx, 
             group: ['doctor_id'],
