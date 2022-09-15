@@ -858,8 +858,8 @@ class RegistrationController {
           
         let result = await ModelModel.findAll({
             attributes: [
-                 'id', "type_service", "created_at", "direct_id",
-                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN registration.summa ELSE 0 END)"), 'tushum'],
+                 'id', "type_service", "created_at", "direct_id","summa",
+                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.direct_id = direct.id THEN direct.bonus ELSE 0 END)"), 'tushum'],
                 [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.type_service = 1 then registration.direct_id else 0 end)"), 'count']
             ],
             include: [
@@ -872,6 +872,7 @@ class RegistrationController {
                 ['id', 'ASC']
             ],
         })
+        console.log(result);
         res.send(result);
     };
     
@@ -889,8 +890,8 @@ class RegistrationController {
         let result = await ModelModel.findAll({
             attributes: [
                  'id', "type_service", "created_at", "direct_id",
-                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.type_service = 1 THEN registration.summa ELSE 0 END)"), 'tushum'],
-                [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.type_service = 1 then registration.direct_id else 0 end)"), 'count']
+                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.direct_id = direct.id THEN direct.bonus ELSE 0 END)"), 'tushum'],
+                [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.direct_id = direct.id then registration.direct_id else 0 end)"), 'count']
             ],
             include: [
                 { model: directModel, as: 'direct', where: query},
