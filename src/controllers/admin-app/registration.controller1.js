@@ -368,12 +368,10 @@ class RegistrationController {
             var date_time = Math.floor(new Date().getTime() / 1000);
             let type = 0, doc_type = '';
             if(element.pay_type == 'Plastik'){
-                element.pay_type = 2,
                 type = 0,
                 doc_type = 'kirim'
             }
             else if(element.pay_type == 'Naqt'){
-                element.pay_type = 1,
                 type = 0,
                 doc_type = 'kirim'
             }
