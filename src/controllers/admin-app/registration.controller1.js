@@ -282,13 +282,13 @@ class RegistrationController {
                 "type": data.type,
                 "price": data.price,
                 "doc_id": data.registration_id,
-                "user_id": model.id,
+                "user_id": data.user_id,
                 "inspection_id": data.inspection_id,
                 "inspection_category": data.category_id,
               })
               let user = await UserModel.findOne({
                   where:{
-                    id: data.inspection_id
+                    id: data.user_id
                   },
                   raw: true
               })
@@ -327,7 +327,6 @@ class RegistrationController {
             await this.#deletePalata(model.id);
         }
         for(let element of registration_palata){
-            console.log(element);
             palata={
                 "palata_id": element.palata_id,
                 "registration_id":model.id,
@@ -337,7 +336,6 @@ class RegistrationController {
                 "day":element.day,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
-            console.log('salom', palata)
             var date_time = Math.floor(new Date().getTime() / 1000);
             register_palataModel.create({
                 "palata_id": element.palata_id,
@@ -382,7 +380,6 @@ class RegistrationController {
             else{
                 doc_type = 'kirim'
             }
-            console.log(element)
             Register_kassaModel.create({
                 "date_time": date_time,
                 "doctor_id": element.user_id,
@@ -469,17 +466,19 @@ class RegistrationController {
             if(!insert){
                 var has=await QueueModel.findOne({
                     where:{
-                        status:{[Op.not]:'complete'},
+                        status:{[Op.not]:'complate'},
                         room_id: element.room_id,
                         patient_id: element.patient_id
                     }
                 });
+                console.log(has, "has");
                 if(has!=null){
                     if(element.status!=has.status){
                         has.status=element.status;
+                        console.log("helooooo");
                         await has.save();
                     }
-                }else if(element.status!='complete') {
+                }else if(element.status!='complate') {
                     var que=await QueueModel.findOne({
                         where:{ 
                             room_id: element.room_id,
@@ -488,6 +487,7 @@ class RegistrationController {
                             ['number', 'DESC']
                         ],
                     });
+                    console.log(que, "que");
                     if(que!=null){
                         element.number=que.number+1;
                     }else{
@@ -509,6 +509,7 @@ class RegistrationController {
                 }else{
                     element.number=1;
                 }
+                console.log(element, "queu");
                 await QueueModel.create(element); 
 
             }
@@ -718,9 +719,9 @@ class RegistrationController {
         let result = await Register_inspectionModel.findAll({
             attributes: [
                  'id', "type", "date_time", "inspection_category",
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
-                [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.type = 1 then register_inspection.inspection_category else 0 end)"), 'count']
+                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.inspection_category = inspection.id THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.inspection_category = inspection.id THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
+                [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.inspection_category = inspection.id then register_inspection.inspection_category else 0 end)"), 'count']
             ],
             include: [
                 { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
@@ -959,7 +960,7 @@ class RegistrationController {
     queueAll = async (req, res, next) => {
         const model = await QueueModel.findAll({
             where:{
-                status:{[Op.not]:'complete'}
+                status:{[Op.not]:'complate'}
             },
             include:[
                 {model: RoomModel, as: 'room', attributes: ['name']},
