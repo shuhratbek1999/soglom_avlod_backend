@@ -292,6 +292,7 @@ class RegistrationController {
                   },
                   raw: true
               })
+              console.log(user, "salom");
                 function isHave(item) { 
                     return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
@@ -957,6 +958,7 @@ class RegistrationController {
     }
      
     queueAll = async (req, res, next) => {
+        console.log();
         const model = await QueueModel.findAll({
             where:{
                 status:{[Op.not]:'complate'}
@@ -965,14 +967,17 @@ class RegistrationController {
                 {model: RoomModel, as: 'room', attributes: ['name'],
             include:[
                 {model: UserModel, as: 'users', attributes: ['doctor_id'],
+             include:[
+                {model: Registration_doctorModel, as: 'registration_doctor', attributes: ['doctor_id'],
             include:[
-                {model:DoctorModel, as: 'doctor', attributes: ['name']}
+                {model: DoctorModel, as: "doctor", attributes: ['name']}
             ]
+            }
+             ]
             }
             ]
             },
                 {model: PatientModel, as: 'patient', attributes: ['fullname']},
-                {model: DoctorModel, as: 'doctor', attributes: ['name']}
             ],
             // group:['room_id'],
             limit: 100,

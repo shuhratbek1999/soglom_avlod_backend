@@ -32,6 +32,9 @@ date_time: {
 },
 status: {
     type: DataTypes.STRING(20),
+},
+doctor_id:{
+  type: DataTypes.VIRTUAL()
 }
 
 }, {
