@@ -32,7 +32,7 @@ class RegistrationController {
     q=[];
     getAll = async (req, res, next) => {
         const model = await ModelModel.findAll({
-            include:[
+            include:[ 
                 {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
@@ -471,7 +471,6 @@ class RegistrationController {
                         patient_id: element.patient_id
                     }
                 });
-                console.log(has, "has");
                 if(has!=null){
                     if(element.status!=has.status){
                         has.status=element.status;
@@ -963,7 +962,15 @@ class RegistrationController {
                 status:{[Op.not]:'complate'}
             },
             include:[
-                {model: RoomModel, as: 'room', attributes: ['name']},
+                {model: RoomModel, as: 'room', attributes: ['name'],
+            include:[
+                {model: UserModel, as: 'users', attributes: ['doctor_id'],
+            include:[
+                {model:DoctorModel, as: 'doctor', attributes: ['name']}
+            ]
+            }
+            ]
+            },
                 {model: PatientModel, as: 'patient', attributes: ['fullname']},
                 {model: DoctorModel, as: 'doctor', attributes: ['name']}
             ],
