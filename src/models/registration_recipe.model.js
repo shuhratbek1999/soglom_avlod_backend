@@ -36,6 +36,10 @@ registration_doctor_id: {
   comment:{
       type: DataTypes.STRING,
       allowNull: false
+  },
+  name:{
+    type: DataTypes.STRING(),
+    allowNull: false
   }
 }, {
   sequelize,

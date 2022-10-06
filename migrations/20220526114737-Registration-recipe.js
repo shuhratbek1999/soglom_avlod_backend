@@ -42,6 +42,10 @@ exports.up = function(db) {
     comment:{
       type: 'string',
       notNull: true,
+    },
+    name: {
+      type: 'string',
+      notNull: true
     }
   });
 };
