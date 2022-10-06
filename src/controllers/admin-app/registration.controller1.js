@@ -459,7 +459,9 @@ class RegistrationController {
                 'pill_id':element.pill_id,
                 "time":element.time,
                 "day":element.day,
-                "comment":element.comment};
+                "comment":element.comment,
+                "name": element.name
+            };
             await Registration_recipeModel.create(adds); 
         }
     }
