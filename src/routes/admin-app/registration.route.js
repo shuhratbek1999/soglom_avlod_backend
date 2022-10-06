@@ -17,6 +17,7 @@ router.post('/direct', auth(), awaitHandlerFactory(registrationControl.direct));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
 router.get('/directOne/:id', auth(), awaitHandlerFactory(registrationControl.directOne));
 router.post('/create', auth(),  awaitHandlerFactory(registrationControl.create));
+router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
 router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));

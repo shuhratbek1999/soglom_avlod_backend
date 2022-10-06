@@ -130,7 +130,7 @@ class RegistrationController {
             include: [
                 { model: RoomModel,as: 'room',
                 include: [
-                    { model: UserModel,as: 'user'}
+                    { model: UserModel,as: 'users'}
                 ],
 
             },
@@ -400,7 +400,7 @@ class RegistrationController {
             var {Registration_recipe,...data} = element;
             let user = await UserModel.findOne({
                 where:{
-                    id: element.doctor_id
+                    doctor_id: element.doctor_id
                 },
                 raw: true
             })
@@ -969,13 +969,9 @@ class RegistrationController {
                 {model: RoomModel, as: 'room', attributes: ['name'],
             include:[
                 {model: UserModel, as: 'users', attributes: ['doctor_id'],
-             include:[
-                {model: Registration_doctorModel, as: 'registration_doctor', attributes: ['doctor_id'],
-            include:[
-                {model: DoctorModel, as: "doctor", attributes: ['name']}
-            ]
-            }
-             ]
+                include:[
+                    {model: DoctorModel, as: 'doctor', attributes: ['name']}
+                ]
             }
             ]
             },
