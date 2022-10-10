@@ -19,6 +19,7 @@ router.get('/directOne/:id', auth(), awaitHandlerFactory(registrationControl.dir
 router.post('/create', auth(),  awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
+router.post('/search', auth(),  awaitHandlerFactory(registrationControl.search));
 router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
 router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));

@@ -718,6 +718,27 @@ class RegistrationController {
         }
         res.send(resultx);
     };
+    search = async (req, res, next) => {
+        let ModelList = await PatientModel.findAll({
+            attributes: ['id', 'lastname', 'name', 'patronymic', 'phone', 'birtday', 'actions',
+        ],
+            where:{ 
+                name:{  [Op.like]: '%'+req.body.name+'%'}
+            },
+            order: [
+                ['name', 'ASC'],
+                ['id', 'ASC']
+            ],
+            limit:100,
+            raw: true
+        });
+        res.send({
+            "error": false,
+            "error_code": 200,
+            "message": "Product list filial:02 Феендо махсулотлари",
+            data: ModelList
+        });
+    };
     inspection = async (req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};
