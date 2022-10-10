@@ -38,8 +38,7 @@ registration_doctor_id: {
       allowNull: false
   },
   name:{
-    type: DataTypes.STRING(),
-    allowNull: false
+    type: DataTypes.STRING()
   }
 }, {
   sequelize,

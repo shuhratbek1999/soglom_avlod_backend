@@ -125,7 +125,6 @@ class RegistrationController {
     
    
     getPechat = async (req, res, next) => {
-        console.log(req.params, "req");
         const Prixod = await QueueModel.findAll({
             where:{ patient_id: req.params.patient,status:"waiting" },
             include: [
@@ -141,7 +140,6 @@ class RegistrationController {
                 ['number', 'ASC']
             ],
         });
-        console.log(Prixod, "navbat");
         if (Prixod === null) {
             throw new HttpException(404, 'Not found');
         }
@@ -249,6 +247,7 @@ class RegistrationController {
         
         const result = await ModelModel.destroy({where : {id: id } });
         await this.#deletedoctor(id);
+        await this.#deleteRecipe(id);
         await this.#deleteInspection(id);
         await this.#deleteFiles(id);
         await this.#deletePalata(id);
@@ -336,6 +335,7 @@ class RegistrationController {
                 'price':element.price,
                 "date_time":date_time,
                 "date_do": element.date_do,
+                "date_to": element.date_to,
                 "day":element.day,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
@@ -407,7 +407,6 @@ class RegistrationController {
                 },
                 raw: true
             })
-            console.log(user.room_id, "user");
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -428,7 +427,6 @@ class RegistrationController {
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
             var have=await this.q.find(isHave);
-            console.log(have, "have");
             if(have==undefined){
                 this.q.push({
                     "room_id":user.room_id,
@@ -446,13 +444,16 @@ class RegistrationController {
                     this.q[index].status=have.status;
                 }
             }
-            await this.#recieptadd(models, element.registration_recipe); 
+            await this.#recieptadd(models, element.registration_recipe, false); 
         }
     }
-    #recieptadd = async(model, registration_recipe) => {
+    #recieptadd = async(model, registration_recipe, insert = true) => {
+        if(!insert){
+            await this.#deleteRecipe(model.id);
+        }
         var adds;
-        console.log(model, "recipe");
         for(var element of registration_recipe){
+            console.log(element, "recipe");
             adds={
                 "registration_doctor_id":model.id,
                 "registration_id":model.registration_id,
@@ -526,8 +527,12 @@ class RegistrationController {
         } 
         this.q=[];
     }
-    #deletedoctor = async(doc_id) => {
+    #deletedoctor = async(doc_id) =>
+     {
         await Registration_doctorModel.destroy({where: {registration_id: doc_id}})
+        await Registration_recipeModel.destroy({where: {registration_id: doc_id}})
+    }
+    #deleteRecipe = async(doc_id) => {
         await Registration_recipeModel.destroy({where: {registration_id: doc_id}})
     }
     #deleteInspection = async(doc_id) => {
