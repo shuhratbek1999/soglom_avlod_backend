@@ -708,7 +708,7 @@ class RegistrationController {
     };
     search = async (req, res, next) => {
         let ModelList = await PatientModel.findAll({
-            attributes: ['id', 'lastname', 'name', 'patronymic', 'phone', 'birtday', 'actions',
+            attributes: ['id', 'lastname', 'name', 'patronymic', 'phone', 'birthday', 'actions',
         ],
             where:{ 
                 name:{  [Op.like]: '%'+req.body.name+'%'}
