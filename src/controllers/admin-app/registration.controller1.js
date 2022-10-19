@@ -143,10 +143,10 @@ class RegistrationController {
         if (Prixod === null) {
             throw new HttpException(404, 'Not found');
         }
-        for(var element of Prixod){
-            element.status='printed';
-            await element.save();
-        }
+        // for(var element of Prixod){
+        //     element.status='printed';
+        //     await element.save();
+        // }
         res.send(Prixod);
     };
     getByPatient = async (req, res, next) => {
@@ -241,12 +241,28 @@ class RegistrationController {
         }
 
     };
-
+palataDel = async(req, res, next) => {
+    const model = await register_palataModel.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    if(!model){
+        throw HttpException(404, "bunday id da malumot yoq")
+    }
+    res.send({
+        error: false,
+        error_code: 200,
+        message: "malumot bor",
+        data: "malumot o'chdi"
+    })
+}
     delete = async (req, res, next) => {
         const id = req.params.id;
         
         const result = await ModelModel.destroy({where : {id: id } });
         await this.#deletedoctor(id);
+        await this.#deleteRecipe(id);
         await this.#deleteInspection(id);
         await this.#deleteFiles(id);
         await this.#deletePalata(id);
@@ -273,8 +289,9 @@ class RegistrationController {
         var dds;
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
+            // console.log(data, "inspection");
             data.registration_id=model.id;
-            dds={"inspection_id":data.inspection_id, "user_id": data.user_id,"registration_id":model.id,"type":data.type,"price":data.price,"category_id":data.category_id,'status':data.status}
+            dds={"inspection_id":data.inspection_id, "user_id": data.user_id,"registration_id":model.id,"type":data.type,"price":data.price,"category_id":data.category_id,'status':model.status}
             const models = await Registration_inspectionModel.create(dds);
             var date_time = Math.floor(new Date().getTime() / 1000);
             Register_inspectionModel.create({
@@ -292,7 +309,6 @@ class RegistrationController {
                   },
                   raw: true
               })
-              console.log(user, "salom");
                 function isHave(item) { 
                     return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
@@ -334,6 +350,7 @@ class RegistrationController {
                 'price':element.price,
                 "date_time":date_time,
                 "date_do": element.date_do,
+                "date_to": element.date_to,
                 "day":element.day,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
@@ -398,13 +415,13 @@ class RegistrationController {
         }
         for(var element of registration_doctor){
             var {Registration_recipe,...data} = element;
+            // console.log(data, "doktor");
             let user = await UserModel.findOne({
                 where:{
                     doctor_id: element.doctor_id
                 },
                 raw: true
             })
-            console.log(user);
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -426,7 +443,13 @@ class RegistrationController {
               }
             var have=await this.q.find(isHave);
             if(have==undefined){
-                this.q.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":data.status});
+                this.q.push({
+                    "room_id":user.room_id,
+                    "patient_id":model.patient_id,
+                    "number":0,
+                    "date_time":Math.floor(new Date().getTime() / 1000),
+                    "status":model.status
+                });
             }else if(data.status!=have.status){
                 if(data.status!='complete'){
                     var index=this.q.findIndex(isHave);
@@ -436,12 +459,16 @@ class RegistrationController {
                     this.q[index].status=have.status;
                 }
             }
-            await this.#recieptadd(models, element.registration_recipe); 
+            await this.#recieptadd(models, element.registration_recipe, false); 
         }
     }
-    #recieptadd = async(model, registration_recipe) => {
+    #recieptadd = async(model, registration_recipe, insert = true) => {
+        if(!insert){
+            await this.#deleteRecipe(model.id);
+        }
         var adds;
         for(var element of registration_recipe){
+            console.log(element, "recipe");
             adds={
                 "registration_doctor_id":model.id,
                 "registration_id":model.registration_id,
@@ -477,7 +504,6 @@ class RegistrationController {
                 if(has!=null){
                     if(element.status!=has.status){
                         has.status=element.status;
-                        console.log("helooooo");
                         await has.save();
                     }
                 }else if(element.status!='complate') {
@@ -489,7 +515,6 @@ class RegistrationController {
                             ['number', 'DESC']
                         ],
                     });
-                    console.log(que, "que");
                     if(que!=null){
                         element.number=que.number+1;
                     }else{
@@ -511,15 +536,18 @@ class RegistrationController {
                 }else{
                     element.number=1;
                 }
-                console.log(element, "queu");
                 await QueueModel.create(element); 
 
             }
         } 
         this.q=[];
     }
-    #deletedoctor = async(doc_id) => {
+    #deletedoctor = async(doc_id) =>
+     {
         await Registration_doctorModel.destroy({where: {registration_id: doc_id}})
+        await Registration_recipeModel.destroy({where: {registration_id: doc_id}})
+    }
+    #deleteRecipe = async(doc_id) => {
         await Registration_recipeModel.destroy({where: {registration_id: doc_id}})
     }
     #deleteInspection = async(doc_id) => {
@@ -538,7 +566,6 @@ class RegistrationController {
 
     palata = async (req, res, next) => {
         let query = {}, query_begin = {}, query_end = {}, body = req.body;
-        console.log('salom', req.body);
         let data1 = body.date_to;
         let data2 = body.date_do;
         query.date_time = {
@@ -707,24 +734,61 @@ class RegistrationController {
     };
     search = async (req, res, next) => {
         let ModelList = await PatientModel.findAll({
-            attributes: ['id', 'lastname', 'name', 'patronymic', 'phone', 'birthday',
+            attributes: ['id','fullname', 'lastname', 'name', 'patronymic', 'phone', 'birthday',
         ],
             where:{ 
-                name:{  [Op.like]: '%'+req.body.name+'%'}
+                fullname:{  [Op.like]: '%'+req.body.name+'%'}
             },
             order: [
                 ['name', 'ASC'],
                 ['id', 'ASC']
             ],
-            limit:100,
-            raw: true
-        });
+            limit:100        });
         res.send({
             "error": false,
             "error_code": 200,
             "message": "Product list filial:02 Феендо махсулотлари",
             data: ModelList
         });
+    };
+    
+    searchs = async (req, res, next) => {
+        let ModelList = await ModelModel.findAll({
+            include:[
+                {model: PatientModel, as: 'patient', attributes: ['fullname'], 
+                where:{ 
+                    fullname:{  [Op.like]: '%'+req.body.name+'%'}
+                }
+            }
+            ],
+            limit:100,
+            raw: true
+        });
+        
+        if(req.body.name.length == 0){
+            let model = await ModelModel.findAll({
+                raw: true,
+                limit: 10,
+                include:[
+                    {model: PatientModel, as:'patient', attributes:['fullname']}
+                ]
+            })
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: model
+            });
+        }
+        else{
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: ModelList
+            });
+        }
+       
     };
     inspection = async (req, res, next) => {
         this.checkValidation(req);
@@ -780,7 +844,6 @@ class RegistrationController {
             where: queryx, 
             group: ['inspection_category'],
         })
-    // console.log(result);
         res.send(result);
     };
     kassaAll = async (req, res, next) =>{
@@ -893,7 +956,6 @@ class RegistrationController {
                 ['id', 'ASC']
             ],
         })
-        console.log(result);
         res.send(result);
     };
     
@@ -980,7 +1042,6 @@ class RegistrationController {
     }
      
     queueAll = async (req, res, next) => {
-        console.log();
         const model = await QueueModel.findAll({
             where:{
                 status:{[Op.not]:'complate'}

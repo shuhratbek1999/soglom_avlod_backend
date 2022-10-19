@@ -33,10 +33,9 @@ exports.registrationValidate = [
        .exists()
        .isDecimal()
        .withMessage('decimal tipida kiriting'),
-      //  body('registration_doctor')
-      //  .exists()
-      //  .isArray()
-      //  .withMessage('massiv korinishida kiriting'),
+       body('patient_id')
+       .exists()
+       .withMessage('Bemor tanlanilishi kerak'),
       //  body('doctor_id')
       //  .exists()
       //  .isInt()

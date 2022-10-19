@@ -3,6 +3,7 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const PillModel = require('../../models/pill.model')
 const { validationResult } = require('express-validator');
+const {Op} = require("sequelize")
 
 /******************************************************************************
  *                              Employer Controller
@@ -35,6 +36,26 @@ class PillController {
             data: model
         });
     }
+    search = async (req, res, next) => {
+        let ModelList = await PillModel.findAll({
+            attributes: ['id', 'name',
+        ],
+            where:{ 
+                name:{  [Op.like]: '%'+req.body.name+'%'}
+            },
+            order: [
+                ['name', 'ASC']
+            ],
+            limit:100,
+            raw: true
+        });
+        res.send({
+            "error": false,
+            "error_code": 200,
+            "message": "Product list filial:02 Феендо махсулотлари",
+            data: ModelList
+        });
+    };
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await PillModel.create(req.body);
