@@ -622,10 +622,10 @@ palataDel = async(req, res, next) => {
         result.data = await Register_kassaModel.findAll({
             attributes : [
                 'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where: query,
             include: [
@@ -638,10 +638,10 @@ palataDel = async(req, res, next) => {
         //begin naqd plastik
         let kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_begin,
             raw: true
@@ -651,10 +651,10 @@ palataDel = async(req, res, next) => {
         //end naqd plastik
         kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 1 THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = 2 THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_end,
             raw: true
