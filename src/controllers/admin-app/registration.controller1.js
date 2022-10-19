@@ -577,7 +577,6 @@ class RegistrationController {
     
     kassaSverka = async (req, res, next) => {
         this.checkValidation(req);
-    
         let result = {begin: null, data : [], end: null};
         let body = req.body; 
         let query = {}, query_begin = {}, query_end = {}, queryx = {};
