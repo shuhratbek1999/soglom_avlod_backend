@@ -606,6 +606,8 @@ palataDel = async(req, res, next) => {
         this.checkValidation(req);
         let result = {begin: null, data : [], end: null};
         let body = req.body; 
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
         let query = {}, query_begin = {}, query_end = {}, queryx = {};
         query.date_time =  {
             [Op.gte]: body.datetime1,
@@ -621,12 +623,11 @@ palataDel = async(req, res, next) => {
         result.data = await Register_kassaModel.findAll({
             attributes : [
                 'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.pay_type = "Naqt" THEN register_kassa.price ELSE 0 END)`), 'kirim_cash'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.pay_type = "Plastik" THEN register_kassa.price ELSE 0 END)`), 'kirim_plastic'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.pay_type = "Naqt" THEN register_kassa.price ELSE 0 END)`), 'chiqim_cash'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.pay_type = "Plastik" THEN register_kassa.price ELSE 0 END)`), 'chiqim_plastic'],
             ],
-            where: query,
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
             ],
@@ -687,7 +688,6 @@ palataDel = async(req, res, next) => {
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 1 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
             ],
-            where: query,
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
             ],
@@ -699,19 +699,25 @@ palataDel = async(req, res, next) => {
         let resultx = [];
         for(let i = 0; i < result.length; i++){
             let kassa_register = await Register_kassaModel.findOne({
-                attributes : [
+                attributes : [ 'id', 'doctor_id', "type", "date_time", "doc_type",
                     [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
                 ],
                 where : query_begin,
-                raw: true
+                raw: true,
+                include: [
+                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
+                ],
             });
             let kassa_registerx = await Register_kassaModel.findOne({
-                attributes : [
+                attributes : [ 'id', 'doctor_id', "type", "date_time", "doc_type",
                     [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
                 ],
                 where : query_end,
+                include: [
+                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
+                ],
                 raw: true
-            });   
+            }); 
             resultx.push(
                 {
                     'pay_type' : result[i].pay_type,
@@ -823,7 +829,7 @@ palataDel = async(req, res, next) => {
     };
     insSverka = async (req, res, next) => {
         this.checkValidation(req);
-        let query = {}, queryx = {};
+        let query = {}, queryx = {}, inspection = req.body.inspection_category;
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
@@ -835,8 +841,8 @@ palataDel = async(req, res, next) => {
         let result = await Register_inspectionModel.findAll({
             attributes: [
                  'id', "doc_id", "date_time", "type", "doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)"), 'kirim_summa'],
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)"), 'chiqim_summa'],
+                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)`), 'kirim_summa'],
+                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)`), 'chiqim_summa']
             ],
             include: [
                 { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
