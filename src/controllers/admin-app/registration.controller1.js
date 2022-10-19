@@ -241,7 +241,22 @@ class RegistrationController {
         }
 
     };
-
+palataDel = async(req, res, next) => {
+    const model = await register_palataModel.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    if(!model){
+        throw HttpException(404, "bunday id da malumot yoq")
+    }
+    res.send({
+        error: false,
+        error_code: 200,
+        message: "malumot bor",
+        data: "malumot o'chdi"
+    })
+}
     delete = async (req, res, next) => {
         const id = req.params.id;
         
@@ -720,24 +735,61 @@ class RegistrationController {
     };
     search = async (req, res, next) => {
         let ModelList = await PatientModel.findAll({
-            attributes: ['id', 'lastname', 'name', 'patronymic', 'phone', 'birthday',
+            attributes: ['id','fullname', 'lastname', 'name', 'patronymic', 'phone', 'birthday',
         ],
             where:{ 
-                name:{  [Op.like]: '%'+req.body.name+'%'}
+                fullname:{  [Op.like]: '%'+req.body.name+'%'}
             },
             order: [
                 ['name', 'ASC'],
                 ['id', 'ASC']
             ],
-            limit:100,
-            raw: true
-        });
+            limit:100        });
         res.send({
             "error": false,
             "error_code": 200,
             "message": "Product list filial:02 Феендо махсулотлари",
             data: ModelList
         });
+    };
+    
+    searchs = async (req, res, next) => {
+        let ModelList = await ModelModel.findAll({
+            include:[
+                {model: PatientModel, as: 'patient', attributes: ['fullname'], 
+                where:{ 
+                    fullname:{  [Op.like]: '%'+req.body.name+'%'}
+                }
+            }
+            ],
+            limit:100,
+            raw: true
+        });
+        
+        if(req.body.name.length == 0){
+            let model = await ModelModel.findAll({
+                raw: true,
+                limit: 10,
+                include:[
+                    {model: PatientModel, as:'patient', attributes:['fullname']}
+                ]
+            })
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: model
+            });
+        }
+        else{
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: ModelList
+            });
+        }
+       
     };
     inspection = async (req, res, next) => {
         this.checkValidation(req);

@@ -43,9 +43,7 @@ class UserController {
             throw new HttpException(404, "Parol noto'g'ri kiritildi")
         }
 
-        const token = jwt.sign({ user_id: model.id.toString() }, secret_jwt, {
-            expiresIn: '24h'
-        });
+        const token = jwt.sign({ user_id: model.id.toString() }, secret_jwt);
         if(!token){
            throw new HttpException(404, "token mavjud emas")
         }

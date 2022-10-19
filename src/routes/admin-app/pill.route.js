@@ -8,6 +8,7 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 const  {pillValidate}  = require('../../middleware/validators/admin-app/pillValidator.middleware');
 
 router.get('/all', auth(), awaitHandlerFactory(pillController.getAll));
+router.post('/search', auth(), awaitHandlerFactory(pillController.search));
 router.get('/one/:id', auth(), awaitHandlerFactory(pillController.getOne));
 router.post('/create', auth(), pillValidate, awaitHandlerFactory(pillController.create));
 router.patch('/update/:id', auth(), pillValidate, awaitHandlerFactory(pillController.update));
