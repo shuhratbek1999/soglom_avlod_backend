@@ -15,6 +15,7 @@ router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll
 router.get('/directAll', auth(), awaitHandlerFactory(registrationControl.directAll));
 router.post('/direct', auth(), awaitHandlerFactory(registrationControl.direct));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
+router.get('/arxivOne/:id', auth(), awaitHandlerFactory(registrationControl.getOneArxiv));
 router.get('/directOne/:id', auth(), awaitHandlerFactory(registrationControl.directOne));
 router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
 router.post('/create', auth(), registrationValidate, awaitHandlerFactory(registrationControl.create));

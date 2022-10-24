@@ -1,4 +1,5 @@
 const ModelModel = require('../../models/registration.model');
+const arxiv = require('../../models/registration_arxiv.model')
 const HttpException = require('../../utils/HttpException.utils');
 const Register_kassaModel = require('../../models/register_kassa.model')
 const inspectionCategory = require('../../models/inspector_category.model')
@@ -19,15 +20,20 @@ const QueueModel = require('../../models/queue.model');
 const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
 const inspection = require('../../models/inspection.model');
-const { add } = require('lodash');
 const DoctorCategory = require('../../models/doctor_category.model');
 const InspectionModel = require('../../models/inspection.model')
-const db = require("../../db/db-sequelize");
 const { Op, where } = require("sequelize");
 const directModel = require('../../models/direct.model')
 const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay.model');
+const registration_palata_arxivModel = require('../../models/registration_palata_arxiv.model')
+const Registration_inspection_arxivModel = require('../../models/registration_inspection_arxiv.model');
+const Registration_inspection_child_arxxivModel = require('../../models/registration_inspection_child_arxiv.model');
+const Registration_pay_arxivModel = require('../../models/registration_pay_arxiv.model');
+const Registration_doctor_arxivModel = require('../../models/registration_doctor_arxiv.model');
+const Registration_recipe_arxivModel = require('../../models/registration_recipe_arxiv.model');
+const Registration_files_arxivModel = require('../../models/registration_files_arxiv.model');
 class RegistrationController {
     q=[];
     getAll = async (req, res, next) => {
@@ -117,6 +123,57 @@ class RegistrationController {
             data: Prixod
         });
     }
+    getOneArxiv = async (req, res, next) => {
+        this.checkValidation(req);
+        const Prixod = await arxiv.findOne({
+            where:{ id: req.params.id },
+            include: [
+                {
+                  model: UserModel, as: 'user', attributes:['user_name']
+                }, 
+                {
+                  model: registration_palata_arxivModel, as: 'registration_palata',
+                  include:[
+                    {model: palataModel, as: 'palatas', attributes: ['name']}
+                  ]
+                },  
+                { model: Registration_doctor_arxivModel,as: 'registration_doctor', 
+                    include : [
+                        { model: Registration_recipe_arxivModel, as: 'registration_recipe',
+                        include:[
+                            {model:PillModel,as:'pill'}]
+                    },
+                        { model: DoctorModel, as: 'doctor',
+                    include:[
+                        {model:DoctorCategory,as:'doctor_category',attributes:['name']},
+                    ]}
+                    ]
+                },
+                { model: Registration_inspection_arxivModel,as: 'registration_inspection', 
+                    include : [
+                        { model: Registration_inspection_child_arxxivModel, as: 'registration_inspection_child'},
+                        { model: InspectionModel, as: 'inspection',
+                        include:[
+                            {model:UserModel,as:'User',attributes:['user_name']}
+                        ]
+                    }
+                    ]
+                },
+                { model: Registration_files_arxivModel,as: 'registration_files'},
+                { model: PatientModel,as: 'patient'},
+                {model: Registration_pay_arxivModel, as: 'registration_pay'}
+            ],
+        });
+        if (Prixod === null) {
+            throw new HttpException(404, 'Not found');
+        }
+       res.status(200).send({  
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: Prixod
+        });
+    }
     delQueue = async (req, res, next) => {
         let time=Math.floor(new Date().getTime() / 1000)-20000;
         await QueueModel.destroy({where:{datetime:{[Op.lte]:time}}});
@@ -179,6 +236,10 @@ class RegistrationController {
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
+        setTimeout(() => {
+            arxiv.create(data)
+        }, 86400);
+
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
@@ -289,7 +350,6 @@ palataDel = async(req, res, next) => {
         var dds;
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
-            // console.log(data, "inspection");
             data.registration_id=model.id;
             dds={"inspection_id":data.inspection_id, "user_id": data.user_id,"registration_id":model.id,"type":data.type,"price":data.price,"category_id":data.category_id,'status':model.status}
             const models = await Registration_inspectionModel.create(dds);
@@ -303,6 +363,16 @@ palataDel = async(req, res, next) => {
                 "inspection_id": data.inspection_id,
                 "inspection_category": data.category_id,
               })
+              setTimeout(() => {
+                 Registration_inspection_arxivModel.create({
+                    "inspection_id":data.inspection_id, 
+                    "user_id": data.user_id,
+                    "registration_id":Model.id,
+                    "type":data.type,"price":data.price,
+                    "category_id":data.category_id,
+                    'status':Model.status
+                 })
+              }, 86400);
               let user = await UserModel.findOne({
                   where:{
                     id: data.user_id
@@ -335,6 +405,19 @@ palataDel = async(req, res, next) => {
             dds={"parent_id":models.id,"text":element.text,"norm":element.norm,"name":element.name,"registration_id":models.registration_id,"status":element.status,"price":element.price,"checked":element.checked,"file":element.file}
 
             await Registration_inspection_childModel.create(dds); 
+            setTimeout(() => {
+                Registration_inspection_child_arxxivModel.create({
+                    "parent_id":models.id,
+                    "text":element.text,
+                    "norm":element.norm,
+                    "name":element.name,
+                    "registration_id":models.registration_id,
+                    "status":element.status,
+                    "price":element.price,
+                    "checked":element.checked,
+                    "file":element.file
+                })
+            }, 86400);
         }
     }
     #palataadd = async(model, registration_palata, insert = true) =>{
@@ -365,6 +448,19 @@ palataDel = async(req, res, next) => {
                 "date_do": element.date_do,
                 "date_time": element.date_time
             })
+           setTimeout(() => {
+            registration_palata_arxivModel.create({
+                "palata_id": element.palata_id,
+                "registration_id":Model.id,
+                'price':element.price,
+                "date_time":date_time,
+                "date_do": element.date_do,
+                "date_to": element.date_to,
+                "day":element.day,
+                "total_price":element.total_price               
+            }) 
+           }, 86400);
+
         }
     }
       
@@ -382,6 +478,7 @@ palataDel = async(req, res, next) => {
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
+            
             let type = 0, doc_type = '';
             if(element.pay_type == 'Plastik'){
                 type = 0,
@@ -406,6 +503,15 @@ palataDel = async(req, res, next) => {
                 "type": type,
                 "doc_type": doc_type
             })
+            setTimeout(() => {
+                Registration_pay_arxivModel.create({
+                    "user_id": element.user_id,
+                    "registration_id": Model.id,
+                    "pay_type": element.pay_type,
+                    "summa": element.summa,
+                    "discount": element.discount      
+                }) 
+            }, 86400);
         }
     }
 
@@ -438,6 +544,15 @@ palataDel = async(req, res, next) => {
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim'
              })
+             setTimeout(() => {
+                Registration_doctor_arxivModel.create({
+                    "doctor_id":element.doctor_id,
+                    "registration_id":Model.id,
+                    "price":data.price,
+                    "status": Model.status,
+                    "text":data.text    
+                })
+             }, 86400);
             function isHave(item) { 
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
@@ -479,6 +594,17 @@ palataDel = async(req, res, next) => {
                 "name": element.name
             };
             await Registration_recipeModel.create(adds); 
+            setTimeout(() => {
+                Registration_recipe_arxivModel.create({
+                    "registration_doctor_id":Model.id,
+                    "registration_id":Model.registration_id,
+                    'pill_id':element.pill_id,
+                    "time":element.time,
+                    "day":element.day,
+                    "comment":element.comment,
+                    "name": element.name     
+                })
+            }, 86400);
         }
     }
     #filesadd = async(model, registration_files,insert = true) => {
@@ -489,6 +615,12 @@ palataDel = async(req, res, next) => {
         for(var element of registration_files){
             asas={'registration_id':model.id,"href":element.href};
             await Registration_filesModel.create(asas); 
+            setTimeout(() => {
+                Registration_files_arxivModel.create({
+                    'registration_id':Model.id,
+                    "href":element.href
+                })
+            }, 86400);
         }
     }
     #queue = async(insert=true) => {
