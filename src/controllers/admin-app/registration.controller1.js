@@ -645,7 +645,6 @@ palataDel = async(req, res, next) => {
             ],
             where : query_begin,
             raw: true
-            // group: ['sklad_id'],
         });
         if(kassa_register != null) result.begin = kassa_register;
         //end naqd plastik
@@ -658,7 +657,6 @@ palataDel = async(req, res, next) => {
             ],
             where : query_end,
             raw: true
-            // group: ['sklad_id'],
         });
         if(kassa_register != null) result.end = kassa_register;
         res.send(result);
