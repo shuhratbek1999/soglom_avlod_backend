@@ -21,6 +21,7 @@ const palataRouter = require('../routes/admin-app/palata.route')
 const RegDoctor = require('../routes/admin-app/registerDoctor.route')
 const UploadRouter = require('../routes/admin-app/upload.route')
 const imgRouter = require('../routes/admin-app/upload_img.route')
+const arxiv = require('../routes/admin-app/registration_arxiv.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -50,6 +51,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/register_doctor`, RegDoctor);
         app.use(`/api/v1/admin-app/upload`, UploadRouter);
         app.use(`/api/v1/admin-app/uploads`, imgRouter);
+        app.use(`/api/v1/admin-app/arxiv`, arxiv);
 
         app.use(`/href`, express.static('upload'));
 
