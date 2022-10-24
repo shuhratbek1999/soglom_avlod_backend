@@ -81,8 +81,6 @@ class RegisterDoctorController {
         this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         if(body.doctor_id !== null){
             query.id = {[Op.eq] : body.doctor_id }
             queryx.doctor_id = {[Op.eq]: body.doctor_id}
@@ -90,14 +88,15 @@ class RegisterDoctorController {
 
         let result = await register_doctorModel.findAll({
             attributes: [
-                 'id', "doc_id", "date_time", "type", "doc_type", "price" ],
+                 'id', "doc_id", "date_time", "type", "doc_type", "price"
+            ],
             include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
+                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], required: true},
             ],
-            where: queryx, 
-            order: [
-                ['id', 'ASC']
-            ],
+            where: {
+              date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+              doctor_id: body.doctor_id
+            }
         })
         res.send(result);
     };
