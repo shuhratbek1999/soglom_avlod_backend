@@ -90,22 +90,15 @@ class RegisterDoctorController {
 
         let result = await register_doctorModel.findAll({
             attributes: [
-                 'id', "doc_id", "date_time", "type", "doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'begin_total'],
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 0 THEN register_doctor.price ELSE 0 END)"), 'kirim_summa'],
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 1 THEN register_doctor.price ELSE 0 END)"), 'chiqim_summa'],
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time <= " + datetime2 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'end_total'],
-            ],
+                 'id', "doc_id", "date_time", "type", "doc_type", "price" ],
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
             ],
             where: queryx, 
-            group: ['doctor_id'],
             order: [
                 ['id', 'ASC']
             ],
         })
-// console.log(result);
         res.send(result);
     };
    update = async (req, res, next) => {
