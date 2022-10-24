@@ -57,6 +57,7 @@ class RegistrationController {
                     ]
                 } 
              ],
+             limit: 200
         });
         res.status(200).send({  
             error: false,
@@ -745,6 +746,7 @@ palataDel = async(req, res, next) => {
             where:{ 
                 fullname:{  [Op.like]: '%'+req.body.name+'%'}
             },
+            
             order: [
                 ['name', 'ASC'],
                 ['id', 'ASC']
@@ -765,7 +767,10 @@ palataDel = async(req, res, next) => {
                 where:{ 
                     fullname:{  [Op.like]: '%'+req.body.name+'%'}
                 }
-            }
+            },
+            {
+                model: UserModel, as: 'user', attributes: ['user_name']
+            }  
             ],
             limit:100,
             raw: true

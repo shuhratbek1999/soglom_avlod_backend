@@ -1,27 +1,27 @@
 const { body } = require('express-validator');
 
 exports.registrationValidate = [
-   body('user_id')
-        .exists()
-        .withMessage('int typeda kiriting'),
-       body('complaint')
-       .exists()
-       .withMessage('Int tipida kiriting'),
-       body('summa')
-       .exists()
-       .withMessage('decimal tipida kiriting'),
-       body('pay_summa')
-       .exists()
-       .withMessage('decimal tipida kiriting'),
-       body('backlog')
-       .exists()
-       .withMessage('decimal tipida kiriting'),
-       body('discount')
-       .exists()
-       .withMessage('decimal tipida kiriting'),
-       body('patient_id')
-       .exists()
-       .withMessage('Bemor tanlanilishi kerak'),
+      body('user_id')
+      .exists()
+      .withMessage('Hodim aniqlanmadi'),
+      // body('complaint')
+      // .exists()
+      // .withMessage('Int tipida kiriting'),
+      // body('summa')
+      // .exists()
+      // .withMessage('decimal tipida kiriting'),
+      // body('pay_summa')
+      // .exists()
+      // .withMessage('decimal tipida kiriting'),
+      // body('backlog')
+      // .exists()
+      // .withMessage('decimal tipida kiriting'),
+      // body('discount')
+      // .exists()
+      // .withMessage('decimal tipida kiriting'),
+      body('patient_id')
+      .exists()
+      .withMessage('Bemor tanlanilishi kerak'),
       //  body('doctor_id')
       //  .exists()
       //  .isInt()

@@ -10,7 +10,7 @@ const {Op} = require("sequelize")
  ******************************************************************************/
 class PillController {
     getAll = async (req, res, next) => {
-        const model = await PillModel.findAll();
+        const model = await PillModel.findAll({limit: 3});
         res.status(200).send({
             error: false,
             error_code: 200,
