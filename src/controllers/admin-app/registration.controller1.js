@@ -239,7 +239,7 @@ class RegistrationController {
         const model = await ModelModel.create(data);
         setTimeout(() => {
             arxiv.create(data)
-        }, 86400);
+        }, 2000);
 
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
@@ -373,7 +373,7 @@ palataDel = async(req, res, next) => {
                     "category_id":data.category_id,
                     'status':Model.status
                  })
-              }, 86400);
+              }, 2000);
               let user = await UserModel.findOne({
                   where:{
                     id: data.user_id
@@ -418,7 +418,7 @@ palataDel = async(req, res, next) => {
                     "checked":element.checked,
                     "file":element.file
                 })
-            }, 86400);
+            }, 2000);
         }
     }
     #palataadd = async(model, registration_palata, insert = true) =>{
@@ -460,7 +460,7 @@ palataDel = async(req, res, next) => {
                 "day":element.day,
                 "total_price":element.total_price               
             }) 
-           }, 86400);
+           }, 2000);
 
         }
     }
@@ -512,7 +512,7 @@ palataDel = async(req, res, next) => {
                     "summa": element.summa,
                     "discount": element.discount      
                 }) 
-            }, 86400);
+            }, 2000);
         }
     }
 
@@ -553,7 +553,7 @@ palataDel = async(req, res, next) => {
                     "status": Model.status,
                     "text":data.text    
                 })
-             }, 86400);
+             }, 2000);
             function isHave(item) { 
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
@@ -605,7 +605,7 @@ palataDel = async(req, res, next) => {
                     "comment":element.comment,
                     "name": element.name     
                 })
-            }, 86400);
+            }, 2000);
         }
     }
     #filesadd = async(model, registration_files,insert = true) => {
@@ -621,7 +621,7 @@ palataDel = async(req, res, next) => {
                     'registration_id':Model.id,
                     "href":element.href
                 })
-            }, 86400);
+            }, 2000);
         }
     }
     #queue = async(insert=true) => {
@@ -871,8 +871,6 @@ palataDel = async(req, res, next) => {
     };
     search = async (req, res, next) => {
         let ModelList = await PatientModel.findAll({
-            attributes: ['id','fullname', 'lastname', 'name', 'patronymic', 'phone', 'birthday',
-        ],
             where:{ 
                 fullname:{  [Op.like]: '%'+req.body.name+'%'}
             },
