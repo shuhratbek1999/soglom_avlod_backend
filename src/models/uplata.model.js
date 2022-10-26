@@ -16,8 +16,7 @@ uplataModel.init({
     allowNull: false
 },
 name: {
-    type: DataTypes.STRING(60),
-    allowNull: false
+    type: DataTypes.STRING(60)
 },
 price:{
   type: DataTypes.DECIMAL,
@@ -31,6 +30,10 @@ doctor_id:{
 },
 type:{
   type: DataTypes.INTEGER
+},
+date_time:{
+  type: DataTypes.INTEGER(),
+  allowNullL: true
 }
 
 }, {

@@ -4,13 +4,18 @@ const HttpException = require('../../utils/HttpException.utils');
 const UplataModel = require('../../models/uplata.model')
 const RegionModel = require('../../models/region.model')
 const { validationResult } = require('express-validator');
+const UserModel = require('../../models/doctor_category.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class UplateController {
     getAll = async (req, res, next) => {
-        const model = await UplataModel.findAll(req.body);
+        const model = await UplataModel.findAll({
+            include:[
+                {model: UserModel, as: 'user', attributes:['user_name']}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -37,8 +42,16 @@ class UplateController {
         });
     }
    create = async (req, res, next) => {
+    // let data =Math.floor(new Date().getTime() / 1000);
        this.checkValidation(req);
-       const model = await UplataModel.create(req.body);
+       const model = await UplataModel.create({
+        "name": req.body.name,
+        "user_id": req.body.user_id,
+        "doctor_id": req.body.doctor_id,
+        "type": req.body.type,
+        "date_time": req.body.date_time,
+        "price": req.body.price,
+       });
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -58,6 +71,7 @@ class UplateController {
     model.doctor_id = req.body.doctor_id;
     model.price = req.body.price;
     model.type = req.body.type;
+    model.date_time = req.body.date_time;
     model.save();
     res.status(200).send({
         error: false,
