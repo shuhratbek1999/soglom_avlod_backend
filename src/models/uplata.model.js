@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const UserModel = require('./doctor_category.model');
 class uplataModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -53,4 +54,5 @@ date_time:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+uplataModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
 module.exports = uplataModel;
