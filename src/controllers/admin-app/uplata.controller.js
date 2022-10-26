@@ -54,7 +54,10 @@ class UplateController {
         }
     });
     model.name = req.body.name;
-    model.region_id = req.body.region_id;
+    model.user_id = req.body.user_id;
+    model.doctor_id = req.body.doctor_id;
+    model.price = req.body.price;
+    model.type = req.body.type;
     model.save();
     res.status(200).send({
         error: false,
