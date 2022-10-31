@@ -92,7 +92,7 @@ direct_id:{
   ],
    
 });
-Registration_arxivModel.hasMany(registration_doctor_arxivModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
+Registration_arxivModel.hasMany(registration_doctor_arxivModel, {as: 'registration_doctor_arxiv', foreignKey: 'registration_id'})
 Registration_arxivModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
 // Registration_arxivModel.hasMany(Registration_inspection_childModel, {as: 'registration_inspection_child', foreignKey: 'id'})
 Registration_arxivModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})

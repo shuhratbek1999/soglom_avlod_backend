@@ -73,7 +73,7 @@ class RegistrationController {
         });
     }
     getAll_arxiv = async (req, res, next) => {
-        const model = await ModelModel.findAll({
+        const model = await arxiv.findAll({
             include:[ 
                 {
                     model: UserModel, as: 'user', attributes: ['user_name']
@@ -83,7 +83,7 @@ class RegistrationController {
                 },
 
                 {
-                    model: Registration_doctor_arxivModel, as: 'registration_doctor',
+                    model: Registration_doctor_arxivModel, as: 'registration_doctor_arxiv',
                     include:[
                         {
                             model: Registration_recipe_arxivModel, as: 'registration_recipe'
@@ -110,7 +110,7 @@ class RegistrationController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const Prixod = await ModelModel.findOne({
+        const Prixod = await arxiv.findOne({
             where:{ id: req.params.id },
             include: [
                 {
@@ -122,7 +122,7 @@ class RegistrationController {
                     {model: palataModel, as: 'palatas', attributes: ['name']}
                   ]
                 },  
-                { model: Registration_doctorModel,as: 'registration_doctor', 
+                { model: Registration_doctorModel,as: 'registration_doctor_arxiv', 
                     include : [
                         { model: Registration_recipeModel, as: 'registration_recipe',
                         include:[

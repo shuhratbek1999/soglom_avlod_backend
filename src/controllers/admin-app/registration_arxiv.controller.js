@@ -4,7 +4,6 @@ const { validationResult } = require('express-validator');
 const registration_palataModel = require('../../models/registration_palata_arxiv.model');
 const Registration_inspectionModel = require('../../models/registration_inspection_arxiv.model');
 const Registration_inspection_childModel = require('../../models/registration_inspection_child_arxiv.model');
-const Registration_doctorModel = require('../../models/registration_doctor_arxiv.model');
 const Registration_recipeModel = require('../../models/registration_recipe_arxiv.model');
 const Registration_filesModel = require('../../models/registration_files_arxiv.model');
 const UserModel = require('../../models/user.model');
@@ -18,6 +17,7 @@ const { Op } = require("sequelize");
 const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay.model');
+const Registration_doctor_arxivModel = require('../../models/registration_doctor_arxiv.model');
 class Registration_arxivController {
     q=[];
     getAll = async (req, res, next) => {
@@ -31,7 +31,7 @@ class Registration_arxivController {
                 },
 
                 {
-                    model: Registration_doctorModel, as: 'registration_doctor',
+                    model: Registration_doctor_arxivModel, as: 'registration_doctor_arxiv',
                     include:[
                         {
                             model: Registration_recipeModel, as: 'registration_recipe'
@@ -70,7 +70,7 @@ class Registration_arxivController {
                     {model: palataModel, as: 'palatas', attributes: ['name']}
                   ]
                 },  
-                { model: Registration_doctorModel,as: 'registration_doctor', 
+                { model: Registration_doctor_arxivModel,as: 'registration_doctor_arxiv', 
                     include : [
                         { model: Registration_recipeModel, as: 'registration_recipe',
                         include:[
