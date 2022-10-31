@@ -73,6 +73,10 @@ hospital_summa:{
 },
 direct_id:{
     type: DataTypes.INTEGER
+},
+tramma_type:{
+    type: DataTypes.INTEGER,
+    allowNull: false
 }
 
 }, {

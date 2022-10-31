@@ -34,6 +34,10 @@ Registration_doctorModel.init({
   text:{
       type:DataTypes.STRING,
       allowNull: false
+},
+date_time:{
+  type: DataTypes.INTEGER(),
+  allowNull: false
 }
 }, {
   sequelize,

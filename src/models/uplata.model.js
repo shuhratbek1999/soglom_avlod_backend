@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const UserModel = require('./doctor_category.model');
 class uplataModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -16,8 +17,7 @@ uplataModel.init({
     allowNull: false
 },
 name: {
-    type: DataTypes.STRING(60),
-    allowNull: false
+    type: DataTypes.STRING(60)
 },
 price:{
   type: DataTypes.DECIMAL,
@@ -31,6 +31,10 @@ doctor_id:{
 },
 type:{
   type: DataTypes.INTEGER
+},
+date_time:{
+  type: DataTypes.INTEGER(),
+  allowNullL: true
 }
 
 }, {
@@ -50,4 +54,5 @@ type:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+uplataModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
 module.exports = uplataModel;

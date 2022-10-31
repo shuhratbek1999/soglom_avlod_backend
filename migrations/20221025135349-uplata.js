@@ -38,6 +38,10 @@ exports.up = function(db) {
     type:{
       type: 'int',
       notNull: true
+    },
+    date_time:{
+      type: 'int',
+      notNull: true
     }
   });
 };

@@ -36,6 +36,10 @@ exports.up = function(db) {
       length: 30,
       notNull: true
     },
+    imtiyoz_type:{
+      type: 'string',
+      notNull: true
+    },
     patronymic: {
       type: 'string',
             notNull: true

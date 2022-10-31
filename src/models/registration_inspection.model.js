@@ -42,6 +42,10 @@ Registration_inspectionModel.init({
   status:{
       type: DataTypes.STRING(20),
       allowNull: false
+  },
+  date_time:{
+    type: DataTypes.INTEGER(),
+    allowNull: false
   }
 }, {
   sequelize,

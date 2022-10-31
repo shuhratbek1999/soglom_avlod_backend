@@ -30,6 +30,10 @@ lastname: {
 patronymic: {
     type: DataTypes.STRING(40),
 },
+imtiyoz_type:{
+    type: DataTypes.STRING(),
+    allowNull: false
+},
 region_id: {
     type: DataTypes.INTEGER,
 },
