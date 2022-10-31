@@ -62,6 +62,10 @@ exports.up = function(db) {
     },
     hospital_summa:{
       type: 'decimal'
+    },
+    imtiyoz_type:{
+      type: "string",
+      notNull: true
     }
   });
 };
