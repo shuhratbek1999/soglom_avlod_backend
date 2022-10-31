@@ -62,6 +62,9 @@ exports.up = function(db) {
     },
     hospital_summa:{
       type: 'decimal'
+    },
+    tramma_type:{
+      type: 'boolean'
     }
 })
 } 

@@ -386,7 +386,15 @@ palataDel = async(req, res, next) => {
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
             data.registration_id=model.id;
-            dds={"inspection_id":data.inspection_id, "user_id": data.user_id,"registration_id":model.id,"type":data.type,"price":data.price,"category_id":data.category_id,'status':model.status}
+            dds={
+                "inspection_id":data.inspection_id, 
+                "user_id": data.user_id,
+                "registration_id":model.id,
+                "type":data.type,"price":data.price,
+                "category_id":data.category_id,
+                'status':model.status,
+                "date_time": data.date_time
+            }
             const models = await Registration_inspectionModel.create(dds);
             var date_time = Math.floor(new Date().getTime() / 1000);
             Register_inspectionModel.create({

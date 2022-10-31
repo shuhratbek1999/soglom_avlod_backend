@@ -39,6 +39,10 @@ exports.up = function(db) {
     text:{
       type: 'string',
     },
+    date_time:{
+      type: 'int',
+      notNull: true
+    }
   });
 };
 

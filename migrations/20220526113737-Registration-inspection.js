@@ -46,7 +46,11 @@ exports.up = function(db) {
       type: 'string',
       notNull: true,
       length: 20
-    } 
+    },
+    date_time:{
+      type: 'int',
+      notNull: true
+    }
   });
 };
 

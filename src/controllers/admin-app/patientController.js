@@ -55,7 +55,8 @@ class PatientController {
         'passpord': req.body.passpord,
         'addres': req.body.addres,
         'gender': req.body.gender,
-        'birthday': req.body.birthday
+        'birthday': req.body.birthday,
+        'imtiyoz_type': req.body.imtiyoz_type,
        });
        res.status(200).send({
         error: false,
@@ -76,6 +77,7 @@ class PatientController {
     model.lastname = req.body.lastname;
     model.patronymic = req.body.patronymic;
     model.region_id = req.body.region_id;
+    model.imtiyoz_type = req.body.imtiyoz_type;
     model.district_id = req.body.district_id;
     model.phone = req.body.phone;
     model.passport = req.body.passport;
