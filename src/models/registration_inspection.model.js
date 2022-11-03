@@ -46,6 +46,9 @@ Registration_inspectionModel.init({
   date_time:{
     type: DataTypes.INTEGER(),
     allowNull: false
+  },
+  skidka:{
+    type: 'decimal'
   }
 }, {
   sequelize,

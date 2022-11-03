@@ -147,10 +147,14 @@ class RegistrationController {
                 { model: PatientModel,as: 'patient'},
                 {model: Registration_payModel, as: 'registration_pay'}
             ],
+            raw: true
         });
         if (Prixod === null) {
             throw new HttpException(404, 'Not found');
         }
+        var myDate = new Date(new Date().getTime()+(5*24*60*60*1000))
+        console.log(Prixod['registration_inspection.price'], myDate);
+        
        res.status(200).send({  
             error: false,
             error_code: 200,
@@ -267,19 +271,26 @@ class RegistrationController {
 
     create = async (req, res, next) => {
         this.checkValidation(req);
-        
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
+        // const user = await ModelModel.findAll(req.body);
+        // user.some(el => {
+        //     if(el.patient_id == data.patient_id){
+        //         console.log("salom");
+        //     }
+        // })
         const model = await ModelModel.create(data);
-        setTimeout(() => {
-            arxiv.create(data)
-        }, 86400);
+    //     let Models = {};
+    //    setTimeout(() => {
+    //      let models =  arxiv.create(data)
+    //      Models = {...models}
+    //     }, 86400);
 
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
         await this.#inspectionadd(model, registration_inspection);
-        await this.#doctoradd(model, registration_doctor);
+        await this.#doctoradd(model,  registration_doctor);
         await this.#filesadd(model, registration_files);
         await this.#palataadd(model, registration_palata);
         await this.#payAdd(model, registration_pay);
@@ -378,7 +389,7 @@ palataDel = async(req, res, next) => {
         }
     }
 
-    #inspectionadd = async(model, registration_inspection, insert = true) => {
+    #inspectionadd = async(model,  registration_inspection, insert = true) => {
         if(!insert){
             await this.#deleteInspection(model.id);
         }
@@ -386,14 +397,15 @@ palataDel = async(req, res, next) => {
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
             data.registration_id=model.id;
+          let date =Math.floor(new Date().getTime() / 1000);
             dds={
-                "inspection_id":data.inspection_id, 
+                "inspection_id":data.inspection_id,  
                 "user_id": data.user_id,
                 "registration_id":model.id,
                 "type":data.type,"price":data.price,
                 "category_id":data.category_id,
                 'status':model.status,
-                "date_time": data.date_time
+                "date_time": date
             }
             const models = await Registration_inspectionModel.create(dds);
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -405,17 +417,18 @@ palataDel = async(req, res, next) => {
                 "user_id": data.user_id,
                 "inspection_id": data.inspection_id,
                 "inspection_category": data.category_id,
+                "skidka": data.skidka
               })
-              setTimeout(() => {
-                 Registration_inspection_arxivModel.create({
-                    "inspection_id":data.inspection_id, 
-                    "user_id": data.user_id,
-                    "registration_id":Model.id,
-                    "type":data.type,"price":data.price,
-                    "category_id":data.category_id,
-                    'status':Model.status
-                 })
-              }, 86400);
+            //   setTimeout(() => {
+            //      Registration_inspection_arxivModel.create({
+            //         "inspection_id":data.inspection_id, 
+            //         "user_id": data.user_id,
+            //         "registration_id":Models.id,
+            //         "type":data.type,"price":data.price,
+            //         "category_id":data.category_id,
+            //         'status':Models.status
+            //      })
+            //   }, 86400);
               let user = await UserModel.findOne({
                   where:{
                     id: data.user_id
@@ -448,22 +461,22 @@ palataDel = async(req, res, next) => {
             dds={"parent_id":models.id,"text":element.text,"norm":element.norm,"name":element.name,"registration_id":models.registration_id,"status":element.status,"price":element.price,"checked":element.checked,"file":element.file}
 
             await Registration_inspection_childModel.create(dds); 
-            setTimeout(() => {
-                Registration_inspection_child_arxxivModel.create({
-                    "parent_id":models.id,
-                    "text":element.text,
-                    "norm":element.norm,
-                    "name":element.name,
-                    "registration_id":models.registration_id,
-                    "status":element.status,
-                    "price":element.price,
-                    "checked":element.checked,
-                    "file":element.file
-                })
-            }, 86400);
+            // setTimeout(() => {
+            //     Registration_inspection_child_arxxivModel.create({
+            //         "parent_id":models.id,
+            //         "text":element.text,
+            //         "norm":element.norm,
+            //         "name":element.name,
+            //         "registration_id":models.registration_id,
+            //         "status":element.status,
+            //         "price":element.price,
+            //         "checked":element.checked,
+            //         "file":element.file
+            //     })
+            // }, 86400);
         }
     }
-    #palataadd = async(model, registration_palata, insert = true) =>{
+    #palataadd = async(model, registration_palata,  insert = true) =>{
         var palata;
         var date_time = Math.floor(new Date().getTime() / 1000);
         if(!insert){
@@ -491,23 +504,23 @@ palataDel = async(req, res, next) => {
                 "date_do": element.date_do,
                 "date_time": element.date_time
             })
-           setTimeout(() => {
-            registration_palata_arxivModel.create({
-                "palata_id": element.palata_id,
-                "registration_id":Model.id,
-                'price':element.price,
-                "date_time":date_time,
-                "date_do": element.date_do,
-                "date_to": element.date_to,
-                "day":element.day,
-                "total_price":element.total_price               
-            }) 
-           }, 86400);
+        //    setTimeout(() => {
+        //     registration_palata_arxivModel.create({
+        //         "palata_id": element.palata_id,
+        //         "registration_id":Models.id,
+        //         'price':element.price,
+        //         "date_time":date_time,
+        //         "date_do": element.date_do,
+        //         "date_to": element.date_to,
+        //         "day":element.day,
+        //         "total_price":element.total_price               
+        //     }) 
+        //    }, 86400);
 
         }
     }
       
-    #payAdd = async(model, registration_pay, insert = true) =>{
+    #payAdd = async(model, registration_pay,  insert = true) =>{
         if(!insert){
             await this.#deletepay(model.id);
         }
@@ -546,15 +559,15 @@ palataDel = async(req, res, next) => {
                 "type": type,
                 "doc_type": doc_type
             })
-            setTimeout(() => {
-                Registration_pay_arxivModel.create({
-                    "user_id": element.user_id,
-                    "registration_id": Model.id,
-                    "pay_type": element.pay_type,
-                    "summa": element.summa,
-                    "discount": element.discount      
-                }) 
-            }, 86400);
+            // setTimeout(() => {
+            //     Registration_pay_arxivModel.create({
+            //         "user_id": element.user_id,
+            //         "registration_id": Models.id,
+            //         "pay_type": element.pay_type,
+            //         "summa": element.summa,
+            //         "discount": element.discount      
+            //     }) 
+            // }, 86400);
         }
     }
 
@@ -571,12 +584,15 @@ palataDel = async(req, res, next) => {
                 },
                 raw: true
             })
+           let date =Math.floor(new Date().getTime() / 1000);
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
                 "price":data.price,
                 "status": model.status,
-                "text":data.text};
+                "text":data.text,
+                "date_time": date
+            };
             const models = await Registration_doctorModel.create(news);
             var date_time = Math.floor(new Date().getTime() / 1000);
             RegisterDoctorModel.create({
@@ -587,15 +603,15 @@ palataDel = async(req, res, next) => {
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim'
              })
-             setTimeout(() => {
-                Registration_doctor_arxivModel.create({
-                    "doctor_id":element.doctor_id,
-                    "registration_id":Model.id,
-                    "price":data.price,
-                    "status": Model.status,
-                    "text":data.text    
-                })
-             }, 86400);
+            //  setTimeout(() => {
+            //     Registration_doctor_arxivModel.create({
+            //         "doctor_id":element.doctor_id,
+            //         "registration_id":Models.id,
+            //         "price":data.price,
+            //         "status": Models.status,
+            //         "text":data.text    
+            //     })
+            //  }, 86400);
             function isHave(item) { 
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
@@ -637,20 +653,20 @@ palataDel = async(req, res, next) => {
                 "name": element.name
             };
             await Registration_recipeModel.create(adds); 
-            setTimeout(() => {
-                Registration_recipe_arxivModel.create({
-                    "registration_doctor_id":Model.id,
-                    "registration_id":Model.registration_id,
-                    'pill_id':element.pill_id,
-                    "time":element.time,
-                    "day":element.day,
-                    "comment":element.comment,
-                    "name": element.name     
-                })
-            }, 86400);
+            // setTimeout(() => {
+            //     Registration_recipe_arxivModel.create({
+            //         "registration_doctor_id":Models.id,
+            //         "registration_id":Models.registration_id,
+            //         'pill_id':element.pill_id,
+            //         "time":element.time,
+            //         "day":element.day,
+            //         "comment":element.comment,
+            //         "name": element.name     
+            //     })
+            // }, 86400);
         }
     }
-    #filesadd = async(model, registration_files,insert = true) => {
+    #filesadd = async(model, registration_files, insert = true) => {
         if(!insert){
             await this.#deleteFiles(model.id);
         }
@@ -658,12 +674,12 @@ palataDel = async(req, res, next) => {
         for(var element of registration_files){
             asas={'registration_id':model.id,"href":element.href};
             await Registration_filesModel.create(asas); 
-            setTimeout(() => {
-                Registration_files_arxivModel.create({
-                    'registration_id':Model.id,
-                    "href":element.href
-                })
-            }, 86400);
+            // setTimeout(() => {
+            //     Registration_files_arxivModel.create({
+            //         'registration_id':Models.id,
+            //         "href":element.href
+            //     })
+            // }, 86400);
         }
     }
     #queue = async(insert=true) => {
