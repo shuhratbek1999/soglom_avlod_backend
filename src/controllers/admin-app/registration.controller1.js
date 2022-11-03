@@ -405,7 +405,8 @@ palataDel = async(req, res, next) => {
                 "type":data.type,"price":data.price,
                 "category_id":data.category_id,
                 'status':model.status,
-                "date_time": date
+                "date_time": date,
+                "skidka": data.skidka
             }
             const models = await Registration_inspectionModel.create(dds);
             var date_time = Math.floor(new Date().getTime() / 1000);
