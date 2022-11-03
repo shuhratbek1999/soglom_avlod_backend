@@ -1004,7 +1004,7 @@ palataDel = async(req, res, next) => {
             let date = parseInt(moment(new Date).format('DD'))
             console.log(date, x);
             let vaqtFarqi = Math.abs(date - x);
-            if(vaqtFarqi == 5){
+            if(vaqtFarqi >= 5){
                 let models = {
                     tramma_type: val.tramma_type,
                     days: vaqtFarqi
@@ -1016,7 +1016,7 @@ palataDel = async(req, res, next) => {
                     data: models
                 })
             }
-            else if(vaqtFarqi == 15){
+            else if(vaqtFarqi < 16){
                 let models = {
                     tramma_type: val.tramma_type,
                     days: vaqtFarqi
@@ -1028,7 +1028,7 @@ palataDel = async(req, res, next) => {
                     data: models
                 })
             }
-            else if(vaqtFarqi == 31){
+            else if(vaqtFarqi < 32){
                 let models = {
                     tramma_type: val.tramma_type,
                     days: vaqtFarqi
