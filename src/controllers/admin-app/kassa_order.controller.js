@@ -59,7 +59,7 @@ class Kassa_orderController {
         "doctor_id": req.body.expense_id,
         "pay_type": req.body.pay_type,
         "price": req.body.price,    
-        "type": 'kirim'
+        "type": 'chiqim'
     })
        res.status(200).send({
         error: false,

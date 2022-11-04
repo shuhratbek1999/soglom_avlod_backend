@@ -31,6 +31,9 @@ exports.up = function(db) {
     price:{
       type: 'decimal'
     },
+    doc_type:{
+      type: 'string'
+    },
     doc_id:{
       type: 'int'
     },

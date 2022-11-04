@@ -60,8 +60,8 @@ class RegisterDoctorController {
             attributes: [
                  'id', "type", "date_time",
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'begin_total'],
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 0 THEN register_doctor.price ELSE 0 END)"), 'total_kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.type = 1 THEN register_doctor.price ELSE 0 END)"), 'total_chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'kirim' THEN register_doctor.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'chiqim' THEN register_doctor.price ELSE 0 END)"), 'total_chiqim'],
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time <= " + datetime2 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'end_total'],
             ],
             include: [
@@ -96,6 +96,14 @@ class RegisterDoctorController {
             where: {
               date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
               doctor_id: body.doctor_id
+            }
+        })
+        result.forEach(val => {
+            if(val.dataValues.doc_type == 'kirim'){
+                val.dataValues.kirim = val.dataValues.price
+            }
+            else{
+                val.dataValues.chiqim = val.dataValues.price
             }
         })
         res.send(result);
