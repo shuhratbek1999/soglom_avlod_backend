@@ -22,6 +22,7 @@ router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palata
 router.post('/create', auth(), registrationValidate, awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
+router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));
 router.post('/search', auth(),  awaitHandlerFactory(registrationControl.search));
 router.post('/searchs', auth(),  awaitHandlerFactory(registrationControl.searchs));
 router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));

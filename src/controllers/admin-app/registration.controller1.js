@@ -34,6 +34,8 @@ const Registration_pay_arxivModel = require('../../models/registration_pay_arxiv
 const Registration_doctor_arxivModel = require('../../models/registration_doctor_arxiv.model');
 const Registration_recipe_arxivModel = require('../../models/registration_recipe_arxiv.model');
 const Registration_files_arxivModel = require('../../models/registration_files_arxiv.model');
+const RegistrationModel = require('../../models/registration.model');
+const moment = require('moment')
 class RegistrationController {
     q=[];
     getAll = async (req, res, next) => {
@@ -406,7 +408,8 @@ palataDel = async(req, res, next) => {
                 "type":data.type,"price":data.price,
                 "category_id":data.category_id,
                 'status':model.status,
-                "date_time": date
+                "date_time": date,
+                "skidka": data.skidka
             }
             const models = await Registration_inspectionModel.create(dds);
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -989,6 +992,74 @@ palataDel = async(req, res, next) => {
         }
        
     };
+    Imtiyozli = async (req, res, next) => {
+        let bemor_id = req.body.patient_id;
+        let date =Math.floor(new Date().getTime() / 1000);      
+        // res.send("salom")
+        const model = await RegistrationModel.findAll({
+            attributes: ['user_id', 'direct_id', 'created_at', 'updated_at', 'status', 'patient_id', 
+            'type_service', 'complaint','summa','pay_summa','backlog','discount','hospital_summa','tramma_type'],
+            where:{
+                patient_id: bemor_id
+            }
+        })
+        model.forEach(val => {
+            let x = parseInt(moment(val.created_at * 1000).format('DD'));
+            let date = parseInt(moment(new Date).format('DD'))
+            console.log(date, x);
+            let vaqtFarqi = Math.abs(date - x);
+            if(vaqtFarqi >= 5){
+                let models = {
+                    tramma_type: val.tramma_type,
+                    days: vaqtFarqi
+                };
+                res.send({
+                    error: false,
+                    error_code: 200,
+                    message: 'habar',
+                    data: models
+                })
+            }
+            else if(vaqtFarqi < 16){
+                let models = {
+                    tramma_type: val.tramma_type,
+                    days: vaqtFarqi
+                };
+                res.send({
+                    error: false,
+                    error_code: 200,
+                    message: 'habar',
+                    data: models
+                })
+            }
+            else if(vaqtFarqi < 32){
+                let models = {
+                    tramma_type: val.tramma_type,
+                    days: vaqtFarqi
+                };
+                res.send({
+                    error: false,
+                    error_code: 200,
+                    message: 'habar',
+                    data: models
+                })
+            }
+            else{
+                res.send({
+                    error: false,
+                    error_code: 200,
+                    message: 'habar',
+                    data: false
+                })
+            }
+        })
+        // model.forEach(val => {
+        //     console.log(val.dataValues);
+        //     let dates = new Date(val.dataValues.created_at.getTime() + (5*24*60*60*1000));
+        //     console.log(dates);
+        // })
+        // console.log(model);
+    }
     inspection = async (req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};
