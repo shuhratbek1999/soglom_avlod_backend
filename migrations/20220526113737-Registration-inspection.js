@@ -50,6 +50,9 @@ exports.up = function(db) {
     date_time:{
       type: 'int',
       notNull: true
+    },
+    skidka:{
+      type : 'decimal'
     }
   });
 };
