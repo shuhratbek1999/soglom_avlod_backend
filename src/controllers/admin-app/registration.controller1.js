@@ -421,7 +421,8 @@ palataDel = async(req, res, next) => {
                 "user_id": data.user_id,
                 "inspection_id": data.inspection_id,
                 "inspection_category": data.category_id,
-                "skidka": data.skidka
+                "skidka": data.skidka,
+                "doc_type": 'kirim'
               })
             //   setTimeout(() => {
             //      Registration_inspection_arxivModel.create({
@@ -551,7 +552,7 @@ palataDel = async(req, res, next) => {
             }
             else if(!element.summa){
                  type = 1,
-                 doc_type = 'chiqim'
+                 doc_type = 'kirim'
             }
             else{
                 doc_type = 'kirim'
@@ -562,7 +563,7 @@ palataDel = async(req, res, next) => {
                 "pay_type": element.pay_type,
                 "price": element.summa,    
                 "type": type,
-                "doc_type": doc_type
+                "doc_type": 'Kirim'
             })
             // setTimeout(() => {
             //     Registration_pay_arxivModel.create({
@@ -819,10 +820,10 @@ palataDel = async(req, res, next) => {
         result.data = await Register_kassaModel.findAll({
             attributes : [
                 'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.pay_type = "Naqt" THEN register_kassa.price ELSE 0 END)`), 'kirim_cash'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.pay_type = "Plastik" THEN register_kassa.price ELSE 0 END)`), 'kirim_plastic'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.pay_type = "Naqt" THEN register_kassa.price ELSE 0 END)`), 'chiqim_cash'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.pay_type = "Plastik" THEN register_kassa.price ELSE 0 END)`), 'chiqim_plastic'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.doc_type = "Kirim" THEN register_kassa.price ELSE 0 END)`), 'kirim_cash'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.doc_type = "Kirim" THEN register_kassa.price ELSE 0 END)`), 'kirim_plastic'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.doc_type = "chiqim" THEN register_kassa.price ELSE 0 END)`), 'chiqim_cash'],
+                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.doc_type = "chiqim" THEN register_kassa.price ELSE 0 END)`), 'chiqim_plastic'],
             ],
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
@@ -834,10 +835,10 @@ palataDel = async(req, res, next) => {
         //begin naqd plastik
         let kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_begin,
             raw: true
@@ -846,10 +847,10 @@ palataDel = async(req, res, next) => {
         //end naqd plastik
         kassa_register = await Register_kassaModel.findOne({
             attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Naqt" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `pay_type` = "Plastik" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
+                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
+                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
             ],
             where : query_end,
             raw: true
@@ -879,8 +880,8 @@ palataDel = async(req, res, next) => {
             attributes : [ 
                 'id', 'doctor_id', "type", "date_time", "doc_type",
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'total'],
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 0 THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.type = 1 THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.doc_type = 'Kirim' THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.doc_type = 'chiqim' THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
             ],
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
@@ -926,7 +927,6 @@ palataDel = async(req, res, next) => {
                     'date_time': result[i].date_time,
                     'id': result[i].id,
                     "doc_type": result[i].doc_type
-    
                 }
             );
         }
@@ -1003,6 +1003,9 @@ palataDel = async(req, res, next) => {
                 patient_id: bemor_id
             }
         })
+        if(!model){
+            throw HttpException(404, "bemor oldin kelmagan")
+        }
         model.forEach(val => {
             let x = parseInt(moment(val.created_at * 1000).format('DD'));
             let date = parseInt(moment(new Date).format('DD'))
@@ -1075,8 +1078,8 @@ palataDel = async(req, res, next) => {
         let result = await Register_inspectionModel.findAll({
             attributes: [
                  'id', "type", "date_time", "inspection_category",
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.inspection_category = inspection.id THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.inspection_category = inspection.id THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
                 [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.inspection_category = inspection.id then register_inspection.inspection_category else 0 end)"), 'count']
             ],
             include: [
@@ -1105,8 +1108,8 @@ palataDel = async(req, res, next) => {
         let result = await Register_inspectionModel.findAll({
             attributes: [
                  'id', "doc_id", "date_time", "type", "doc_type",
-                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.type = 1 THEN register_inspection.price ELSE 0 END)`), 'kirim_summa'],
-                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.type = 0 THEN register_inspection.price ELSE 0 END)`), 'chiqim_summa']
+                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)`), 'kirim_summa'],
+                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)`), 'chiqim_summa']
             ],
             include: [
                 { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},

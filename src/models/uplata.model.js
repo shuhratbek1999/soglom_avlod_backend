@@ -54,5 +54,5 @@ date_time:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-uplataModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
+uplataModel.belongsTo(UserModel, {as: 'users', foreignKey: 'user_id'})
 module.exports = uplataModel;

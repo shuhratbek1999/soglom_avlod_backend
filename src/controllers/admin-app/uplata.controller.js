@@ -4,18 +4,17 @@ const HttpException = require('../../utils/HttpException.utils');
 const UplataModel = require('../../models/uplata.model')
 const RegionModel = require('../../models/region.model')
 const { validationResult } = require('express-validator');
-const UserModel = require('../../models/doctor_category.model');
+const UserModel = require('../../models/user.model');
+const Register_kassaModel = require('../../models/register_kassa.model');
+const register_doctorModel = require('../../models/register_doctor.model');
+const Register_inspectionModel = require('../../models/register_inspection.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class UplateController {
     getAll = async (req, res, next) => {
-        const model = await UplataModel.findAll({
-            include:[
-                {model: UserModel, as: 'user', attributes:['user_name']}
-            ]
-        });
+        const model = await UplataModel.findAll(req.body);
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -42,7 +41,8 @@ class UplateController {
         });
     }
    create = async (req, res, next) => {
-    // let data =Math.floor(new Date().getTime() / 1000);
+    
+    let data =Math.floor(new Date().getTime() / 1000);
        this.checkValidation(req);
        const model = await UplataModel.create({
         "name": req.body.name,
@@ -51,7 +51,54 @@ class UplateController {
         "type": req.body.type,
         "date_time": req.body.date_time,
         "price": req.body.price,
-       });
+       }); 
+       const ModelUser = await UserModel.findAll({
+        where:{
+            id: req.body.user_id
+        },
+        raw: true
+    })
+    console.log(ModelUser[0].doctor_id, "salommmmmm");
+       let pay_type = null;
+       if(req.body.type == 0){
+          pay_type = "Naqt"
+       }
+       else{
+        pay_type = "Plastik"
+       }
+     await  Register_kassaModel.create({
+          "date_time": data,
+          "type": req.body.type,
+          "price": req.body.price,
+          "pay_type": pay_type,
+          "doc_type": "chiqim",
+          "doctor_id": req.body.user_id
+       })
+        ModelUser.forEach(val => {
+            if(val.doctor_id != 0){
+                register_doctorModel.create({
+                    "date_time": data,
+                    "type": req.body.type,
+                    "price": req.body.price,
+                    "doc_id": 1, 
+                    "doctor_id": ModelUser[0].doctor_id,
+                    "doc_type": 'chiqim' 
+             })
+            } else if(val.inspection_category_id != 0){
+                Register_inspectionModel.create({
+                    "date_time": data,
+                    "type": req.body.type,
+                    "price": req.body.price,
+                    "doc_id": 1,
+                    "user_id": req.body.user_id,
+                    "inspection_id": val.inspection_category_id,
+                    "inspection_category": val.inspection_category_id,
+                    "skidka": 0,
+                    "doc_type": 'chiqim'
+                  })
+            }
+        })
+      
        res.status(200).send({
         error: false,
         error_code: 200,
