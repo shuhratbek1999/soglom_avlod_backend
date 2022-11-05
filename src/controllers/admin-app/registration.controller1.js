@@ -875,7 +875,7 @@ palataDel = async(req, res, next) => {
         result = await Register_kassaModel.findAll({
             attributes : [ 
                 'id', 'doctor_id', "type", "date_time", "doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, register_kassa.type) ELSE 0 END)"), 'total'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'total'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.doc_type = 'Kirim' THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.doc_type = 'chiqim' THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
             ],
@@ -1101,13 +1101,13 @@ palataDel = async(req, res, next) => {
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
         }
         let result = await Register_inspectionModel.findAll({
-            include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], required: true},
-            ],
             where: {
-              date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
-              inspection_category: body.inspection_category
-            }
+                date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+                inspection_category: body.inspection_category
+              },
+            include: [
+                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
+            ]
         })
         result.forEach(val => {
             if(val.dataValues.doc_type == 'kirim'){

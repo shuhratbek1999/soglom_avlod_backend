@@ -41,7 +41,6 @@ class UplateController {
         });
     }
    create = async (req, res, next) => {
-    
     let data =Math.floor(new Date().getTime() / 1000);
        this.checkValidation(req);
        const model = await UplataModel.create({
@@ -58,7 +57,6 @@ class UplateController {
         },
         raw: true
     })
-    console.log(ModelUser[0].doctor_id, "salommmmmm");
        let pay_type = null;
        if(req.body.type == 0){
           pay_type = "Naqt"
