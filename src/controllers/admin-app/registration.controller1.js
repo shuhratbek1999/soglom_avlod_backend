@@ -19,8 +19,6 @@ const PatientModel = require('../../models/patient.model');
 const QueueModel = require('../../models/queue.model');
 const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
-const inspection = require('../../models/inspection.model');
-const DoctorCategory = require('../../models/doctor_category.model');
 const InspectionModel = require('../../models/inspection.model')
 const { Op, where } = require("sequelize");
 const directModel = require('../../models/direct.model')
@@ -990,7 +988,7 @@ palataDel = async(req, res, next) => {
     };
     Imtiyozli = async (req, res, next) => {
         let bemor_id = req.body.patient_id;
-        let date =Math.floor(new Date().getTime() / 1000);      
+        let date =Math.floor(new Date().getTime());      
         // res.send("salom")
         const model = await RegistrationModel.findAll({
             attributes: ['user_id', 'direct_id', 'created_at', 'updated_at', 'status', 'patient_id', 
@@ -1003,11 +1001,15 @@ palataDel = async(req, res, next) => {
             throw HttpException(404, "bemor oldin kelmagan")
         }
         model.forEach(val => {
-            let x = parseInt(moment(val.created_at * 1000).format('DD'));
-            let date = parseInt(moment(new Date).format('DD'))
-            console.log(date, x);
-            let vaqtFarqi = Math.abs(date - x);
-            if(vaqtFarqi >= 5){
+            var date = new Date(val.created_at*1000);
+            date.setDate(date.getDate() + 0);
+            let day1 = new Date();
+            day1.setDate(day1.getDate() + 5);
+            console.log(date.setTime());
+            let x = parseInt(moment(val.created_at * 1000));
+            let dates = parseInt(moment(new Date).format('DD'))
+            let vaqtFarqi = Math.abs(dates - x);
+            if(day1 > x){
                 let models = {
                     tramma_type: val.tramma_type,
                     days: vaqtFarqi
@@ -1015,11 +1017,11 @@ palataDel = async(req, res, next) => {
                 res.send({
                     error: false,
                     error_code: 200,
-                    message: 'habar',
+                    message: '5 kun ichida keldi',
                     data: models
                 })
             }
-            else if(vaqtFarqi < 16){
+            else if(vaqtFarqi < 16 && vaqtFarqi > 5){
                 let models = {
                     tramma_type: val.tramma_type,
                     days: vaqtFarqi
@@ -1027,11 +1029,11 @@ palataDel = async(req, res, next) => {
                 res.send({
                     error: false,
                     error_code: 200,
-                    message: 'habar',
+                    message: '15 kun ichida keldi',
                     data: models
                 })
             }
-            else if(vaqtFarqi < 32){
+            else if(vaqtFarqi > 16 && vaqtFarqi < 32){
                 let models = {
                     tramma_type: val.tramma_type,
                     days: vaqtFarqi
@@ -1039,7 +1041,7 @@ palataDel = async(req, res, next) => {
                 res.send({
                     error: false,
                     error_code: 200,
-                    message: 'habar',
+                    message: 'bir oy ichida keldi',
                     data: models
                 })
             }
@@ -1094,24 +1096,26 @@ palataDel = async(req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {}, inspection = req.body.inspection_category;
         let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         if(body.inspection_category != null){
             query.id = {[Op.eq] : body.inspection_category }
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
-        };
-    
+        }
         let result = await Register_inspectionModel.findAll({
-            attributes: [
-                 'id', "doc_id", "date_time", "type", "doc_type",
-                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)`), 'kirim_summa'],
-                [sequelize.literal(`SUM(CASE WHEN register_inspection.date_time >= ` + datetime1 + ` and register_inspection.date_time <= ` + datetime2 + ` AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)`), 'chiqim_summa']
-            ],
             include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
+                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], required: true},
             ],
-            where: queryx, 
-            group: ['inspection_category'],
+            where: {
+              date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+              inspection_category: body.inspection_category
+            }
+        })
+        result.forEach(val => {
+            if(val.dataValues.doc_type == 'kirim'){
+                val.dataValues.kirim = val.dataValues.price
+            }
+            else{
+                val.dataValues.chiqim = val.dataValues.price
+            }
         })
         res.send(result);
     };
