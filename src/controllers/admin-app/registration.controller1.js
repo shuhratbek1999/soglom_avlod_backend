@@ -19,6 +19,7 @@ const PatientModel = require('../../models/patient.model');
 const QueueModel = require('../../models/queue.model');
 const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
+const DoctorCategory = require('../../models/doctor_category.model')
 const InspectionModel = require('../../models/inspection.model')
 const { Op, where } = require("sequelize");
 const directModel = require('../../models/direct.model')
@@ -147,14 +148,11 @@ class RegistrationController {
                 { model: Registration_filesModel,as: 'registration_files'},
                 { model: PatientModel,as: 'patient'},
                 {model: Registration_payModel, as: 'registration_pay'}
-            ],
-            raw: true
+            ]
         });
         if (Prixod === null) {
             throw new HttpException(404, 'Not found');
         }
-        var myDate = new Date(new Date().getTime()+(5*24*60*60*1000))
-        console.log(Prixod['registration_inspection.price'], myDate);
         
        res.status(200).send({  
             error: false,
@@ -1005,11 +1003,6 @@ palataDel = async(req, res, next) => {
             throw HttpException(404, "bemor oldin kelmagan")
         }
         model.forEach(val => {
-            var date = new Date(val.created_at*1000);
-            date.setDate(date.getDate() + 0);
-            let day1 = new Date();
-            day1.setDate(day1.getDate() + 5);
-            console.log(date.setTime());
             let x = parseInt(moment(val.created_at * 1000));
             let dates = parseInt(moment(new Date).format('DD'))
             let vaqtFarqi = Math.abs(dates - x);
