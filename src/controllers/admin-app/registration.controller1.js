@@ -111,7 +111,7 @@ class RegistrationController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const Prixod = await arxiv.findOne({
+        const Prixod = await ModelModel.findOne({
             where:{ id: req.params.id },
             include: [
                 {
@@ -123,7 +123,7 @@ class RegistrationController {
                     {model: palataModel, as: 'palatas', attributes: ['name']}
                   ]
                 },  
-                { model: Registration_doctorModel,as: 'registration_doctor_arxiv', 
+                { model: Registration_doctorModel,as: 'registration_doctor', 
                     include : [
                         { model: Registration_recipeModel, as: 'registration_recipe',
                         include:[
