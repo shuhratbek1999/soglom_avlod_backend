@@ -584,14 +584,13 @@ palataDel = async(req, res, next) => {
                 },
                 raw: true
             })
-           let date =Math.floor(new Date().getTime() / 1000);
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
                 "price":data.price,
                 "status": model.status,
                 "text":data.text,
-                "date_time": date
+                "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
             var date_time = Math.floor(new Date().getTime() / 1000);
