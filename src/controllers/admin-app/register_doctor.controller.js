@@ -59,10 +59,10 @@ class RegisterDoctorController {
         let result = await register_doctorModel.findAll({
             attributes: [
                  'id', "type", "date_time",
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'begin_total'],
+                 [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'kirim' THEN register_doctor.price ELSE 0 END)"), 'total_kirim'],
                 [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'chiqim' THEN register_doctor.price ELSE 0 END)"), 'total_chiqim'],
-                [sequelize.literal("SUM(CASE WHEN register_doctor.date_time <= " + datetime2 + " THEN register_doctor.price * power(-1, register_doctor.type) ELSE 0 END)"), 'end_total'],
+                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
             ],
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], where: query},
@@ -74,6 +74,7 @@ class RegisterDoctorController {
                 ['id', 'ASC']
             ],
         })
+        console.log(result);
         res.send(result);
     };
 
