@@ -10,13 +10,15 @@ const {Op} = require("sequelize")
  ******************************************************************************/
 class PillController {
     getAll = async (req, res, next) => {
-        const model = await PillModel.findAll({limit: 3});
+        const model = await PillModel.findAll({limit: 100});
+        
         res.status(200).send({
             error: false,
             error_code: 200,
             message: 'malumotlar chiqdi',
             data: model
         });
+        
     }
 
     getOne = async (req, res, next) => {
@@ -47,14 +49,27 @@ class PillController {
                 ['name', 'ASC']
             ],
             limit:100,
-            raw: true
         });
-        res.send({
-            "error": false,
-            "error_code": 200,
-            "message": "Product list filial:02 Феендо махсулотлари",
-            data: ModelList
-        });
+        if(req.body.name == null){
+            let model = await PillModel.findAll({
+                raw: true,
+                limit: 50,
+            })
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: model
+            });
+        }
+        else{
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: ModelList
+            });
+        }
     };
    create = async (req, res, next) => {
        this.checkValidation(req);

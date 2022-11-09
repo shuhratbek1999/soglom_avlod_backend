@@ -75,7 +75,7 @@ direct_id:{
     type: DataTypes.INTEGER
 },
 tramma_type:{
-    type: DataTypes.INTEGER
+    type: DataTypes.STRING()
 }
 
 }, {

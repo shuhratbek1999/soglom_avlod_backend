@@ -573,6 +573,74 @@ palataDel = async(req, res, next) => {
         }
     }
 
+    Imtiyozli = async (req, res, next) => {
+        let bemor_id = req.body.patient_id;
+        let date =Math.floor(new Date().getTime()/1000);      
+        const model = await RegistrationModel.findAll({
+            attributes: ['user_id', 'direct_id', 'created_at', 'updated_at', 'status', 'patient_id', 
+            'type_service', 'complaint','summa','pay_summa','backlog','discount','hospital_summa','tramma_type'],
+            where:{
+                patient_id: bemor_id
+            }
+        })
+        if(!model){
+            throw HttpException(404, "bemor oldin kelmagan")
+        }
+        if(model.length != 0){
+            model.forEach(value => {
+                let beshinchiKun = moment(value.created_at*1000).day(8).format();
+                let kelganKuni = moment(value.created_at*1000).format();
+                let bugungiVaqt = moment(date *1000).format();
+                let onBeshinchiKun = moment(value.created_at*1000).day(18).format();
+                let birOy = moment(value.created_at*1000).day(31).format();
+                if(beshinchiKun > bugungiVaqt && kelganKuni < bugungiVaqt ){
+                    let day = "5 kun oralig'ida";
+                    res.send({
+                        "error": false,
+                        "error_code": 0,
+                        "message": "malumot topildi",
+                        data: day
+                    });
+                }
+                else if(onBeshinchiKun > bugungiVaqt && kelganKuni < bugungiVaqt){
+                    let day = "15 kun oralig'ida";
+                    res.send({
+                        "error": false,
+                        "error_code": 0,
+                        "message": "malumot topildi",
+                        data: day
+                    });
+                }
+                else if(birOy > bugungiVaqt && kelganKuni < bugungiVaqt){
+                    let day = "Bir oy oralig'ida";
+                    res.send({
+                        "error": false,
+                        "error_code": 0,
+                        "message": "malumot topildi",
+                        data: day
+                    });
+                }
+                else{
+                    let day = "Bir oydan ortiq";
+                    res.send({
+                        "error": false,
+                        "error_code": 200,
+                        "message": "malumot topildi",
+                        data: day
+                    });
+                }
+            })
+        }
+        else{
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "malumot topildi",
+                data: "Bir oydan ortiq"
+            });
+        }
+    }
+
     #doctoradd = async(model, registration_doctor, insert = true) => {
         if(!insert){
             await this.#deletedoctor(model.id);
@@ -931,24 +999,64 @@ palataDel = async(req, res, next) => {
         let ModelList = await PatientModel.findAll({
             where:{ 
                 fullname:{  [Op.like]: '%'+req.body.name+'%'}
-            },
-            
+            }, 
             order: [
                 ['name', 'ASC'],
                 ['id', 'ASC']
             ],
-            limit:100        });
-        res.send({
-            "error": false,
-            "error_code": 200,
-            "message": "Product list filial:02 Феендо махсулотлари",
-            data: ModelList
+            limit:100        
         });
+        if(req.body == null){
+            const model = await PatientModel.findAll({
+                where:{
+                    fullname: {[Op.like]: '%' + req.body.name + '%'}
+                },
+                order:['name'],
+                limit: 50
+            })
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: model
+            });
+        }
+        else{
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "Product list filial:02 Феендо махсулотлари",
+                data: ModelList
+            });
+        }
+      
     };
     
     searchs = async (req, res, next) => {
         let ModelList = await ModelModel.findAll({
-            include:[
+            include:[ 
+                {
+                    model: UserModel, as: 'user', attributes: ['user_name']
+                },
+
+                {
+                    model: Registration_doctorModel, as: 'registration_doctor',
+                    include:[
+                        {
+                            model: Registration_recipeModel, as: 'registration_recipe'
+                        }
+                    ]
+                },
+                {
+                    model: Registration_inspectionModel, as: 'registration_inspection',
+                    include:[
+                        {
+                            model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                        }
+                    ]
+                },
+
+
                 {model: PatientModel, as: 'patient', attributes: ['fullname'], 
                 where:{ 
                     fullname:{  [Op.like]: '%'+req.body.name+'%'}
@@ -958,15 +1066,33 @@ palataDel = async(req, res, next) => {
                 model: UserModel, as: 'user', attributes: ['user_name']
             }  
             ],
-            limit:100,
-            raw: true
+            limit:100
         });
         
         if(req.body.name.length == 0){
             let model = await ModelModel.findAll({
-                raw: true,
-                limit: 10,
+                limit: 50,
                 include:[
+                    {
+                        model: UserModel, as: 'user', attributes: ['user_name']
+                    },
+    
+                    {
+                        model: Registration_doctorModel, as: 'registration_doctor',
+                        include:[
+                            {
+                                model: Registration_recipeModel, as: 'registration_recipe'
+                            }
+                        ]
+                    },
+                    {
+                        model: Registration_inspectionModel, as: 'registration_inspection',
+                        include:[
+                            {
+                                model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                            }
+                        ]
+                    },
                     {model: PatientModel, as:'patient', attributes:['fullname']}
                 ]
             })
@@ -987,76 +1113,6 @@ palataDel = async(req, res, next) => {
         }
        
     };
-    Imtiyozli = async (req, res, next) => {
-        let bemor_id = req.body.patient_id;
-        let date =Math.floor(new Date().getTime());      
-        // res.send("salom")
-        const model = await RegistrationModel.findAll({
-            attributes: ['user_id', 'direct_id', 'created_at', 'updated_at', 'status', 'patient_id', 
-            'type_service', 'complaint','summa','pay_summa','backlog','discount','hospital_summa','tramma_type'],
-            where:{
-                patient_id: bemor_id
-            }
-        })
-        if(!model){
-            throw HttpException(404, "bemor oldin kelmagan")
-        }
-        model.forEach(val => {
-            let x = parseInt(moment(val.created_at * 1000));
-            let dates = parseInt(moment(new Date).format('DD'))
-            let vaqtFarqi = Math.abs(dates - x);
-            if(day1 > x){
-                let models = {
-                    tramma_type: val.tramma_type,
-                    days: vaqtFarqi
-                };
-                res.send({
-                    error: false,
-                    error_code: 200,
-                    message: '5 kun ichida keldi',
-                    data: models
-                })
-            }
-            else if(vaqtFarqi < 16 && vaqtFarqi > 5){
-                let models = {
-                    tramma_type: val.tramma_type,
-                    days: vaqtFarqi
-                };
-                res.send({
-                    error: false,
-                    error_code: 200,
-                    message: '15 kun ichida keldi',
-                    data: models
-                })
-            }
-            else if(vaqtFarqi > 16 && vaqtFarqi < 32){
-                let models = {
-                    tramma_type: val.tramma_type,
-                    days: vaqtFarqi
-                };
-                res.send({
-                    error: false,
-                    error_code: 200,
-                    message: 'bir oy ichida keldi',
-                    data: models
-                })
-            }
-            else{
-                res.send({
-                    error: false,
-                    error_code: 200,
-                    message: 'habar',
-                    data: false
-                })
-            }
-        })
-        // model.forEach(val => {
-        //     console.log(val.dataValues);
-        //     let dates = new Date(val.dataValues.created_at.getTime() + (5*24*60*60*1000));
-        //     console.log(dates);
-        // })
-        // console.log(model);
-    }
     inspection = async (req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};

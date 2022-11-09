@@ -64,7 +64,7 @@ exports.up = function(db) {
       type: 'decimal'
     },
     tramma_type:{
-      type: 'boolean'
+      type: 'string'
     }
 })
 } 
