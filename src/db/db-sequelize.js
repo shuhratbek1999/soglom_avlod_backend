@@ -9,6 +9,9 @@ const db_sequelize = new Sequelize(
         host:  config.host,
         port: config.db_port,
         dialect: 'mysql',
+        dialectOptions: {
+            decimalNumbers: true
+        },
         logging,   
     },
 );
