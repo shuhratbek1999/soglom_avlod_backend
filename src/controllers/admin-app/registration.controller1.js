@@ -551,7 +551,7 @@ palataDel = async(req, res, next) => {
             var {Registration_recipe,...data} = element;
             let user = await UserModel.findOne({
                 where:{
-                    doctor_id: element.doctor_id
+                    doctor_id: data.doctor_id
                 },
                 raw: true
             })
@@ -564,12 +564,13 @@ palataDel = async(req, res, next) => {
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
+            console.log(data);
             var date_time = Math.floor(new Date().getTime() / 1000);
             RegisterDoctorModel.create({
                 "date_time": date_time,
                 "type": data.text,
                 "price": data.price,
-                "doc_id": data.registration_id, 
+                "doc_id": model.id, 
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim'
              })
