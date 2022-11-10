@@ -393,6 +393,7 @@ palataDel = async(req, res, next) => {
     #inspectionadd = async(model,  registration_inspection, insert = true) => {
         if(!insert){
             await this.#deleteInspection(model.id);
+            await this.#deleteIns(model.id)
         }
         var dds;
         for(var element of registration_inspection){
@@ -527,6 +528,7 @@ palataDel = async(req, res, next) => {
     #payAdd = async(model, registration_pay,  insert = true) =>{
         if(!insert){
             await this.#deletepay(model.id);
+            await this.#deleteKassa(model.id);
         }
         for(var element of registration_pay){
             var pay = {
