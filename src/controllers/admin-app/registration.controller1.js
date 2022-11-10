@@ -524,7 +524,7 @@ palataDel = async(req, res, next) => {
             }
             Register_kassaModel.create({
                 "date_time": date_time,
-                "doctor_id": element.user_id,
+                "doctor_id": element.registration_id,
                 "pay_type": element.pay_type,
                 "price": element.summa,    
                 "type": type,
@@ -776,10 +776,8 @@ palataDel = async(req, res, next) => {
     
     kassaSverka = async (req, res, next) => {
         this.checkValidation(req);
-        let result = {begin: null, data : [], end: null};
+        let result;
         let body = req.body; 
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         let query = {}, query_begin = {}, query_end = {}, queryx = {};
         query.date_time =  {
             [Op.gte]: body.datetime1,
@@ -792,14 +790,10 @@ palataDel = async(req, res, next) => {
             [Op.lte]: body.datetime2,
         };
         
-        result.data = await Register_kassaModel.findAll({
-            attributes : [
-                'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.doc_type = "Kirim" THEN register_kassa.price ELSE 0 END)`), 'kirim_cash'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.doc_type = "Kirim" THEN register_kassa.price ELSE 0 END)`), 'kirim_plastic'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.doc_type = "chiqim" THEN register_kassa.price ELSE 0 END)`), 'chiqim_cash'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.doc_type = "chiqim" THEN register_kassa.price ELSE 0 END)`), 'chiqim_plastic'],
-            ],
+        result = await Register_kassaModel.findAll({
+            where: {
+                date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+              },
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
             ],
@@ -807,30 +801,24 @@ palataDel = async(req, res, next) => {
                 ['date_time', 'ASC']
             ]
         })
-        //begin naqd plastik
-        let kassa_register = await Register_kassaModel.findOne({
-            attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
-            ],
-            where : query_begin,
-            raw: true
-        });
-        if(kassa_register != null) result.begin = kassa_register;
-        //end naqd plastik
-        kassa_register = await Register_kassaModel.findOne({
-            attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
-            ],
-            where : query_end,
-            raw: true
-        });
-        if(kassa_register != null) result.end = kassa_register;
+        result.forEach(val => {
+            if(val.dataValues.pay_type == 'Plastik'){
+                if(val.dataValues.doc_type == 'Kirim'){
+                    val.dataValues.Plaskirim = val.dataValues.price
+                }
+                else{
+                val.dataValues.PlasChiqim = val.dataValues.price
+                }
+            }
+            else{
+                if(val.dataValues.doc_type == 'chiqim'){
+                    val.dataValues.Nahdkirim = val.dataValues.price
+                }
+                else{
+                val.dataValues.NahdChiqim = val.dataValues.price
+                }
+            }
+        })
         res.send(result);
     }
     
