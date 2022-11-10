@@ -72,41 +72,7 @@ class RegistrationController {
             data: model
         });
     }
-    getAll_arxiv = async (req, res, next) => {
-        const model = await ModelModel.findAll({
-            include:[ 
-                {
-                    model: UserModel, as: 'user', attributes: ['user_name']
-                },
-                {
-                    model: PatientModel, as: 'patient', attributes: ['fullname']
-                },
-
-                {
-                    model: Registration_doctor_arxivModel, as: 'registration_doctor',
-                    include:[
-                        {
-                            model: Registration_recipe_arxivModel, as: 'registration_recipe'
-                        }
-                    ]
-                },
-                {
-                    model: Registration_inspection_arxivModel, as: 'registration_inspection',
-                    include:[
-                        {
-                            model: Registration_inspection_child_arxxivModel, as: 'registration_inspection_child'
-                        }
-                    ]
-                } 
-             ],
-        });
-        res.status(200).send({  
-            error: false,
-            error_code: 200,
-            message: 'Malumotlar chiqdi',
-            data: model
-        });
-    }
+   
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
