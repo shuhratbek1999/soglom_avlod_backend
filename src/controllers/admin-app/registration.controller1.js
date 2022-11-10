@@ -524,7 +524,7 @@ palataDel = async(req, res, next) => {
             }
             Register_kassaModel.create({
                 "date_time": date_time,
-                "doctor_id": element.registration_id,
+                "doctor_id": model.id,
                 "pay_type": element.pay_type,
                 "price": element.summa,    
                 "type": type,
@@ -812,7 +812,7 @@ palataDel = async(req, res, next) => {
                 }
             }
             else{
-                if(val.dataValues.doc_type == 'chiqim'){
+                if(val.dataValues.doc_type != 'chiqim'){
                     val.dataValues.Nahdkirim = val.dataValues.price
                 }
                 else{
