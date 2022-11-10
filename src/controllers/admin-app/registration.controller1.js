@@ -1213,25 +1213,19 @@ palataDel = async(req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         if(body.direct_id !== null){
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
         let result = await ModelModel.findAll({
-            attributes: [
-                 'id', "type_service", "created_at", "direct_id",
-                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.direct_id = direct.id THEN direct.bonus ELSE 0 END)"), 'tushum'],
-                [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.direct_id = direct.id then registration.direct_id else 0 end)"), 'count']
-            ],
             include: [
                 { model: directModel, as: 'direct', where: query},
             ],
-            where: queryx,
-            raw: true,
-            group: ['direct_id'],
+                where: {
+                    created_at: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+                    direct_id: body.direct_id
+                  },
             order: [
                 ['id', 'ASC']
             ],
