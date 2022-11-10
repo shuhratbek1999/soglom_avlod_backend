@@ -364,7 +364,6 @@ palataDel = async(req, res, next) => {
         var dds;
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
-            console.log(data);
             data.registration_id=model.id;
           let date =Math.floor(new Date().getTime() / 1000);
             dds={
@@ -550,7 +549,6 @@ palataDel = async(req, res, next) => {
         }
         for(var element of registration_doctor){
             var {Registration_recipe,...data} = element;
-            // console.log(data, "doktor");
             let user = await UserModel.findOne({
                 where:{
                     doctor_id: element.doctor_id
@@ -571,7 +569,7 @@ palataDel = async(req, res, next) => {
                 "date_time": date_time,
                 "type": data.text,
                 "price": data.price,
-                "doc_id": 1, 
+                "doc_id": data.registration_id, 
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim'
              })
@@ -614,7 +612,6 @@ palataDel = async(req, res, next) => {
         }
         var adds;
         for(var element of registration_recipe){
-            console.log(element, "recipe");
             adds={
                 "registration_doctor_id":model.id,
                 "registration_id":model.registration_id,
@@ -935,7 +932,26 @@ palataDel = async(req, res, next) => {
                 where:{ 
                     fullname:{  [Op.like]: '%'+req.body.name+'%'}
                 }
-            }
+            },
+            {
+                model: UserModel, as: 'user', attributes: ['user_name']
+            },
+            {
+                model: Registration_doctorModel, as: 'registration_doctor',
+                include:[
+                    {
+                        model: Registration_recipeModel, as: 'registration_recipe'
+                    }
+                ]
+            },
+            {
+                model: Registration_inspectionModel, as: 'registration_inspection',
+                include:[
+                    {
+                        model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                    }
+                ]
+            } 
             ],
             limit:100,
             raw: true
