@@ -1015,11 +1015,11 @@ palataDel = async(req, res, next) => {
             model.forEach(value => {
                 let beshinchiKun = moment(value.created_at*1000).day(8).format();
                 let kelganKuni = moment(value.created_at*1000).format();
-                let bugungiVaqt = moment(date *1000).day(25).format();
+                let bugungiVaqt = moment(date *1000).format();
                 let onBeshinchiKun = moment(value.created_at*1000).day(18).format();
                 let birOy = moment(value.created_at*1000).day(31).format();
                 if(beshinchiKun > bugungiVaqt && kelganKuni < bugungiVaqt ){
-                    let day = "5 kun ichida keldi";
+                    let day = "5 kun oralig'ida";
                     res.send({
                         "error": false,
                         "error_code": 0,
@@ -1028,8 +1028,7 @@ palataDel = async(req, res, next) => {
                     });
                 }
                 else if(onBeshinchiKun > bugungiVaqt && kelganKuni < bugungiVaqt){
-                    console.log("15 kun ichida keldi");
-                    let day = "15 kun ichida keldi";
+                    let day = "15 kun oralig'ida";
                     res.send({
                         "error": false,
                         "error_code": 0,
@@ -1038,8 +1037,7 @@ palataDel = async(req, res, next) => {
                     });
                 }
                 else if(birOy > bugungiVaqt && kelganKuni < bugungiVaqt){
-                    console.log("bir oy ichida keldi");
-                    let day = "bir oy ichida keldi";
+                    let day = "Bir oy oralig'ida";
                     res.send({
                         "error": false,
                         "error_code": 0,
@@ -1048,8 +1046,7 @@ palataDel = async(req, res, next) => {
                     });
                 }
                 else{
-                    console.log("oldin kelmagan");
-                    let day = "1 oydan keyin keldi";
+                    let day = "Bir oydan ortiq";
                     res.send({
                         "error": false,
                         "error_code": 200,
@@ -1060,7 +1057,12 @@ palataDel = async(req, res, next) => {
             })
         }
         else{
-            throw new HttpException(404, "bemor topilmadi")
+            res.send({
+                "error": false,
+                "error_code": 200,
+                "message": "malumot topildi",
+                data: "Bir oydan ortiq"
+            });
         }
     }
     inspection = async (req, res, next) => {
