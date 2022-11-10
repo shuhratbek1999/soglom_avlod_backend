@@ -964,29 +964,72 @@ palataDel = async(req, res, next) => {
     
     searchs = async (req, res, next) => {
         let ModelList = await ModelModel.findAll({
-            include:[
+            include:[ 
+                {
+                    model: UserModel, as: 'user', attributes: ['user_name']
+                },
+
+                {
+                    model: Registration_doctorModel, as: 'registration_doctor',
+                    include:[
+                        {
+                            model: Registration_recipeModel, as: 'registration_recipe'
+                        }
+                    ]
+                },
+                {
+                    model: Registration_inspectionModel, as: 'registration_inspection',
+                    include:[
+                        {
+                            model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                        }
+                    ]
+                },
+
+
                 {model: PatientModel, as: 'patient', attributes: ['fullname'], 
                 where:{ 
                     fullname:{  [Op.like]: '%'+req.body.name+'%'}
                 }
-            }
+            },
+            {
+                model: UserModel, as: 'user', attributes: ['user_name']
+            }  
             ],
-            limit:100,
-            raw: true
+            limit:100
         });
         
         if(req.body.name.length == 0){
             let model = await ModelModel.findAll({
-                raw: true,
-                limit: 10,
+                limit: 50,
                 include:[
+                    {
+                        model: UserModel, as: 'user', attributes: ['user_name']
+                    },
+    
+                    {
+                        model: Registration_doctorModel, as: 'registration_doctor',
+                        include:[
+                            {
+                                model: Registration_recipeModel, as: 'registration_recipe'
+                            }
+                        ]
+                    },
+                    {
+                        model: Registration_inspectionModel, as: 'registration_inspection',
+                        include:[
+                            {
+                                model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                            }
+                        ]
+                    },
                     {model: PatientModel, as:'patient', attributes:['fullname']}
                 ]
             })
             res.send({
                 "error": false,
                 "error_code": 200,
-                "message": "malumot keldi",
+                "message": "Product list filial:02 Феендо махсулотлари",
                 data: model
             });
         }
@@ -994,7 +1037,7 @@ palataDel = async(req, res, next) => {
             res.send({
                 "error": false,
                 "error_code": 200,
-                "message": "malumot topildi",
+                "message": "Product list filial:02 Феендо махсулотлари",
                 data: ModelList
             });
         }
