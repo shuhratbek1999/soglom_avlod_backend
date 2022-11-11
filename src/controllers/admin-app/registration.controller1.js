@@ -715,7 +715,7 @@ palataDel = async(req, res, next) => {
     }
     #deleteIns = async(doc_id) =>
      {
-        await Register_inspectionModel.destroy({where: {inspection_category: doc_id}})
+        await Register_inspectionModel.destroy({where: {doc_id: doc_id}})
     }
     #deleteKassa = async(doc_id) =>
      {
