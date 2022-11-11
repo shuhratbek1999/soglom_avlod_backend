@@ -72,41 +72,7 @@ class RegistrationController {
             data: model
         });
     }
-    getAll_arxiv = async (req, res, next) => {
-        const model = await ModelModel.findAll({
-            include:[ 
-                {
-                    model: UserModel, as: 'user', attributes: ['user_name']
-                },
-                {
-                    model: PatientModel, as: 'patient', attributes: ['fullname']
-                },
-
-                {
-                    model: Registration_doctor_arxivModel, as: 'registration_doctor',
-                    include:[
-                        {
-                            model: Registration_recipe_arxivModel, as: 'registration_recipe'
-                        }
-                    ]
-                },
-                {
-                    model: Registration_inspection_arxivModel, as: 'registration_inspection',
-                    include:[
-                        {
-                            model: Registration_inspection_child_arxxivModel, as: 'registration_inspection_child'
-                        }
-                    ]
-                } 
-             ],
-        });
-        res.status(200).send({  
-            error: false,
-            error_code: 200,
-            message: 'Malumotlar chiqdi',
-            data: model
-        });
-    }
+   
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
@@ -398,7 +364,6 @@ palataDel = async(req, res, next) => {
         var dds;
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
-            console.log(data);
             data.registration_id=model.id;
           let date =Math.floor(new Date().getTime() / 1000);
             dds={
@@ -559,7 +524,7 @@ palataDel = async(req, res, next) => {
             }
             Register_kassaModel.create({
                 "date_time": date_time,
-                "doctor_id": element.user_id,
+                "doctor_id": element.registration_id,
                 "pay_type": element.pay_type,
                 "price": element.summa,    
                 "type": type,
@@ -584,10 +549,9 @@ palataDel = async(req, res, next) => {
         }
         for(var element of registration_doctor){
             var {Registration_recipe,...data} = element;
-            // console.log(data, "doktor");
             let user = await UserModel.findOne({
                 where:{
-                    doctor_id: element.doctor_id
+                    doctor_id: data.doctor_id
                 },
                 raw: true
             })
@@ -600,12 +564,13 @@ palataDel = async(req, res, next) => {
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
+            console.log(data);
             var date_time = Math.floor(new Date().getTime() / 1000);
             RegisterDoctorModel.create({
                 "date_time": date_time,
                 "type": data.text,
                 "price": data.price,
-                "doc_id": 1, 
+                "doc_id": model.id, 
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim'
              })
@@ -648,7 +613,6 @@ palataDel = async(req, res, next) => {
         }
         var adds;
         for(var element of registration_recipe){
-            console.log(element, "recipe");
             adds={
                 "registration_doctor_id":model.id,
                 "registration_id":model.registration_id,
@@ -813,10 +777,8 @@ palataDel = async(req, res, next) => {
     
     kassaSverka = async (req, res, next) => {
         this.checkValidation(req);
-        let result = {begin: null, data : [], end: null};
+        let result;
         let body = req.body; 
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         let query = {}, query_begin = {}, query_end = {}, queryx = {};
         query.date_time =  {
             [Op.gte]: body.datetime1,
@@ -829,14 +791,10 @@ palataDel = async(req, res, next) => {
             [Op.lte]: body.datetime2,
         };
         
-        result.data = await Register_kassaModel.findAll({
-            attributes : [
-                'doctor_id', 'pay_type', 'date_time', 'type', 'doc_type',
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.doc_type = "Kirim" THEN register_kassa.price ELSE 0 END)`), 'kirim_cash'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.doc_type = "Kirim" THEN register_kassa.price ELSE 0 END)`), 'kirim_plastic'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 0 and register_kassa.doc_type = "chiqim" THEN register_kassa.price ELSE 0 END)`), 'chiqim_cash'],
-                [sequelize.literal(`SUM(CASE WHEN register_kassa.date_time >= ` + datetime1 + ` and register_kassa.date_time <= ` + datetime2 + ` AND register_kassa.type = 1 and register_kassa.doc_type = "chiqim" THEN register_kassa.price ELSE 0 END)`), 'chiqim_plastic'],
-            ],
+        result = await Register_kassaModel.findAll({
+            where: {
+                date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+              },
             include: [
                 { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
             ],
@@ -844,30 +802,24 @@ palataDel = async(req, res, next) => {
                 ['date_time', 'ASC']
             ]
         })
-        //begin naqd plastik
-        let kassa_register = await Register_kassaModel.findOne({
-            attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
-            ],
-            where : query_begin,
-            raw: true
-        });
-        if(kassa_register != null) result.begin = kassa_register;
-        //end naqd plastik
-        kassa_register = await Register_kassaModel.findOne({
-            attributes : [
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "Kirim" THEN `price` ELSE 0 END )'), 'kirim_plastic'],
-                [sequelize.literal('sum(CASE WHEN `type` = 0 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_cash'],
-                [sequelize.literal('sum(CASE WHEN `type` = 1 and `doc_type` = "chiqim" THEN `price` ELSE 0 END )'), 'chiqim_plastic'],
-            ],
-            where : query_end,
-            raw: true
-        });
-        if(kassa_register != null) result.end = kassa_register;
+        result.forEach(val => {
+            if(val.dataValues.pay_type == 'Plastik'){
+                if(val.dataValues.doc_type == 'Kirim'){
+                    val.dataValues.Plaskirim = val.dataValues.price
+                }
+                else{
+                val.dataValues.PlasChiqim = val.dataValues.price
+                }
+            }
+            else{
+                if(val.dataValues.doc_type == 'chiqim'){
+                    val.dataValues.Nahdkirim = val.dataValues.price
+                }
+                else{
+                val.dataValues.NahdChiqim = val.dataValues.price
+                }
+            }
+        })
         res.send(result);
     }
     
@@ -994,7 +946,23 @@ palataDel = async(req, res, next) => {
             },
             {
                 model: UserModel, as: 'user', attributes: ['user_name']
-            }  
+            },
+            {
+                model: Registration_doctorModel, as: 'registration_doctor',
+                include:[
+                    {
+                        model: Registration_recipeModel, as: 'registration_recipe'
+                    }
+                ]
+            },
+            {
+                model: Registration_inspectionModel, as: 'registration_inspection',
+                include:[
+                    {
+                        model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                    }
+                ]
+            } 
             ],
             limit:100
         });
@@ -1285,25 +1253,19 @@ palataDel = async(req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         if(body.direct_id !== null){
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
         let result = await ModelModel.findAll({
-            attributes: [
-                 'id', "type_service", "created_at", "direct_id",
-                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.direct_id = direct.id THEN direct.bonus ELSE 0 END)"), 'tushum'],
-                [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.direct_id = direct.id then registration.direct_id else 0 end)"), 'count']
-            ],
             include: [
                 { model: directModel, as: 'direct', where: query},
             ],
-            where: queryx,
-            raw: true,
-            group: ['direct_id'],
+                where: {
+                    created_at: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+                    direct_id: body.direct_id
+                  },
             order: [
                 ['id', 'ASC']
             ],

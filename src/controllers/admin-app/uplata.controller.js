@@ -78,7 +78,7 @@ class UplateController {
                     "date_time": data,
                     "type": req.body.type,
                     "price": req.body.price,
-                    "doc_id": 1, 
+                    "doc_id": model.id, 
                     "doctor_id": ModelUser[0].doctor_id,
                     "doc_type": 'chiqim' 
              })
@@ -87,7 +87,7 @@ class UplateController {
                     "date_time": data,
                     "type": req.body.type,
                     "price": req.body.price,
-                    "doc_id": 1,
+                    "doc_id": model.id,
                     "user_id": req.body.user_id,
                     "inspection_id": val.inspection_category_id,
                     "inspection_category": val.inspection_category_id,
