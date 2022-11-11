@@ -79,7 +79,7 @@ class UplateController {
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id, 
-                    "doctor_id": ModelUser[0].doctor_id,
+                    "doctor_id": model.id,
                     "doc_type": 'chiqim' 
              })
             } else if(val.inspection_category_id != 0){
@@ -90,7 +90,7 @@ class UplateController {
                     "doc_id": model.id,
                     "user_id": req.body.user_id,
                     "inspection_id": val.inspection_category_id,
-                    "inspection_category": val.inspection_category_id,
+                    "inspection_category": model.id,
                     "skidka": 0,
                     "doc_type": 'chiqim'
                   })
