@@ -90,7 +90,7 @@ class UplateController {
                     "doc_id": model.id,
                     "user_id": req.body.user_id,
                     "inspection_id": val.inspection_category_id,
-                    "inspection_category": model.id,
+                    "inspection_category": val.inspection_category,
                     "skidka": 0,
                     "doc_type": 'chiqim'
                   })
