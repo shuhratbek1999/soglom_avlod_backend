@@ -33,6 +33,9 @@ class PatientController {
                 id: req.params.id
             }
         });
+        if(model.dataValues.birthday == '0'){
+            model.dataValues.birthday = 0
+        }
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
