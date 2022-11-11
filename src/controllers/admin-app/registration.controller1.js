@@ -711,7 +711,7 @@ palataDel = async(req, res, next) => {
     #deleteDoctor = async(doc_id) =>
      {
         console.log("salom");
-        await RegisterDoctorModel.destroy({where: {doctor_id: doc_id}})
+        await RegisterDoctorModel.destroy({where: {doc_id: doc_id}})
     }
     #deleteIns = async(doc_id) =>
      {
