@@ -44,22 +44,31 @@ class Kassa_orderController {
         });
     }
    create = async (req, res, next) => {
+    console.log(req.body.type);
        this.checkValidation(req);
        var date_time = Math.floor(new Date().getTime() / 1000);
+       let pay_type;
+       if(req.body.type == 'Naqd'){
+         pay_type = 'naqt'
+       }
+       else{
+        pay_type = 'plastik'
+       }
        const model = await kassa_orderModel.create({
         "expense_id": req.body.expense_id,
         "date_time": date_time,
         "type": req.body.type,
-        "pay_type": req.body.pay_type,
+        "pay_type": pay_type,
         "price": req.body.price,
         "comment": req.body.comment
        });
        Register_kassaModel.create({
         "date_time": date_time,
-        "doctor_id": req.body.expense_id,
-        "pay_type": req.body.pay_type,
+        "doctor_id": model.id,
+        "pay_type": pay_type,
         "price": req.body.price,    
-        "type": 'chiqim'
+        "type": req.body.type,
+        "doc_type": 'chiqim'
     })
        res.status(200).send({
         error: false,
@@ -88,12 +97,20 @@ class Kassa_orderController {
             id: req.params.id
         }
     })
-    Register_kassaModel.create({
+    let pay_type;
+       if(req.body.type == 'Naqd'){
+         pay_type = 'naqt'
+       }
+       else{
+        pay_type = 'plastik'
+       }
+       Register_kassaModel.create({
         "date_time": date_time,
-        "doctor_id": req.body.expense_id,
-        "pay_type": req.body.pay_type,
+        "doctor_id": model.id,
+        "pay_type": pay_type,
         "price": req.body.price,    
-        "type": 'kirim'
+        "type": req.body.type,
+        "doc_type": 'chiqim'
     })
     res.status(200).send({
         error: false,
