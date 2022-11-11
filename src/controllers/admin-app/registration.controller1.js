@@ -1152,6 +1152,7 @@ palataDel = async(req, res, next) => {
             query.id = {[Op.eq] : body.inspection_category }
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
         }
+       if(body.datetime1 < body.datetime2){
         let result = await Register_inspectionModel.findAll({
             where: {
                 date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
@@ -1170,6 +1171,27 @@ palataDel = async(req, res, next) => {
             }
         })
         res.send(result);
+       }
+       else{
+        let result = await Register_inspectionModel.findAll({
+            where: {
+                date_time: {[Op.lt]: body.datetime1},
+                inspection_category: body.inspection_category
+              },
+            include: [
+                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
+            ]
+        })
+        result.forEach(val => {
+            if(val.dataValues.doc_type == 'kirim'){
+                val.dataValues.kirim = val.dataValues.price
+            }
+            else{
+                val.dataValues.chiqim = val.dataValues.price
+            }
+        })
+        res.send(result);
+       }
     };
     kassaAll = async (req, res, next) =>{
         const model = await Register_kassaModel.findAll({
