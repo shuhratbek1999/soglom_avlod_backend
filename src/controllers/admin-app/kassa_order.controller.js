@@ -49,10 +49,10 @@ class Kassa_orderController {
        var date_time = Math.floor(new Date().getTime() / 1000);
        let pay_type;
        if(req.body.type == 'Naqd'){
-         pay_type = 'Naqt'
+         pay_type = 'naqt'
        }
        else{
-        pay_type = 'Plastik'
+        pay_type = 'plastik'
        }
        const model = await kassa_orderModel.create({
         "expense_id": req.body.expense_id,
@@ -64,7 +64,7 @@ class Kassa_orderController {
        });
        Register_kassaModel.create({
         "date_time": date_time,
-        "doctor_id": req.body.expense_id,
+        "doctor_id": model.id,
         "pay_type": pay_type,
         "price": req.body.price,    
         "type": req.body.type,
@@ -99,14 +99,14 @@ class Kassa_orderController {
     })
     let pay_type;
        if(req.body.type == 'Naqd'){
-         pay_type = 'Naqt'
+         pay_type = 'naqt'
        }
        else{
-        pay_type = 'Plastik'
+        pay_type = 'plastik'
        }
        Register_kassaModel.create({
         "date_time": date_time,
-        "doctor_id": req.body.expense_id,
+        "doctor_id": model.id,
         "pay_type": pay_type,
         "price": req.body.price,    
         "type": req.body.type,

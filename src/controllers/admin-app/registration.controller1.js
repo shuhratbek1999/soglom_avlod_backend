@@ -803,7 +803,7 @@ palataDel = async(req, res, next) => {
             ]
         })
         result.forEach(val => {
-            if(val.dataValues.pay_type == 'Plastik'){
+            if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
                 if(val.dataValues.doc_type == 'Kirim'){
                     val.dataValues.Plaskirim = val.dataValues.price
                 }
