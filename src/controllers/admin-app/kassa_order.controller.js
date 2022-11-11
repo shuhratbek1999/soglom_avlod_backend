@@ -94,7 +94,7 @@ class Kassa_orderController {
     model.save();
     await Register_kassaModel.destroy({
         where:{
-            id: req.params.id
+            doctor_id: req.params.id
         }
     })
     let pay_type;
