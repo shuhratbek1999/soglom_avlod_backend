@@ -74,7 +74,6 @@ class RegisterDoctorController {
                 ['id', 'ASC']
             ],
         })
-        console.log(result);
         res.send(result);
     };
 
@@ -87,6 +86,7 @@ class RegisterDoctorController {
             queryx.doctor_id = {[Op.eq]: body.doctor_id}
         };
 
+       if(body.datetime1 < body.datetime2){
         let result = await register_doctorModel.findAll({
             attributes: [
                  'id', "doc_id", "date_time", "type", "doc_type", "price"
@@ -108,6 +108,30 @@ class RegisterDoctorController {
             }
         })
         res.send(result);
+       }
+       else{
+        let result = await register_doctorModel.findAll({
+            attributes: [
+                 'id', "doc_id", "date_time", "type", "doc_type", "price"
+            ],
+            include: [
+                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], required: true},
+            ],
+            where: {
+              date_time: {[Op.lt]: body.datetime1},
+              doctor_id: body.doctor_id
+            }
+        })
+        result.forEach(val => {
+            if(val.dataValues.doc_type == 'kirim'){
+                val.dataValues.kirim = val.dataValues.price
+            }
+            else{
+                val.dataValues.chiqim = val.dataValues.price
+            }
+        })
+        res.send(result);
+       }
     };
    update = async (req, res, next) => {
        this.checkValidation(req);

@@ -791,36 +791,70 @@ palataDel = async(req, res, next) => {
             [Op.lte]: body.datetime2,
         };
         
-        result = await Register_kassaModel.findAll({
-            where: {
-                date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
-              },
-            include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
-            ],
-            order: [
-                ['date_time', 'ASC']
-            ]
-        })
-        result.forEach(val => {
-            if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
-                if(val.dataValues.doc_type == 'Kirim'){
-                    val.dataValues.Plaskirim = val.dataValues.price
+        if(req.body.datetime1 < req.body.datetime2){
+            result = await Register_kassaModel.findAll({
+                where: {
+                    date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+                  },
+                include: [
+                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
+                ],
+                order: [
+                    ['date_time', 'ASC']
+                ]
+            })
+            result.forEach(val => {
+                if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
+                    if(val.dataValues.doc_type == 'Kirim'){
+                        val.dataValues.Plaskirim = val.dataValues.price
+                    }
+                    else{
+                    val.dataValues.PlasChiqim = val.dataValues.price
+                    }
                 }
                 else{
-                val.dataValues.PlasChiqim = val.dataValues.price
+                    if(val.dataValues.doc_type != 'chiqim'){
+                        val.dataValues.Nahdkirim = val.dataValues.price
+                    }
+                    else{
+                    val.dataValues.NahdChiqim = val.dataValues.price
+                    }
                 }
-            }
-            else{
-                if(val.dataValues.doc_type != 'chiqim'){
-                    val.dataValues.Nahdkirim = val.dataValues.price
-                }
-                else{
-                val.dataValues.NahdChiqim = val.dataValues.price
-                }
-            }
-        })
+            })
         res.send(result);
+        }
+        else{
+            result = await Register_kassaModel.findAll({
+                where: {
+                    date_time: {[Op.lt]: body.datetime1},
+                  },
+                include: [
+                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
+                ],
+                order: [
+                    ['date_time', 'ASC']
+                ]
+            })
+            result.forEach(val => {
+                if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
+                    if(val.dataValues.doc_type == 'Kirim'){
+                        val.dataValues.Plaskirim = val.dataValues.price
+                    }
+                    else{
+                    val.dataValues.PlasChiqim = val.dataValues.price
+                    }
+                }
+                else{
+                    if(val.dataValues.doc_type != 'chiqim'){
+                        val.dataValues.Nahdkirim = val.dataValues.price
+                    }
+                    else{
+                    val.dataValues.NahdChiqim = val.dataValues.price
+                    }
+                }
+            })
+        res.send(result);
+        }
     }
     
     kassa = async (req, res, next) => {
@@ -1302,7 +1336,7 @@ palataDel = async(req, res, next) => {
             },
                 {model: PatientModel, as: 'patient', attributes: ['fullname']},
             ],
-            // group:['room_id'],
+            group:['room_id'],
             limit: 100,
             order: [
                 ['number', 'ASC']
