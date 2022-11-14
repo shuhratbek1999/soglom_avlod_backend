@@ -42,6 +42,9 @@ exports.up = function(db) {
     },
     doctor_id:{
       type: 'int'
+    },
+    place: {
+      type: 'string'
     }
   });
 };

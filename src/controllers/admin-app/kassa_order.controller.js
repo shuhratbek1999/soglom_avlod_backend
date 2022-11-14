@@ -68,7 +68,8 @@ class Kassa_orderController {
         "pay_type": pay_type,
         "price": req.body.price,    
         "type": req.body.type,
-        "doc_type": 'chiqim'
+        "doc_type": 'chiqim',
+        "place": "kassa Order"
     })
        res.status(200).send({
         error: false,
@@ -110,7 +111,8 @@ class Kassa_orderController {
         "pay_type": pay_type,
         "price": req.body.price,    
         "type": req.body.type,
-        "doc_type": 'chiqim'
+        "doc_type": 'chiqim',
+        "place": "kassa Order"
     })
     res.status(200).send({
         error: false,

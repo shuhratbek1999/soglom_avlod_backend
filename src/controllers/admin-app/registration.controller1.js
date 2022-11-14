@@ -528,7 +528,8 @@ palataDel = async(req, res, next) => {
                 "pay_type": element.pay_type,
                 "price": element.summa,    
                 "type": type,
-                "doc_type": 'Kirim'
+                "doc_type": 'Kirim',
+                "place": "registration"
             })
             // setTimeout(() => {
             //     Registration_pay_arxivModel.create({
