@@ -80,7 +80,7 @@ class UplateController {
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id, 
-                    "doctor_id": model.id,
+                    "doctor_id": val.doctor_id,
                     "doc_type": 'chiqim' 
              })
             } else if(val.inspection_category_id != 0){
@@ -106,6 +106,7 @@ class UplateController {
     });
    }
    update = async (req, res, next) => {
+    let data =Math.floor(new Date().getTime() / 1000);
        this.checkValidation(req);
     const model = await UplataModel.findOne({
         where:{
@@ -119,6 +120,70 @@ class UplateController {
     model.type = req.body.type;
     model.date_time = req.body.date_time;
     model.save();
+    await Register_kassaModel.destroy({
+        where:{
+           doctor_id: req.params.id,
+           doc_type: 'chiqim'
+        }
+    })
+    const ModelUser = await UserModel.findAll({
+        where:{
+            id: req.body.user_id
+        },
+        raw: true
+    })
+       let pay_type = null;
+       if(req.body.type == 0){
+          pay_type = "Naqt"
+       }
+       else{
+        pay_type = "Plastik"
+       }
+     await  Register_kassaModel.create({
+          "date_time": data,
+          "type": req.body.type,
+          "price": req.body.price,
+          "pay_type": pay_type,
+          "doc_type": "chiqim",
+          "doctor_id": model.id,
+          "place": "uplata"
+       })
+        ModelUser.forEach(async val => {
+            if(val.doctor_id != 0){
+                await register_doctorModel.destroy({
+                    where:{
+                        doc_id: req.params.id,
+                        doc_type: 'chiqim'
+                    }
+                })
+                register_doctorModel.create({
+                    "date_time": data,
+                    "type": req.body.type,
+                    "price": req.body.price,
+                    "doc_id": model.id, 
+                    "doctor_id": val.doctor_id,
+                    "doc_type": 'chiqim' 
+             })
+            } else if(val.inspection_category_id != 0){
+                await Register_inspectionModel.destroy({
+                    where:{
+                        doc_id: req.params.id,
+                        doc_type: 'chiqim'
+                    }
+                })
+                Register_inspectionModel.create({
+                    "date_time": data,
+                    "type": req.body.type,
+                    "price": req.body.price,
+                    "doc_id": model.id,
+                    "user_id": req.body.user_id,
+                    "inspection_id": val.inspection_category_id,
+                    "inspection_category": val.inspection_category_id,
+                    "skidka": 0,
+                    "doc_type": 'chiqim'
+                  })
+            }
+        })
     res.status(200).send({
         error: false,
         error_code: 200,
