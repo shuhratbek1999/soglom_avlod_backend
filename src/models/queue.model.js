@@ -61,6 +61,6 @@ doctor_id:{
 QueueModel.belongsTo(RoomModel, {as: 'room', foreignKey: 'room_id'})
 QueueModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 QueueModel.hasMany(DoctorModel, {as: "doctor", foreignKey: 'id'})
-QueueModel.belongsTo(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
-QueueModel.belongsTo(Registration_inspectionModel, {as:'registration_inspection', foreignKey: 'registration_id'})
+QueueModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
+QueueModel.hasMany(Registration_inspectionModel, {as:'registration_inspection', foreignKey: 'registration_id'})
 module.exports = QueueModel;
