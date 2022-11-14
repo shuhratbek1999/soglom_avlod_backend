@@ -40,6 +40,12 @@ exports.up = function(db) {
     },
     date_time:{
       type: 'int'
+    },
+    umumiy_sum:{
+      type: 'decimal'
+    },
+    backlog:{
+      type: 'decimal'
     }
   });
 };

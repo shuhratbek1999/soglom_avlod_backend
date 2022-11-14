@@ -501,7 +501,9 @@ palataDel = async(req, res, next) => {
                 "registration_id": model.id,
                 "pay_type": element.pay_type,
                 "summa": element.summa,
-                "discount": element.discount
+                "discount": element.discount,
+                "umumiy_sum": element.umumiy_sum,
+                "backlog": element.backlog
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
