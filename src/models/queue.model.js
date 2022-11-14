@@ -6,6 +6,7 @@ const DoctorModel = require('./doctor.model');
 const register_doctorModel = require('./register_doctor.model');
 const Registration_doctorModel = require('./registration_doctor.model');
 const Registration_inspectionModel = require('./registration_inspection.model');
+const RegistrationModel = require('./registration.model');
 class QueueModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -61,6 +62,6 @@ doctor_id:{
 QueueModel.belongsTo(RoomModel, {as: 'room', foreignKey: 'room_id'})
 QueueModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 QueueModel.hasMany(DoctorModel, {as: "doctor", foreignKey: 'id'})
-QueueModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
-QueueModel.hasMany(Registration_inspectionModel, {as:'registration_inspection', foreignKey: 'registration_id'})
+QueueModel.belongsTo(RegistrationModel, {as: 'registration', foreignKey: 'patient_id'})
+// QueueModel.hasMany(Registration_inspectionModel, {as:'registration_inspection', foreignKey: 'registration_id'})
 module.exports = QueueModel;
