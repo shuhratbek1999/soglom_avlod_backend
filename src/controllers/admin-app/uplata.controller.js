@@ -70,7 +70,7 @@ class UplateController {
           "price": req.body.price,
           "pay_type": pay_type,
           "doc_type": "chiqim",
-          "doctor_id": req.body.user_id
+          "doctor_id": model.id
        })
         ModelUser.forEach(val => {
             if(val.doctor_id != 0){
