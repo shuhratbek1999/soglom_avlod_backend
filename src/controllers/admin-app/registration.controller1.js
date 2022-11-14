@@ -192,9 +192,10 @@ class RegistrationController {
                 include: [
                     { model: UserModel,as: 'users'}
                 ],
-
             },
                 { model: PatientModel,as: 'patient'},
+                {model: Registration_doctorModel, as: 'registration_doctor', attributes: ['price']},
+                {model: Registration_inspectionModel, as: 'registration_inspection', attributes: ['price']}
             ],
             order: [
                 ['number', 'ASC']
