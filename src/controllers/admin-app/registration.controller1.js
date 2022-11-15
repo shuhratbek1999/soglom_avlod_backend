@@ -44,7 +44,7 @@ class RegistrationController {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
                 {
-                    model: PatientModel, as: 'patient', attributes: ['fullname']
+                    model: PatientModel, as: 'patient'
                 },
 
                 {
@@ -981,8 +981,6 @@ palataDel = async(req, res, next) => {
                         }
                     ]
                 },
-
-
                 {model: PatientModel, as: 'patient', 
                 where:{ 
                     fullname:{  [Op.like]: '%'+req.body.name+'%'}
