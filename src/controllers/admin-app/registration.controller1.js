@@ -369,6 +369,12 @@ palataDel = async(req, res, next) => {
         var dds;
         for(var element of registration_inspection){
             var {registration_inspection_child,registration_inspection, ...data} = element;
+            let user = await UserModel.findOne({
+                where:{
+                  id: data.user_id
+                },
+                raw: true
+            })
             data.registration_id=model.id;
           let date =Math.floor(new Date().getTime() / 1000);
             dds={
@@ -405,12 +411,6 @@ palataDel = async(req, res, next) => {
             //         'status':Models.status
             //      })
             //   }, 86400);
-              let user = await UserModel.findOne({
-                  where:{
-                    id: data.user_id
-                  },
-                  raw: true
-              })
                 function isHave(item) { 
                     return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
@@ -568,7 +568,7 @@ palataDel = async(req, res, next) => {
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
-                "price":Math.floor((data.price * user.percent)/100),
+                "price":data.price,
                 "status": model.status,
                 "text":data.text,
                 "date_time": element.date_time
@@ -578,7 +578,7 @@ palataDel = async(req, res, next) => {
             RegisterDoctorModel.create({
                 "date_time": date_time,
                 "type": data.text,
-                "price": data.price,
+                "price": Math.floor((data.price * user.percent)/100),
                 "doc_id": model.id, 
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim'
@@ -1033,7 +1033,7 @@ palataDel = async(req, res, next) => {
                             }
                         ]
                     },
-                    {model: PatientModel, as:'patient', attributes:['fullname']}
+                    {model: PatientModel, as:'patient'}
                 ]
             })
             res.send({
