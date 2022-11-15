@@ -26,6 +26,7 @@ router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyoz
 router.post('/search', auth(),  awaitHandlerFactory(registrationControl.search));
 router.post('/searchs', auth(),  awaitHandlerFactory(registrationControl.searchs));
 router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
+router.post('/inspectionSverka', auth(),  awaitHandlerFactory(registrationControl.InspectionSverka));
 router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.post('/kassasverka', auth(),  awaitHandlerFactory(registrationControl.kassaSverka));

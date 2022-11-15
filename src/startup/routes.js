@@ -23,6 +23,7 @@ const UploadRouter = require('../routes/admin-app/upload.route')
 const imgRouter = require('../routes/admin-app/upload_img.route')
 const arxiv = require('../routes/admin-app/registration_arxiv.route')
 const uplata = require('../routes/admin-app/uplate')
+const shablon_Doctor = require('../routes/admin-app/shablon_doctor.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -54,6 +55,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/uploads`, imgRouter);
         app.use(`/api/v1/admin-app/arxiv`, arxiv);
         app.use(`/api/v1/admin-app/uplata`, uplata);
+        app.use(`/api/v1/admin-app/shablon_doctor`, shablon_Doctor);
 
         app.use(`/href`, express.static('upload'));
 

@@ -46,6 +46,9 @@ exports.up = function(db) {
     },
     backlog:{
       type: 'decimal'
+    },
+    comment:{
+      type: 'string'
     }
   });
 };

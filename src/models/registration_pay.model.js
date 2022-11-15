@@ -29,6 +29,9 @@ summa:{
       type: DataTypes.DECIMAL(),
       allowNull: false
   },
+  comment:{
+    type: DataTypes.STRING()
+},
   date_time:{
       type: DataTypes.INTEGER,
       defaultValue: Math.floor(new Date().getTime() / 1000)
