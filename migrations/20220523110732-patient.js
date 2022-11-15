@@ -68,6 +68,10 @@ exports.up = function(db) {
       type: 'string',
       notNull: true
     },
+    citizen:{
+      type: 'string',
+      notNull: true
+    }
   })
 };
 
