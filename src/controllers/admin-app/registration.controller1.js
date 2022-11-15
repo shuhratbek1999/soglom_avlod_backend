@@ -382,7 +382,7 @@ palataDel = async(req, res, next) => {
                 "user_id": data.user_id,
                 "registration_id":model.id,
                 "type":data.type,
-                "price": Math.floor((model.summa * data.price)/100),
+                "price": data.price,
                 "category_id":data.category_id,
                 'status':model.status,
                 "date_time": date,
