@@ -387,7 +387,7 @@ palataDel = async(req, res, next) => {
             Register_inspectionModel.create({
                 "date_time": date_time,
                 "type": data.type,
-                "price": data.price,
+                "price": Math.floor((data.price * user.percent)/100),
                 "doc_id": data.registration_id,
                 "user_id": data.user_id,
                 "inspection_id": data.inspection_id,
@@ -568,13 +568,12 @@ palataDel = async(req, res, next) => {
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
-                "price":data.price,
+                "price":Math.floor((data.price * user.percent)/100),
                 "status": model.status,
                 "text":data.text,
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
-            console.log(data);
             var date_time = Math.floor(new Date().getTime() / 1000);
             RegisterDoctorModel.create({
                 "date_time": date_time,
@@ -984,7 +983,7 @@ palataDel = async(req, res, next) => {
                 },
 
 
-                {model: PatientModel, as: 'patient', attributes: ['fullname'], 
+                {model: PatientModel, as: 'patient', 
                 where:{ 
                     fullname:{  [Op.like]: '%'+req.body.name+'%'}
                 }
