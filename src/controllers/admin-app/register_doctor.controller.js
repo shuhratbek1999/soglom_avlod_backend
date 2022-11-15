@@ -100,62 +100,85 @@ class RegisterDoctorController {
         }
     };
 
-    sverka = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        if(body.doctor_id !== null){
-            query.id = {[Op.eq] : body.doctor_id }
-            queryx.doctor_id = {[Op.eq]: body.doctor_id}
-        };
+    // sverka = async (req, res, next) => {
+    //     this.checkValidation(req);
+    //     let query = {}, queryx = {};
+    //     let body = req.body;
+    //     if(body.doctor_id !== null){
+    //         query.id = {[Op.eq] : body.doctor_id }
+    //         queryx.doctor_id = {[Op.eq]: body.doctor_id}
+    //     };
 
-       if(body.datetime1 < body.datetime2){
-        let result = await register_doctorModel.findAll({
-            attributes: [
-                 'id', "doc_id", "date_time", "type", "doc_type", "price"
-            ],
-            include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], required: true},
-            ],
-            where: {
-              date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
-              doctor_id: body.doctor_id
-            }
-        })
-        result.forEach(val => {
-            if(val.dataValues.doc_type == 'kirim'){
-                val.dataValues.kirim = val.dataValues.price
-            }
-            else{
-                val.dataValues.chiqim = val.dataValues.price
-            }
-        })
-        res.send(result);
-       }
-       else{
-        let result = await register_doctorModel.findAll({
-            attributes: [
-                 'id', "doc_id", "date_time", "type", "doc_type", "price"
-            ],
-            include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], required: true},
-            ],
-            where: {
-              date_time: {[Op.lt]: body.datetime1},
-              doctor_id: body.doctor_id
-            }
-        })
-        result.forEach(val => {
-            if(val.dataValues.doc_type == 'kirim'){
-                val.dataValues.kirim = val.dataValues.price
-            }
-            else{
-                val.dataValues.chiqim = val.dataValues.price
-            }
-        })
-        res.send(result);
-       }
+    //    if(body.datetime1 < body.datetime2){
+    //     let result = await register_doctorModel.findAll({
+    //         attributes: [
+    //              'id', "doc_id", "date_time", "type", "doc_type", "price"
+    //         ],
+    //         include: [
+    //             { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], required: true},
+    //         ],
+    //         where: {
+    //           date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
+    //           doctor_id: body.doctor_id
+    //         }
+    //     })
+    //     result.forEach(val => {
+    //         if(val.dataValues.doc_type == 'kirim'){
+    //             val.dataValues.kirim = val.dataValues.price
+    //         }
+    //         else{
+    //             val.dataValues.chiqim = val.dataValues.price
+    //         }
+    //     })
+    //     res.send(result);
+    //    }
+    //    else{
+    //     let result = await register_doctorModel.findAll({
+    //         attributes: [
+    //              'id', "doc_id", "date_time", "type", "doc_type", "price"
+    //         ],
+    //         include: [
+    //             { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'], required: true},
+    //         ],
+    //         where: {
+    //           date_time: {[Op.lt]: body.datetime1},
+    //           doctor_id: body.doctor_id
+    //         }
+    //     })
+    //     result.forEach(val => {
+    //         if(val.dataValues.doc_type == 'kirim'){
+    //             val.dataValues.kirim = val.dataValues.price
+    //         }
+    //         else{
+    //             val.dataValues.chiqim = val.dataValues.price
+    //         }
+    //     })
+    //     res.send(result);
+    //    }
+    // };
+
+   DoctorSverka = async (req, res, next) => {
+    this.checkValidation(req);
+    let query = {}, queryx = {};
+    let body = req.body;
+    let datetime1 = body.datetime1;
+    let datetime2 = body.datetime2;
+    if(body.doctor_id !== null){
+        query.id = {[Op.eq] : body.doctor_id }
+        queryx.doctor_id = {[Op.eq]: body.doctor_id}
     };
+    const model = await Register_DoctorModel.findAll({
+        attributes: [ 'doc_type', 'id', 'date_time',
+            [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+           [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'kirim' THEN register_doctor.price ELSE 0 END)"), 'kirim'],
+           [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'chiqim' THEN register_doctor.price ELSE 0 END)"), 'chiqim'],
+       ],  
+       where: queryx,
+       group: ['id']
+    })
+    res.send(model)
+   }
+
    update = async (req, res, next) => {
        this.checkValidation(req);
     const model = await Register_DoctorModel.findOne({

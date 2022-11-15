@@ -1154,55 +1154,27 @@ palataDel = async(req, res, next) => {
         })
         res.send(result);
     };
-    insSverka = async (req, res, next) => {
+    InspectionSverka = async (req, res, next) => {
         this.checkValidation(req);
-        let query = {}, queryx = {}, inspection = req.body.inspection_category;
+        let query = {}, queryx = {};
         let body = req.body;
-        if(body.inspection_category != null){
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.inspection_category !== null){
             query.id = {[Op.eq] : body.inspection_category }
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
-        }
-       if(body.datetime1 < body.datetime2){
-        let result = await Register_inspectionModel.findAll({
-            where: {
-                date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
-                inspection_category: body.inspection_category
-              },
-            include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
-            ]
+        };
+        const model = await Register_inspectionModel.findAll({
+            attributes: [ 'doc_type', 'id', 'date_time',
+                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+               [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'chiqim'],
+        ],
+           where: queryx,
+           group: ['id']
         })
-        result.forEach(val => {
-            if(val.dataValues.doc_type == 'kirim'){
-                val.dataValues.kirim = val.dataValues.price
-            }
-            else{
-                val.dataValues.chiqim = val.dataValues.price
-            }
-        })
-        res.send(result);
+        res.send(model)
        }
-       else{
-        let result = await Register_inspectionModel.findAll({
-            where: {
-                date_time: {[Op.lt]: body.datetime1},
-                inspection_category: body.inspection_category
-              },
-            include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id']},
-            ]
-        })
-        result.forEach(val => {
-            if(val.dataValues.doc_type == 'kirim'){
-                val.dataValues.kirim = val.dataValues.price
-            }
-            else{
-                val.dataValues.chiqim = val.dataValues.price
-            }
-        })
-        res.send(result);
-       }
-    };
     kassaAll = async (req, res, next) =>{
         const model = await Register_kassaModel.findAll({
             include:[

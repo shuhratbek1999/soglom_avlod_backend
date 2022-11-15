@@ -11,6 +11,7 @@ router.get('/all', auth(),  awaitHandlerFactory(RegisterDoctorController.getAll)
 router.get('/one/:id', auth(), awaitHandlerFactory(RegisterDoctorController.getOne));
 router.post('/create',auth(), awaitHandlerFactory(RegisterDoctorController.create));
 router.post('/sverka',auth(), awaitHandlerFactory(RegisterDoctorController.sverka));
+router.post('/sverkaDoctor',auth(), awaitHandlerFactory(RegisterDoctorController.DoctorSverka));
 router.patch('/update/:id', auth(),  awaitHandlerFactory(RegisterDoctorController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(RegisterDoctorController.delete));
 module.exports = router;
