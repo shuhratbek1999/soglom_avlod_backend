@@ -375,7 +375,8 @@ palataDel = async(req, res, next) => {
                 "inspection_id":data.inspection_id,  
                 "user_id": data.user_id,
                 "registration_id":model.id,
-                "type":data.type,"price":data.price,
+                "type":data.type,
+                "price": Math.floor((model.summa * data.price)/100),
                 "category_id":data.category_id,
                 'status':model.status,
                 "date_time": date,
@@ -508,7 +509,8 @@ palataDel = async(req, res, next) => {
                 "summa": element.summa,
                 "discount": element.discount,
                 "umumiy_sum": element.umumiy_sum,
-                "backlog": element.backlog
+                "backlog": element.backlog,
+                "comment": element.comment
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
