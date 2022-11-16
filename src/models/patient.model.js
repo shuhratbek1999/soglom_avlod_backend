@@ -55,7 +55,7 @@ birthday:{
     type:DataTypes.STRING
 },
 citizen:{
-    type: DataTypes.STRING(),
+    type: DataTypes.BOOLEAN(),
     allowNull: true
 }
 

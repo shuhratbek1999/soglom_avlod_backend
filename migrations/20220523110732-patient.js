@@ -69,7 +69,7 @@ exports.up = function(db) {
       notNull: true
     },
     citizen:{
-      type: 'string',
+      type: 'boolean',
       notNull: true
     }
   })
