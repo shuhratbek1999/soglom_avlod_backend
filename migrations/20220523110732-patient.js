@@ -71,6 +71,9 @@ exports.up = function(db) {
     citizen:{
       type: 'boolean',
       notNull: true
+    },
+    percent:{
+      type: 'decimal'
     }
   })
 };

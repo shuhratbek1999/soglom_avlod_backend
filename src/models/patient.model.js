@@ -57,6 +57,9 @@ birthday:{
 citizen:{
     type: DataTypes.BOOLEAN(),
     allowNull: true
+},
+percent:{
+    type: DataTypes.DECIMAL()
 }
 
 }, {

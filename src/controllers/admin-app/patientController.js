@@ -61,7 +61,8 @@ class PatientController {
         'gender': req.body.gender,
         'birthday': req.body.birthday,
         'imtiyoz_type': req.body.imtiyoz_type,
-        "citizen": req.body.citizen
+        "citizen": req.body.citizen,
+        "percent": req.body.percent
        });
        res.status(200).send({
         error: false,
@@ -89,6 +90,8 @@ class PatientController {
     model.gender = req.body.gender;
     model.addres = req.body.addres;
     model.birthday = req.body.birthday;
+    model.percent = req.body.percent;
+    model.citizen = req.body.citizen;
     model.save();
     res.status(200).send({
         error: false,
