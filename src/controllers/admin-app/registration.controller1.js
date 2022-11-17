@@ -1162,7 +1162,7 @@ palataDel = async(req, res, next) => {
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
         };
         const model = await Register_inspectionModel.findAll({
-            attributes: [ 'doc_type', 'id', 'date_time',
+            attributes: [ 'doc_type', 'id', 'date_time', "doc_id",
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'kirim'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'chiqim'],

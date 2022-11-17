@@ -6,6 +6,11 @@ const DoctorModel = require('../../models/doctor.model');
 const register_doctorModel = require('../../models/register_doctor.model');
 const { Op } = require("sequelize");
 const sequelize = require('sequelize');
+const Register_inspectionModel = require('../../models/register_inspection.model');
+const inspectionCategory = require('../../models/inspector_category.model');
+const UserModel = require('../../models/doctor_category.model');
+const Registration_inspectionModel = require('../../models/registration_inspection.model');
+const RegistrationModel = require('../../models/registration.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -99,7 +104,35 @@ class RegisterDoctorController {
             res.send(result);
         }
     };
-
+     
+    TekshiruvSoni = async(req, res, next) => {
+        this.checkValidation(req);
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.inspection_category !== null){
+            query.id = {[Op.eq] : body.inspection_category }  
+            queryx.inspection_category = {[Op.eq]: body.inspection_category}
+        };
+        const model = await Register_inspectionModel.findAll({
+            attributes:[
+                [sequelize.fn("COUNT", sequelize.col("registration.patient_id")), "count"]
+            ],
+            include: [
+                { model: inspectionCategory, as: 'inspection', attributes: ['name'], where: query},
+                { model: RegistrationModel, as: 'registration', attributes: ['patient_id']}
+            ],
+            where: {
+                inspection_category: {[Op.eq]: body.inspection_category},
+                date_time: {
+                    [Op.gte]: datetime1,
+                    [Op.lte]: datetime2
+                }
+            }
+        })
+        res.send(model)
+    }
     // sverka = async (req, res, next) => {
     //     this.checkValidation(req);
     //     let query = {}, queryx = {};

@@ -53,6 +53,10 @@ gender:{
 },
 birthday:{
     type:DataTypes.STRING
+},
+citizen:{
+    type: DataTypes.BOOLEAN(),
+    allowNull: true
 }
 
 }, {

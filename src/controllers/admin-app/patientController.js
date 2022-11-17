@@ -61,6 +61,7 @@ class PatientController {
         'gender': req.body.gender,
         'birthday': req.body.birthday,
         'imtiyoz_type': req.body.imtiyoz_type,
+        "citizen": req.body.citizen
        });
        res.status(200).send({
         error: false,
