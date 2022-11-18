@@ -46,6 +46,24 @@ class shablon_doctorController {
         data: model
     });
    }
+    
+   shablonDoctor = async(req, res, next) => {
+    const model = await shablon_doctorModel.findOne({
+        where:{
+            id: req.body.doctor_id
+        }
+    })
+    if(!model){
+        throw new HttpException(404, "malumot topilmadi")
+    }
+    res.send({
+        error: false,
+        error_code: 0,
+        message: 'Malumotlar chiqdi',
+        data: model
+    })
+   }
+
    update = async (req, res, next) => {
        this.checkValidation(req);
     const model = await shablon_doctorModel.findOne({
