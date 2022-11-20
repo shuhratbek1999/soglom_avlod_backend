@@ -48,7 +48,7 @@ class shablon_doctorController {
    }
     
    shablonDoctor = async(req, res, next) => {
-    const model = await shablon_doctorModel.findOne({
+    const model = await shablon_doctorModel.findAll({
         where:{
             id: req.body.doctor_id
         }
