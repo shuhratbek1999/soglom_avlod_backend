@@ -10,6 +10,7 @@ const  {shablonDoctor}  = require('../../middleware/validators/admin-app/shablon
 router.get('/all', auth(),  awaitHandlerFactory(shablonController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(shablonController.getOne));
 router.post('/create',auth(), shablonDoctor, awaitHandlerFactory(shablonController.create));
+router.post('/shablonOne',auth(), shablonDoctor, awaitHandlerFactory(shablonController.shablonDoctor));
 router.patch('/update/:id', auth(), shablonDoctor, awaitHandlerFactory(shablonController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(shablonController.delete));
 module.exports = router;
