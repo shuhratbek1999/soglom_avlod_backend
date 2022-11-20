@@ -45,6 +45,9 @@ exports.up = function(db) {
     },
     inspection_category:{
       type: 'int'
+    },
+    comment:{
+      type: 'string'
     }
   });
 };

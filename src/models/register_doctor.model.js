@@ -33,6 +33,9 @@ register_doctorModel.init({
 },
 doc_type: {
   type: DataTypes.STRING()
+},
+comment:{
+  type: DataTypes.STRING()
 }
 
 }, {

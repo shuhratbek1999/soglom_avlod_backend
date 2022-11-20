@@ -64,7 +64,7 @@ class RegisterDoctorController {
         if(body.datetime1 < body.datetime2){
             let result = await register_doctorModel.findAll({
                 attributes: [
-                     'id', "type", "date_time", "doc_id",
+                     'id', "type", "date_time", "doc_id","comment",
                      [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                     [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'kirim' THEN register_doctor.price ELSE 0 END)"), 'total_kirim'],
                     [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'chiqim' THEN register_doctor.price ELSE 0 END)"), 'total_chiqim'],
@@ -201,13 +201,21 @@ class RegisterDoctorController {
         queryx.doctor_id = {[Op.eq]: body.doctor_id}
     };
     const model = await Register_DoctorModel.findAll({
-        attributes: [ 'doc_type', 'id', 'date_time', "doc_id",
+        attributes: [ 'doc_type', 'id', 'date_time', "doc_id", "comment","doctor_id",
             [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
            [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'kirim' THEN register_doctor.price ELSE 0 END)"), 'kirim'],
            [sequelize.literal("SUM(CASE WHEN register_doctor.date_time >= " + datetime1 + " and register_doctor.date_time <= " + datetime2 + " AND register_doctor.doc_type = 'chiqim' THEN register_doctor.price ELSE 0 END)"), 'chiqim'],
        ],  
-       where: queryx,
+       where: {
+        date_time:{
+            [Op.gt]: datetime1,
+            [Op.lte]: datetime2
+        }
+       },
        group: ['id']
+    })
+    model.forEach(el => {
+        console.log(el);
     })
     res.send(model)
    }

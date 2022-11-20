@@ -40,6 +40,9 @@ inspection_category:{
 },
 doc_type:{
   type: DataTypes.STRING()
+},
+comment:{
+  type: DataTypes.STRING()
 }
 
 }, {
