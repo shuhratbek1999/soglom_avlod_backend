@@ -242,19 +242,7 @@ class RegistrationController {
         this.checkValidation(req);
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
-        // const user = await ModelModel.findAll(req.body);
-        // user.some(el => {
-        //     if(el.patient_id == data.patient_id){
-        //         console.log("salom");
-        //     }
-        // })
         const model = await ModelModel.create(data);
-    //     let Models = {};
-    //    setTimeout(() => {
-    //      let models =  arxiv.create(data)
-    //      Models = {...models}
-    //     }, 86400);
-
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
@@ -360,6 +348,62 @@ palataDel = async(req, res, next) => {
             throw new HttpException(400, 'Validation faild', errors);
         }
     }
+    #payAdd = async(model, registration_pay,  insert = true) =>{
+        if(!insert){
+            await this.#deletepay(model.id);
+            await this.#deleteKassa(model.id);
+        }
+        for(var element of registration_pay){
+            console.log(element);
+            var pay = {
+                "user_id": element.user_id,
+                "registration_id": model.id,
+                "pay_type": element.pay_type,
+                "summa": element.summa,
+                "discount": element.discount,
+                "umumiy_sum": element.umumiy_sum,
+                "backlog": element.backlog,
+                "comment": element.comment
+            }
+            await Registration_payModel.create(pay);
+            var date_time = Math.floor(new Date().getTime() / 1000);
+            
+            let type = 0, doc_type = '';
+            if(element.pay_type == 'Plastik'){
+                type = 0,
+                doc_type = 'kirim'
+            }
+            else if(element.pay_type == 'Naqt'){
+                type = 0,
+                doc_type = 'kirim'
+            }
+            else if(!element.summa){
+                 type = 1,
+                 doc_type = 'kirim'
+            }
+            else{
+                doc_type = 'kirim'
+            }
+            Register_kassaModel.create({
+                "date_time": date_time,
+                "doctor_id": model.id,
+                "pay_type": element.pay_type,
+                "price": element.summa,    
+                "type": type,
+                "doc_type": 'Kirim',
+                "place": "registration"
+            })
+            // setTimeout(() => {
+            //     Registration_pay_arxivModel.create({
+            //         "user_id": element.user_id,
+            //         "registration_id": Models.id,
+            //         "pay_type": element.pay_type,
+            //         "summa": element.summa,
+            //         "discount": element.discount      
+            //     }) 
+            // }, 86400);
+        }
+    }
 
     #inspectionadd = async(model,  registration_inspection, insert = true) => {
         if(!insert){
@@ -389,6 +433,7 @@ palataDel = async(req, res, next) => {
                 "skidka": data.skidka
             }
             const models = await Registration_inspectionModel.create(dds);
+           setTimeout(async() => {
             let pay = await Registration_payModel.findOne({
                 where:{
                     registration_id: models.dataValues.registration_id
@@ -409,7 +454,8 @@ palataDel = async(req, res, next) => {
                 "place": "Registration",
                 "comment": pay.comment
               })
-            //   setTimeout(() => {
+           }, 1000);
+            //   setTimeout(() => 
             //      Registration_inspection_arxivModel.create({
             //         "inspection_id":data.inspection_id, 
             //         "user_id": data.user_id,
@@ -503,62 +549,6 @@ palataDel = async(req, res, next) => {
 
         }
     }
-      
-    #payAdd = async(model, registration_pay,  insert = true) =>{
-        if(!insert){
-            await this.#deletepay(model.id);
-            await this.#deleteKassa(model.id);
-        }
-        for(var element of registration_pay){
-            var pay = {
-                "user_id": element.user_id,
-                "registration_id": model.id,
-                "pay_type": element.pay_type,
-                "summa": element.summa,
-                "discount": element.discount,
-                "umumiy_sum": element.umumiy_sum,
-                "backlog": element.backlog,
-                "comment": element.comment
-            }
-            await Registration_payModel.create(pay);
-            var date_time = Math.floor(new Date().getTime() / 1000);
-            
-            let type = 0, doc_type = '';
-            if(element.pay_type == 'Plastik'){
-                type = 0,
-                doc_type = 'kirim'
-            }
-            else if(element.pay_type == 'Naqt'){
-                type = 0,
-                doc_type = 'kirim'
-            }
-            else if(!element.summa){
-                 type = 1,
-                 doc_type = 'kirim'
-            }
-            else{
-                doc_type = 'kirim'
-            }
-            Register_kassaModel.create({
-                "date_time": date_time,
-                "doctor_id": model.id,
-                "pay_type": element.pay_type,
-                "price": element.summa,    
-                "type": type,
-                "doc_type": 'Kirim',
-                "place": "registration"
-            })
-            // setTimeout(() => {
-            //     Registration_pay_arxivModel.create({
-            //         "user_id": element.user_id,
-            //         "registration_id": Models.id,
-            //         "pay_type": element.pay_type,
-            //         "summa": element.summa,
-            //         "discount": element.discount      
-            //     }) 
-            // }, 86400);
-        }
-    }
 
     #doctoradd = async(model, registration_doctor, insert = true) => {
         if(!insert){
@@ -582,23 +572,25 @@ palataDel = async(req, res, next) => {
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
-         let pay = await Registration_payModel.findOne({
-                where:{
-                    registration_id: models.dataValues.registration_id
-                },
-                raw: true
-            })
-            var date_time = Math.floor(new Date().getTime() / 1000);
-            RegisterDoctorModel.create({
-                "date_time": date_time,
-                "type": data.text,
-                "price": Math.floor((data.price * user.percent)/100),
-                "doc_id": model.id, 
-                "doctor_id": data.doctor_id,
-                "doc_type": 'kirim',
-                 "place": "Registration",
-                 "comment": pay.comment
-             })
+            setTimeout(async() => {
+                let pay = await Registration_payModel.findOne({
+                    where:{
+                        registration_id: models.dataValues.registration_id
+                    },
+                    raw: true
+                })
+                var date_time = Math.floor(new Date().getTime() / 1000);
+                RegisterDoctorModel.create({
+                    "date_time": date_time,
+                    "type": data.text,
+                    "price": Math.floor((data.price * user.percent)/100),
+                    "doc_id": model.id, 
+                    "doctor_id": data.doctor_id,
+                    "doc_type": 'kirim',
+                     "place": "Registration",
+                     "comment": pay.comment
+                 })
+            }, 1000);
             //  setTimeout(() => {
             //     Registration_doctor_arxivModel.create({
             //         "doctor_id":element.doctor_id,
@@ -735,7 +727,6 @@ palataDel = async(req, res, next) => {
     }
     #deleteDoctor = async(doc_id) =>
      {
-        console.log("salom");
         await RegisterDoctorModel.destroy({where: {doc_id: doc_id}})
     }
     #deleteIns = async(doc_id) =>
@@ -1178,7 +1169,7 @@ palataDel = async(req, res, next) => {
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
         };
         const model = await Register_inspectionModel.findAll({
-            attributes: [ 'doc_type', 'id', 'date_time', "doc_id","comment","inspection_id",
+            attributes: [ 'doc_type', 'id', 'date_time', "doc_id","comment","inspection_id","place",
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'kirim'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'chiqim'],
