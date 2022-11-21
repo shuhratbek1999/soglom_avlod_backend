@@ -389,6 +389,12 @@ palataDel = async(req, res, next) => {
                 "skidka": data.skidka
             }
             const models = await Registration_inspectionModel.create(dds);
+            let pay = await Registration_payModel.findOne({
+                where:{
+                    registration_id: models.dataValues.registration_id
+                },
+                raw: true
+            })
             var date_time = Math.floor(new Date().getTime() / 1000);
             Register_inspectionModel.create({
                 "date_time": date_time,
@@ -400,7 +406,8 @@ palataDel = async(req, res, next) => {
                 "inspection_category": data.category_id,
                 "skidka": data.skidka,
                 "doc_type": 'kirim',
-                "comment": "Registration"
+                "place": "Registration",
+                "comment": pay.comment
               })
             //   setTimeout(() => {
             //      Registration_inspection_arxivModel.create({
@@ -575,6 +582,12 @@ palataDel = async(req, res, next) => {
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
+         let pay = await Registration_payModel.findOne({
+                where:{
+                    registration_id: models.dataValues.registration_id
+                },
+                raw: true
+            })
             var date_time = Math.floor(new Date().getTime() / 1000);
             RegisterDoctorModel.create({
                 "date_time": date_time,
@@ -583,7 +596,8 @@ palataDel = async(req, res, next) => {
                 "doc_id": model.id, 
                 "doctor_id": data.doctor_id,
                 "doc_type": 'kirim',
-                 "comment": "Registration"
+                 "place": "Registration",
+                 "comment": pay.comment
              })
             //  setTimeout(() => {
             //     Registration_doctor_arxivModel.create({

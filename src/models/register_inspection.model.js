@@ -43,6 +43,9 @@ doc_type:{
 },
 comment:{
   type: DataTypes.STRING()
+},
+place:{
+  type:DataTypes.STRING()
 }
 
 }, {

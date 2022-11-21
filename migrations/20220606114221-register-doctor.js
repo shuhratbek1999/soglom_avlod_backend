@@ -43,6 +43,9 @@ exports.up = function(db) {
     },
     comment:{
       type: 'string'
+    },
+    place:{
+      type: 'string'
     }
   });
 };

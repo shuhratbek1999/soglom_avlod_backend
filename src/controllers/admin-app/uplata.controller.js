@@ -82,7 +82,7 @@ class UplateController {
                     "doc_id": model.id, 
                     "doctor_id": val.doctor_id,
                     "doc_type": 'chiqim',
-                    "comment": "Oplata"
+                    "place": "Oplata"
              })
             } else if(val.inspection_category_id != 0){
                 Register_inspectionModel.create({
@@ -95,7 +95,7 @@ class UplateController {
                     "inspection_category": val.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'chiqim',
-                    "comment": "Oplata"
+                    "place": "Oplata"
                   })
             }
         })
@@ -165,7 +165,7 @@ class UplateController {
                     "doc_id": model.id, 
                     "doctor_id": val.doctor_id,
                     "doc_type": 'chiqim',
-                    "comment": "Oplata"
+                    "place": "Oplata"
              })
             } else if(val.inspection_category_id != 0){
                 await Register_inspectionModel.destroy({
@@ -184,7 +184,7 @@ class UplateController {
                     "inspection_category": val.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'chiqim',
-                    "comment": "Oplata"
+                    "place": "Oplata"
                   })
             }
         })
