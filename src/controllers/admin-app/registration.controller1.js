@@ -440,20 +440,38 @@ palataDel = async(req, res, next) => {
                 },
                 raw: true
             })
-            var date_time = Math.floor(new Date().getTime() / 1000);
-            Register_inspectionModel.create({
-                "date_time": date_time,
-                "type": data.type,
-                "price": Math.floor((data.price * user.percent)/100),
-                "doc_id": data.registration_id,
-                "user_id": data.user_id,
-                "inspection_id": data.inspection_id,
-                "inspection_category": data.category_id,
-                "skidka": data.skidka,
-                "doc_type": 'kirim',
-                "place": "Registration",
-                "comment": pay.comment
-              })
+            if(pay != null){
+                var date_time = Math.floor(new Date().getTime() / 1000);
+                Register_inspectionModel.create({
+                    "date_time": date_time,
+                    "type": data.type,
+                    "price": Math.floor((data.price * user.percent)/100),
+                    "doc_id": data.registration_id,
+                    "user_id": data.user_id,
+                    "inspection_id": data.inspection_id,
+                    "inspection_category": data.category_id,
+                    "skidka": data.skidka,
+                    "doc_type": 'kirim',
+                    "place": "Registration",
+                    "comment": pay.comment
+                  })
+            }
+            else{
+                var date_time = Math.floor(new Date().getTime() / 1000);
+                Register_inspectionModel.create({
+                    "date_time": date_time,
+                    "type": data.type,
+                    "price": Math.floor((data.price * user.percent)/100),
+                    "doc_id": data.registration_id,
+                    "user_id": data.user_id,
+                    "inspection_id": data.inspection_id,
+                    "inspection_category": data.category_id,
+                    "skidka": data.skidka,
+                    "doc_type": 'kirim',
+                    "place": "Registration",
+                    "comment": ""
+                  })
+            }
            }, 1000);
             //   setTimeout(() => 
             //      Registration_inspection_arxivModel.create({
@@ -579,7 +597,21 @@ palataDel = async(req, res, next) => {
                     },
                     raw: true
                 })
-                var date_time = Math.floor(new Date().getTime() / 1000);
+                if(pay != null){
+                    var date_time = Math.floor(new Date().getTime() / 1000);
+                    RegisterDoctorModel.create({
+                        "date_time": date_time,
+                        "type": data.text,
+                        "price": Math.floor((data.price * user.percent)/100),
+                        "doc_id": model.id, 
+                        "doctor_id": data.doctor_id,
+                        "doc_type": 'kirim',
+                         "place": "Registration",
+                         "comment": pay.comment
+                     })
+                }
+                else{
+                    var date_time = Math.floor(new Date().getTime() / 1000);
                 RegisterDoctorModel.create({
                     "date_time": date_time,
                     "type": data.text,
@@ -588,8 +620,10 @@ palataDel = async(req, res, next) => {
                     "doctor_id": data.doctor_id,
                     "doc_type": 'kirim',
                      "place": "Registration",
-                     "comment": pay.comment
+                     "comment": ""
                  })
+                }
+                
             }, 1000);
             //  setTimeout(() => {
             //     Registration_doctor_arxivModel.create({
