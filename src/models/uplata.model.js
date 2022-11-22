@@ -33,7 +33,7 @@ type:{
   type: DataTypes.INTEGER
 },
 date_time:{
-  type: DataTypes.INTEGER(),
+  type: DataTypes.STRING(),
   allowNullL: true
 }
 
