@@ -36,7 +36,7 @@ Registration_doctorModel.init({
       allowNull: false
 },
 date_time:{
-  type: DataTypes.INTEGER(),
+  type: DataTypes.STRING(),
   allowNull: false
 }
 }, {

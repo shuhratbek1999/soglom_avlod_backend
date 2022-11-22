@@ -40,7 +40,7 @@ exports.up = function(db) {
       type: 'string',
     },
     date_time:{
-      type: 'int',
+      type: 'string',
       notNull: true
     }
   });
