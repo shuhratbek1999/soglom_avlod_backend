@@ -48,7 +48,7 @@ exports.up = function(db) {
       length: 20
     },
     date_time:{
-      type: 'int',
+      type: 'string',
       notNull: true
     },
     skidka:{

@@ -44,7 +44,7 @@ Registration_inspectionModel.init({
       allowNull: false
   },
   date_time:{
-    type: DataTypes.INTEGER(),
+    type: DataTypes.STRING(),
     allowNull: false
   },
   skidka:{
