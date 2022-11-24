@@ -847,8 +847,16 @@ palataDel = async(req, res, next) => {
                 where: {
                     date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
                   },
+                  include:[
+                    {model: RegistrationModel, as: 'registration', attributes: ['id'],
+                include:[
+                    {model: Registration_doctorModel, as: 'registration_doctor', attributes: ['doctor_id'],
                 include: [
-                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
+                    {model: DoctorModel, as: 'doctor', attributes: ['name']}
+                ]
+                }
+                ]
+                }
                 ],
                 order: [
                     ['date_time', 'ASC']
@@ -879,8 +887,16 @@ palataDel = async(req, res, next) => {
                 where: {
                     date_time: {[Op.lt]: body.datetime1},
                   },
+                  include:[
+                    {model: RegistrationModel, as: 'registration', attributes: [],
+                include:[
+                    {model: Registration_doctorModel, as: 'registration_doctor', attributes: [],
                 include: [
-                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id']},
+                    {model: DoctorModel, as: 'doctor', attributes: ['name']}
+                ]
+                }
+                ]
+                }
                 ],
                 order: [
                     ['date_time', 'ASC']
