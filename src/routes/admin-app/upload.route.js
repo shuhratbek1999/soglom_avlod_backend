@@ -3,6 +3,7 @@ const router = express.Router();
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
 const multer = require('multer');
 const path = require('path');
+const { port } = require('../../startup/config')
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './upload/');  
@@ -32,7 +33,7 @@ var upload = multer({
 
 router.post('/file', upload, awaitHandlerFactory(async (req, res, next) => {    
     res.json({
-        file: `http://localhost:${port}/href/${request.file.filename}`
+        file: `http://localhost:${port}/href/${req.file.filename}`
     })
 }));
 
