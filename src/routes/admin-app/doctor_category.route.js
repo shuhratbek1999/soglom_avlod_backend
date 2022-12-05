@@ -9,7 +9,7 @@ const  {doctor_categoryValidate}  = require('../../middleware/validators/admin-a
 
 router.get('/all', auth(), awaitHandlerFactory(doctor_categoryController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(doctor_categoryController.getOne));
-router.post('/create', auth(), doctor_categoryValidate,  awaitHandlerFactory(doctor_categoryController.create));
-router.patch('/update/:id', auth(), doctor_categoryValidate, awaitHandlerFactory(doctor_categoryController.update));
+router.post('/create', auth(Role.Admin, Role.Dasturchi, Role.Shifokor), doctor_categoryValidate,  awaitHandlerFactory(doctor_categoryController.create));
+router.patch('/update/:id', auth(Role.Admin, Role.Dasturchi, Role.Shifokor), doctor_categoryValidate, awaitHandlerFactory(doctor_categoryController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(doctor_categoryController.delete));
 module.exports = router;

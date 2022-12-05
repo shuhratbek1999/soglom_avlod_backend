@@ -7,9 +7,9 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 
 const  {inspection_id}  = require('../../middleware/validators/admin-app/inspectionValidator.middleware');
 
-router.get('/all', awaitHandlerFactory(inspector_categoryController.getAll));
-router.get('/one/:id', auth(), awaitHandlerFactory(inspector_categoryController.getOne));
-router.post('/create', auth(), inspection_id, awaitHandlerFactory(inspector_categoryController.create));
-router.patch('/update/:id', auth(), inspection_id, awaitHandlerFactory(inspector_categoryController.update));
-router.delete('/delete/:id', auth(), awaitHandlerFactory(inspector_categoryController.delete));
+router.get('/all',auth(Role.Admin, Role.Dasturchi, Role.Loborant), awaitHandlerFactory(inspector_categoryController.getAll));
+router.get('/one/:id', auth(Role.Admin, Role.Dasturchi, Role.Loborant), awaitHandlerFactory(inspector_categoryController.getOne));
+router.post('/create', auth(Role.Admin, Role.Dasturchi, Role.Loborant), inspection_id, awaitHandlerFactory(inspector_categoryController.create));
+router.patch('/update/:id', auth(Role.Admin, Role.Dasturchi, Role.Loborant), inspection_id, awaitHandlerFactory(inspector_categoryController.update));
+router.delete('/delete/:id', auth(Role.Admin, Role.Dasturchi, Role.Loborant), awaitHandlerFactory(inspector_categoryController.delete));
 module.exports = router;

@@ -9,8 +9,7 @@ const storage = multer.diskStorage({
     },
     filename: function(req, file, cb){
         console.log(req.body);
-        req.body.href = new Date().toISOString().replace(/:/g, '-') + path.extname(file.originalname);
-        cb(null, req.body.href);
+        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
     }
 })
 
@@ -32,7 +31,9 @@ var upload = multer({
 }).single('href');
 
 router.post('/file', upload, awaitHandlerFactory(async (req, res, next) => {    
-    res.status(201).send(req.body.href);
+    response.json({
+        file: `http://localhost:${port}/href/${request.file.filename}`
+    })
 }));
 
 

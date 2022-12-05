@@ -10,7 +10,7 @@ const  {registrationValidate}  = require('../../middleware/validators/admin-app/
 
 router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
 router.get('/register_kassa', auth(), awaitHandlerFactory(registrationControl.registerAll));
-router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
+router.get('/queue', auth(Role.Admin, Role.Dasturchi, Role.Shifokor, Role.Kasser), awaitHandlerFactory(registrationControl.queueAll));
 router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll));
 router.get('/directAll', auth(), awaitHandlerFactory(registrationControl.directAll));
 router.post('/direct', auth(), awaitHandlerFactory(registrationControl.direct));
@@ -19,7 +19,7 @@ router.get('/one_arxiv/:id', auth(), awaitHandlerFactory(registrationControl.get
 router.get('/all_arxiv', auth(), awaitHandlerFactory(registrationControl.getAll_arxiv));
 router.get('/directOne/:id', auth(), awaitHandlerFactory(registrationControl.directOne));
 router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
-router.post('/create', auth(), registrationValidate, awaitHandlerFactory(registrationControl.create));
+router.post('/create', auth(Role.Admin, Role.Dasturchi, Role.Shifokor, Role.Kasser), registrationValidate, awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));
@@ -32,8 +32,8 @@ router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
 router.post('/kassasverka', auth(),  awaitHandlerFactory(registrationControl.kassaSverka));
 router.post('/directhisobot', auth(),  awaitHandlerFactory(registrationControl.directHisobot));
 router.post('/directSverka', auth(),  awaitHandlerFactory(registrationControl.directSverka));
-router.patch('/update/:id', auth(), registrationValidate, awaitHandlerFactory(registrationControl.update));
+router.patch('/update/:id', auth(Role.Admin, Role.Dasturchi, Role.Shifokor, Role.Kasser), registrationValidate, awaitHandlerFactory(registrationControl.update));
 router.patch('/directUpdate/:id', auth(), awaitHandlerFactory(registrationControl.directUpdate));
-router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.deleted));
+router.delete('/delete/:id', auth(Role.Admin, Role.Dasturchi, Role.Shifokor, Role.Kasser), awaitHandlerFactory(registrationControl.deleted));
 router.delete('/direct/:id', auth(), awaitHandlerFactory(registrationControl.directDelete));
 module.exports = router;
