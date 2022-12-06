@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('Registration_doctor', {
+  return db.createTable('registration_doctor', {
     id: { 
       type: 'int', 
       primaryKey: true, 
@@ -47,7 +47,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return db.dropTable('Registration_doctor');
+  return db.dropTable('registration_doctor');
 };
 
 exports._meta = {
