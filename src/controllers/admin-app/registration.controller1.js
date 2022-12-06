@@ -11,6 +11,7 @@ const Registration_inspection_childModel = require('../../models/registration_in
 const Registration_doctorModel = require('../../models/registration_doctor.model');
 const Registration_recipeModel = require('../../models/registration_recipe.model');
 const Registration_filesModel = require('../../models/registration_files.model');
+const Register_mkb = require('../../models/register_mkb.model');
 const register_palataModel = require('../../models/register_palata.model');
 const Register_inspectionModel = require('../../models/register_inspection.model');
 const RegisterDoctorModel = require('../../models/register_doctor.model');
@@ -34,7 +35,8 @@ const Registration_doctor_arxivModel = require('../../models/registration_doctor
 const Registration_recipe_arxivModel = require('../../models/registration_recipe_arxiv.model');
 const Registration_files_arxivModel = require('../../models/registration_files_arxiv.model');
 const RegistrationModel = require('../../models/registration.model');
-const moment = require('moment')
+const moment = require('moment');
+const register_mkb = require('../../models/register_mkb.model');
 class RegistrationController {
     q=[];
     getAll = async (req, res, next) => {
@@ -46,7 +48,9 @@ class RegistrationController {
                 {
                     model: PatientModel, as: 'patient'
                 },
-
+                {
+                    model: register_mkb, as: 'register_mkb'
+                },
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
                     include:[
@@ -88,6 +92,9 @@ class RegistrationController {
                     {model: palataModel, as: 'palatas', attributes: ['name']}
                   ]
                 },  
+                {
+                    model: register_mkb, as: 'register_mkb'
+                },
                 { model: Registration_doctorModel,as: 'registration_doctor', 
                     include : [
                         { model: Registration_recipeModel, as: 'registration_recipe',
@@ -240,7 +247,7 @@ class RegistrationController {
 
     create = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, registration_tashxis, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
         if (!model) {
@@ -251,6 +258,7 @@ class RegistrationController {
         await this.#filesadd(model, registration_files);
         await this.#palataadd(model, registration_palata);
         await this.#payAdd(model, registration_pay);
+        await this.#tashxisAdd(model, registration_tashxis);
         await this.#queue();
         res.status(200).send({
             error: false,
@@ -263,7 +271,7 @@ class RegistrationController {
 
     update = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, registration_tashxis, ...data} = req.body;
         var id = parseInt(req.params.id);
         var model = await ModelModel.findOne({where : {id: id}})
 
@@ -289,6 +297,7 @@ class RegistrationController {
             await this.#filesadd(model, registration_files,false);
             await this.#palataadd(model, registration_palata,false);
             await this.#payAdd(model, registration_pay,false);
+            await this.#tashxisAdd(model, registration_tashxis,false);
             await this.#queue(false);
             res.status(200).send({
                 error: false,
@@ -334,6 +343,7 @@ palataDel = async(req, res, next) => {
         await this.#deleteFiles(id);
         await this.#deletePalata(id);
         await this.#deletepay(id);
+        await this.#deleteTashxis(id);
         if (!result) {
             throw new HttpException(404, 'Not found');
         }
@@ -695,12 +705,24 @@ palataDel = async(req, res, next) => {
         for(var element of registration_files){
             asas={'registration_id':model.id,"href":element.href};
             await Registration_filesModel.create(asas); 
-            // setTimeout(() => {
-            //     Registration_files_arxivModel.create({
-            //         'registration_id':Models.id,
-            //         "href":element.href
-            //     })
-            // }, 86400);
+        }
+    }
+    #tashxisAdd = async(model, registration_tashxis, insert = true) => {
+        if(!insert){
+            await this.#deleteTashxis(model.id);
+        }
+        var asas;
+        var date_time = Math.floor(new Date().getTime() / 1000);
+        for(var element of registration_tashxis){
+            asas={
+                'registration_id':model.id,
+                "href":element.href,
+                 "mkb_id": element.mkb_id,
+                 "name": element.name,
+                 "datetime": date_time,
+                 "patient_id": model.patient_ids
+            };
+            await Register_mkb.create(asas); 
         }
     }
     #queue = async(insert=true) => {
@@ -758,6 +780,10 @@ palataDel = async(req, res, next) => {
      {
         await Registration_doctorModel.destroy({where: {registration_id: doc_id}})
         await Registration_recipeModel.destroy({where: {registration_id: doc_id}})
+    }
+    #deleteTashxis = async(doc_id) =>
+     {
+        await Register_mkb.destroy({where: {registration_id: doc_id}})
     }
     #deleteDoctor = async(doc_id) =>
      {

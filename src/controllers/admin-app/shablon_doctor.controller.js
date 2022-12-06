@@ -16,7 +16,7 @@ class shablon_doctorController {
             error_code: 200,
             message: 'Malumotlar chiqdi',
             data: model
-        });
+        })
     }
 
     getOne = async (req, res, next) => {

@@ -22,6 +22,10 @@ info_child_id : {
 name: {
     type: DataTypes.STRING(60),
     allowNull: false
+},
+code:{
+  type:DataTypes.STRING(),
+  allowNull: false
 }
 
 }, {

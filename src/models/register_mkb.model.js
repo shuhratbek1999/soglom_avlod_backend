@@ -26,12 +26,12 @@ patient_id: {
   type: DataTypes.INTEGER(),
   allowNull: false
 },
-doc_id: {
-  type: DataTypes.INTEGER(),
-  allowNull: false
-},
 datetime:{
   type: DataTypes.INTEGER
+},
+name:{
+  type: DataTypes.STRING(),
+  allowNull: false
 }
 
 

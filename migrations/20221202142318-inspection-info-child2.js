@@ -26,6 +26,10 @@ exports.up = function(db) {
     },
     info_child_id: {
       type: 'int'
+    },
+    code:{
+      type: 'string',
+      notNull: true
     }
   });
 };

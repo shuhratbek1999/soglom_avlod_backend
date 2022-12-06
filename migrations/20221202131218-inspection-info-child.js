@@ -29,6 +29,10 @@ exports.up = function(db) {
     info_id: {
       type: 'int',
       notNull: true
+    },
+    code:{
+      type: 'string',
+      notNull: true
     }
   });
 };

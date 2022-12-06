@@ -12,6 +12,7 @@ const directModel = require('./direct.model');
 const registration_palataModel = require('./registration_palata.model');
 const Registration_filesModel = require('./registration_files.model');
 const Registration_payModel = require('./registration_pay.model');
+const register_mkb = require('./register_mkb.model');
 
 class RegistrationModel extends Model {
     toJSON () {//Api da ishladi
@@ -95,6 +96,7 @@ tramma_type:{
   ],
    
 });
+RegistrationModel.hasMany(register_mkb, {as: 'register_mkb', foreignKey: 'registration_id'})
 Register_kassaModel.belongsTo(RegistrationModel, {as: 'registration', foreignKey: 'doctor_id'})
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
