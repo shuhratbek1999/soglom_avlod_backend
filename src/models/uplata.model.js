@@ -17,7 +17,7 @@ uplataModel.init({
     allowNull: false
 },
 name: {
-    type: DataTypes.STRING(60)
+    type: DataTypes.STRING(200)
 },
 price:{
   type: DataTypes.DECIMAL,

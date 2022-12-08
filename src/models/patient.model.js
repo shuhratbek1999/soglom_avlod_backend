@@ -19,16 +19,16 @@ PatientModel.init({
     allowNull: false
 },
 fullname:{ 
-    type:DataTypes.STRING(100)
+    type:DataTypes.STRING(300)
 },
 name: {
-    type: DataTypes.STRING(30),
+    type: DataTypes.STRING(300),
 },
 lastname: {
-    type: DataTypes.STRING(30),
+    type: DataTypes.STRING(300),
 },
 patronymic: {
-    type: DataTypes.STRING(40),
+    type: DataTypes.STRING(400),
 },
 imtiyoz_type:{
     type: DataTypes.STRING()

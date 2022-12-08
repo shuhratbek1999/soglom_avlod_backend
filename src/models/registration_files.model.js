@@ -19,7 +19,7 @@ registration_id: {
     type: DataTypes.INTEGER
 },
 href : {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(300),
     allowNull: false
 }
 

@@ -20,7 +20,7 @@ kassaOrderModel.init({
    type: DataTypes.STRING()
  },
  type: {
-   type: DataTypes.INTEGER(40),
+   type: DataTypes.INTEGER(400),
    allowNull: false
  },
  price:{

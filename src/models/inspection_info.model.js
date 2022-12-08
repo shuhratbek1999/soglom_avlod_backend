@@ -17,7 +17,7 @@ inspection_infoModel.init({
     allowNull: false
 },
 name: {
-    type: DataTypes.STRING(60),
+    type: DataTypes.STRING(600),
     allowNull: false
 },
 code:{

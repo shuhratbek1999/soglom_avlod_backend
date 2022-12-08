@@ -28,7 +28,7 @@ exports.up = function(db) {
     href:{
       type: 'string',
       notNull: true,
-      length: 100
+      length: 200
     }
   });
 };

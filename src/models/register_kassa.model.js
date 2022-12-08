@@ -21,7 +21,7 @@ Register_kassaModel.init({
    type: DataTypes.INTEGER
  },
  type: {
-   type: DataTypes.STRING(40),
+   type: DataTypes.STRING(400),
    allowNull: false
  },
  price:{

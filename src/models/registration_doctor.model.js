@@ -24,7 +24,7 @@ Registration_doctorModel.init({
       type: DataTypes.INTEGER
   },
   status:{
-      type:DataTypes.STRING(20),
+      type:DataTypes.STRING(200),
       allowNull: false
   },
   price:{

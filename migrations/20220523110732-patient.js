@@ -24,7 +24,7 @@ exports.up = function(db) {
     },
     fullname:{
       type: 'string',
-      length: 100,
+      length: 300,
       notNull: true
     },
     name: {
@@ -33,7 +33,7 @@ exports.up = function(db) {
     },
     lastname: {
       type: 'string',
-      length: 30,
+      length: 300,
       notNull: true
     },
     imtiyoz_type:{

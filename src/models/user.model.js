@@ -20,7 +20,7 @@ UserModel.init({
     primaryKey: true
   },
   user_name: {
-    type: DataTypes.STRING(50), 
+    type: DataTypes.STRING(100), 
     allowNull: false
   },
   password: {
@@ -59,7 +59,7 @@ UserModel.init({
  
 }, {
   sequelize,
-  modelName: 'User',
+  modelName: 'user',
   tableName: 'user',
   timestamps: false,
   indexes: [

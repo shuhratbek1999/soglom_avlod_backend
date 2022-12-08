@@ -19,7 +19,7 @@ register_palataModel.init({
    type: DataTypes.INTEGER
  },
  palata_id: {
-   type: DataTypes.INTEGER(40)
+   type: DataTypes.INTEGER(400)
  },
  price:{
    type: DataTypes.DECIMAL()

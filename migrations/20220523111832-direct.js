@@ -24,7 +24,7 @@ exports.up = function(db) {
     },
     name:{
       type: 'string',
-      length: 60,
+      length: 600,
       notNull: true
     },
     bonus:{

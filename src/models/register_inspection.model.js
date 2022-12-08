@@ -21,7 +21,7 @@ Register_inspectionModel.init({
    type: DataTypes.INTEGER
  },
  type: {
-   type: DataTypes.STRING(40)
+   type: DataTypes.STRING(400)
  },
  price:{
    type: DataTypes.DECIMAL()

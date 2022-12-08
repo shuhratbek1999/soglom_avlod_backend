@@ -35,7 +35,7 @@ date_time: {
     type: DataTypes.INTEGER,
 },
 status: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(200),
 },
 doctor_id:{
   type: DataTypes.VIRTUAL()

@@ -43,7 +43,7 @@ Registration_inspection_childModel.init({
       type: DataTypes.BOOLEAN,
   },
   file:{
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(200),
   }
 }, {
   sequelize,

@@ -45,7 +45,7 @@ exports.up = function(db) {
     status:{
       type: 'string',
       notNull: true,
-      length: 20
+      length: 200
     },
     date_time:{
       type: 'string',

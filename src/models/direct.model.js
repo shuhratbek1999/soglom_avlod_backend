@@ -19,7 +19,7 @@ bonus : {
     type: DataTypes.DECIMAL,
 },
 name: {
-    type: DataTypes.STRING(60),
+    type: DataTypes.STRING(600),
     allowNull: false
 }
 

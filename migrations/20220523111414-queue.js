@@ -37,7 +37,7 @@ exports.up = function(db) {
     },
     status:{
       type: 'string',
-      length: 20,
+      length: 200,
       notNull: true
     }
   })

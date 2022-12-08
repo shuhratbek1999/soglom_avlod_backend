@@ -24,7 +24,7 @@ exports.up = function(db) {
     },
     name : {
       type: 'string',
-      length: 30,
+      length: 300,
       notNull: true
     },
     price : {

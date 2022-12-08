@@ -20,7 +20,7 @@ doctor_id : {
     allowNull: false
 },
 name: {
-    type: DataTypes.STRING(60),
+    type: DataTypes.STRING(200),
     allowNull: false
 }
 
