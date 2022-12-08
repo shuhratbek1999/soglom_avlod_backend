@@ -46,7 +46,7 @@ UserModel.init({
     type: DataTypes.INTEGER
   },
   pay_type:{
-    type: DataTypes.ENUM('salary', 'percent'),
+    type: DataTypes.STRING(),
     allowNull: true
   },
   salary:{
