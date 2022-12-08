@@ -16,8 +16,8 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db.insert('user', 
-    ['user_name', 'password', `role`], 
-    ['Dasturchi', '$2a$08$YLZ7gtHc5KgiF3TlX/12r.boof4dIvGSoViUYxaRL8f7yHhKjPh0i', `Admin`]
+    ['user_name', 'password', `role`, `salary`], 
+    ['Dasturchi', '$2a$08$YLZ7gtHc5KgiF3TlX/12r.boof4dIvGSoViUYxaRL8f7yHhKjPh0i', `Admin`, '0']
   );
 };
 
