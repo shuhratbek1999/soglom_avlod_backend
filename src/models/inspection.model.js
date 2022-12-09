@@ -27,6 +27,9 @@ parent_id : {
 price:{
     type: DataTypes.DECIMAL
 },
+citizen_price:{
+  type: DataTypes.DECIMAL
+},
 type:{
     type: DataTypes.BOOLEAN
 },

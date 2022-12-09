@@ -88,6 +88,7 @@ class InspectionController {
         model.user_id = inspection.user_id;
         model.category_id = inspection.category_id;
         model.percent_bonus = inspection.percent_bonus;
+        model.citizen_price = inspection.citizen_price;
         model.save();
         await inspectionChildModel.destroy({
             where:{

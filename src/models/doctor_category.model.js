@@ -23,6 +23,10 @@ UserModel.init({
     type: DataTypes.DECIMAL(),
     allowNull: false
   },
+  citizen_price:{
+    type: DataTypes.DECIMAL(),
+    allowNull: false
+  },
 
 }, {
   sequelize,

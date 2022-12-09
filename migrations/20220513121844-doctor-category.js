@@ -30,6 +30,10 @@ exports.up = function(db) {
     price : {
       type: 'decimal',
       notNull: true
+    },
+    citizen_price : {
+      type: 'decimal',
+      notNull: true
     }
   });
 };

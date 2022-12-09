@@ -53,7 +53,8 @@ class DoctorController {
         }
     });
     model.name = req.body.name;
-    model.price = req.body.price
+    model.price = req.body.price;
+    model.citizen_price = req.body.citizen_price
     model.save();
     res.status(200).send({
         error: false,
