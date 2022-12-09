@@ -720,7 +720,7 @@ palataDel = async(req, res, next) => {
                  "mkb_id": element.mkb_id,
                  "name": element.name,
                  "datetime": date_time,
-                 "patient_id": model.patient_ids
+                 "patient_id": model.patient_id
             };
             await Register_mkb.create(asas); 
         }
