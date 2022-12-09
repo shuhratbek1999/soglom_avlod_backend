@@ -24,6 +24,12 @@ parent_id : {
 price:{
     type:DataTypes.DECIMAL()
 },
+price:{
+  type:DataTypes.DECIMAL()
+},
+citizen_price:{
+  type:DataTypes.DECIMAL()
+},
 name: {
     type: DataTypes.STRING(200),
 },

@@ -56,6 +56,7 @@ class InspectionController {
             "norm": value.norm,
             "parent_id": value.id,
             "price": value.price,
+            "citizen_price": value.citizen_price,
             "name": value.name,
             "file": value.file
         })
