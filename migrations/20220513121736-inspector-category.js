@@ -26,6 +26,10 @@ exports.up = function(db) {
       type:'string',
       length:300,
       notNull: true
+    },
+    citizen_price:{
+      type: 'string',
+      notNull: true
     }
   });
 };
