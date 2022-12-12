@@ -13,6 +13,7 @@ router.post('/sverka',auth(), awaitHandlerFactory(RegisterDoctorController.sverk
 router.post('/tekshiruv',auth(), awaitHandlerFactory(RegisterDoctorController.TekshiruvSoni));
 router.post('/sverkaDoctor',auth(), awaitHandlerFactory(RegisterDoctorController.DoctorSverka));
 router.post('/doctorCount',auth(), awaitHandlerFactory(RegisterDoctorController.DoctorCount));
+router.post('/doctorAll',auth(), awaitHandlerFactory(RegisterDoctorController.doctor));
 router.patch('/update/:id', auth(),  awaitHandlerFactory(RegisterDoctorController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(RegisterDoctorController.delete));
 module.exports = router;

@@ -175,6 +175,14 @@ class RegisterDoctorController {
     })
     res.send(model)
    }
+   doctor = async(req, res, next) => {
+      const model = await Register_DoctorModel.findAll({
+        where:{
+            doctor_id: req.body.doctor_id
+        }
+      })
+      res.send(model)
+   }
    update = async (req, res, next) => {
        this.checkValidation(req);
     const model = await Register_DoctorModel.findOne({
