@@ -44,7 +44,6 @@ class Kassa_orderController {
         });
     }
    create = async (req, res, next) => {
-    console.log(req.body.type);
        this.checkValidation(req);
        var date_time = Math.floor(new Date().getTime() / 1000);
        let pay_type;

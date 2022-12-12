@@ -36,9 +36,7 @@ class UserController {
             throw new HttpException(404, 'Name tanlanmagan')
         }
         const isMatch = await bcrypt.compare(password, model.password)
-        console.log(isMatch);
         delete model['password'];
-        console.log(isMatch);
         if(!isMatch){
             throw new HttpException(404, "Parol noto'g'ri kiritildi")
         }
@@ -107,10 +105,8 @@ class UserController {
     }
     create = async(req, res, next) => {
         this.checkValidation(req);
-        console.log(req.body);
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 8);
-            console.log(req.body.password);
         }
         const modell = await UserModel.create(req.body);
         delete req.body['password']
@@ -182,7 +178,6 @@ class UserController {
     
 }
 
-// console.log(VerifyToken);
 
 
 

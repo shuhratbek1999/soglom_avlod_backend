@@ -41,6 +41,10 @@ exports.up = function(db) {
     patient_id:{
       type: 'int',
       notNull: true
+    },
+    doctor_id:{
+      type: 'int',
+      notNull: true
     }
   });
 };

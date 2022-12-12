@@ -70,7 +70,6 @@ class InspectionController {
     }
     update = async (req, res, next) => {
         const { inspectionChild, ...inspection } = req.body;
-        console.log(inspectionChild);
      const model = await inspectionModel.findOne({
             where:{
                id: req.params.id
@@ -97,7 +96,6 @@ class InspectionController {
             }
         })
         for(let key of inspectionChild){
-            console.log('salom', key);
             inspectionChildModel.create({
             "norm": key.norm,
             "parent_id": model.id,

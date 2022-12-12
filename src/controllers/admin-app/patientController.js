@@ -101,7 +101,6 @@ class PatientController {
     });
 }
    search = async (req, res, next) => {
-    console.log(req.params.key);
     let data = await PatientModel.find(
         {
             "$or": [

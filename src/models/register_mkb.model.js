@@ -32,6 +32,10 @@ datetime:{
 name:{
   type: DataTypes.STRING(),
   allowNull: false
+},
+doctor_id:{
+  type: 'int',
+  allowNull: false
 }
 
 

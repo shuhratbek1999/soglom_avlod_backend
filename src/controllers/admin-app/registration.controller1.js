@@ -192,6 +192,7 @@ class RegistrationController {
     
    
     getPechat = async (req, res, next) => {
+        this.checkValidation(req);
         const Prixod = await QueueModel.findAll({
             where:{ patient_id: req.params.patient,status:"waiting" },
             include: [
@@ -314,7 +315,7 @@ class RegistrationController {
         }
 
     };
-palataDel = async(req, res, next) => {
+    palataDel = async(req, res, next) => {
     const model = await register_palataModel.destroy({
         where: {
             id: req.params.id
@@ -364,7 +365,6 @@ palataDel = async(req, res, next) => {
             await this.#deleteKassa(model.id);
         }
         for(var element of registration_pay){
-            console.log(element);
             var pay = {
                 "user_id": element.user_id,
                 "registration_id": model.id,
@@ -502,10 +502,10 @@ palataDel = async(req, res, next) => {
                     this.q.push({"room_id":user.room_id,"patient_id":model.patient_id,"number":0,"date_time":Math.floor(new Date().getTime() / 1000),"status":data.status});
                 }
                 else if(data.status!=have.status){
-                    if(data.status!='complete'){
+                    if(data.status!='complate'){
                         var index=this.q.findIndex(isHave);
                         this.q[index].status=have.status;
-                    }else if(have.status!='complete'){
+                    }else if(have.status!='complate'){
                         var index=this.q.findIndex(isHave);
                         this.q[index].status=have.status;
                     }
@@ -591,6 +591,7 @@ palataDel = async(req, res, next) => {
                 },
                 raw: true
             })
+            console.log("user", user);
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -654,13 +655,13 @@ palataDel = async(req, res, next) => {
                     "patient_id":model.patient_id,
                     "number":0,
                     "date_time":Math.floor(new Date().getTime() / 1000),
-                    "status":model.status
+                    "status":models.status
                 });
             }else if(data.status!=have.status){
-                if(data.status!='complete'){
+                if(data.status!='complate'){
                     var index=this.q.findIndex(isHave);
                     this.q[index].status=have.status;
-                } else if(have.status!='complete'){
+                } else if(have.status!='complate'){
                     var index=this.q.findIndex(isHave);
                     this.q[index].status=have.status;
                 }
@@ -720,7 +721,8 @@ palataDel = async(req, res, next) => {
                  "mkb_id": element.mkb_id,
                  "name": element.name,
                  "datetime": date_time,
-                 "patient_id": model.patient_id
+                 "patient_id": model.patient_id,
+                 "doctor_id": element.doctor_id
             };
             await Register_mkb.create(asas); 
         }
@@ -735,6 +737,7 @@ palataDel = async(req, res, next) => {
                         patient_id: element.patient_id
                     }
                 });
+                console.log(has, "has");
                 if(has!=null){
                     if(element.status!=has.status){
                         has.status=element.status;
@@ -749,6 +752,7 @@ palataDel = async(req, res, next) => {
                             ['number', 'DESC']
                         ],
                     });
+                    console.log(que, "que");
                     if(que!=null){
                         element.number=que.number+1;
                     }else{
@@ -1258,9 +1262,6 @@ palataDel = async(req, res, next) => {
             }
            },
            group: ['id']
-        })
-        model.forEach(el => {
-            console.log(el);
         })
         res.send(model)
        }

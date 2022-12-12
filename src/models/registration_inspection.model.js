@@ -35,6 +35,10 @@ Registration_inspectionModel.init({
       type: DataTypes.INTEGER,
       allowNull: false
   },
+  price:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+  },
 //inspection_category
   category_id:{
       type: DataTypes.INTEGER
