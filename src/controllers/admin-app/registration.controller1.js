@@ -248,7 +248,7 @@ class RegistrationController {
 
     create = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, registration_tashxis, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, register_mkb, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
         if (!model) {
@@ -259,7 +259,7 @@ class RegistrationController {
         await this.#filesadd(model, registration_files);
         await this.#palataadd(model, registration_palata);
         await this.#payAdd(model, registration_pay);
-        await this.#tashxisAdd(model, registration_tashxis);
+        await this.#tashxisAdd(model, register_mkb);
         await this.#queue();
         res.status(200).send({
             error: false,
@@ -272,10 +272,9 @@ class RegistrationController {
 
     update = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, registration_tashxis, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, register_mkb, ...data} = req.body;
         var id = parseInt(req.params.id);
         var model = await ModelModel.findOne({where : {id: id}})
-
         if (!model) {
             throw new HttpException(404, 'data not found');
         } 
@@ -298,7 +297,7 @@ class RegistrationController {
             await this.#filesadd(model, registration_files,false);
             await this.#palataadd(model, registration_palata,false);
             await this.#payAdd(model, registration_pay,false);
-            await this.#tashxisAdd(model, registration_tashxis,false);
+            await this.#tashxisAdd(model, register_mkb,false);
             await this.#queue(false);
             res.status(200).send({
                 error: false,
@@ -591,7 +590,6 @@ class RegistrationController {
                 },
                 raw: true
             })
-            console.log("user", user);
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -708,13 +706,13 @@ class RegistrationController {
             await Registration_filesModel.create(asas); 
         }
     }
-    #tashxisAdd = async(model, registration_tashxis, insert = true) => {
+    #tashxisAdd = async(model, register_mkb, insert = true) => {
         if(!insert){
             await this.#deleteTashxis(model.id);
         }
         var asas;
         var date_time = Math.floor(new Date().getTime() / 1000);
-        for(var element of registration_tashxis){
+        for(var element of register_mkb){
             asas={
                 'registration_id':model.id,
                 "href":element.href,
