@@ -248,7 +248,7 @@ class RegistrationController {
 
     create = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, register_mkb, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
         if (!model) {
@@ -259,7 +259,6 @@ class RegistrationController {
         await this.#filesadd(model, registration_files);
         await this.#palataadd(model, registration_palata);
         await this.#payAdd(model, registration_pay);
-        await this.#tashxisAdd(model, register_mkb);
         await this.#queue();
         res.status(200).send({
             error: false,
@@ -272,7 +271,7 @@ class RegistrationController {
 
     update = async (req, res, next) => {
         this.checkValidation(req);
-        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, register_mkb, ...data} = req.body;
+        var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, ...data} = req.body;
         var id = parseInt(req.params.id);
         var model = await ModelModel.findOne({where : {id: id}})
         if (!model) {
@@ -297,7 +296,6 @@ class RegistrationController {
             await this.#filesadd(model, registration_files,false);
             await this.#palataadd(model, registration_palata,false);
             await this.#payAdd(model, registration_pay,false);
-            await this.#tashxisAdd(model, register_mkb,false);
             await this.#queue(false);
             res.status(200).send({
                 error: false,
@@ -583,7 +581,7 @@ class RegistrationController {
             await this.#deleteDoctor(model.id)
         }
         for(var element of registration_doctor){
-            var {Registration_recipe,...data} = element;
+            var {Registration_recipe, register_mkb,...data} = element;
             let user = await UserModel.findOne({
                 where:{
                     doctor_id: data.doctor_id
@@ -665,6 +663,7 @@ class RegistrationController {
                 }
             }
             await this.#recieptadd(models, element.registration_recipe, false); 
+            await this.#tashxisAdd(models, element.register_mkb, false)
         }
     }
     #recieptadd = async(model, registration_recipe, insert = true) => {
