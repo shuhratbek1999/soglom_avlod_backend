@@ -49,14 +49,12 @@ class RegistrationController {
                     model: PatientModel, as: 'patient'
                 },
                 {
-                    model: register_mkb, as: 'register_mkb'
-                },
-                {
                     model: Registration_doctorModel, as: 'registration_doctor',
                     include:[
                         {
                             model: Registration_recipeModel, as: 'registration_recipe'
-                        }
+                        },
+                        {model: register_mkb, as: 'register_mkb'}
                     ]
                 },
                 {
@@ -711,7 +709,7 @@ class RegistrationController {
         var date_time = Math.floor(new Date().getTime() / 1000);
         for(var element of (register_mkb)){
             asas={
-                'registration_id':models.id,
+                'registration_id':models.registration_id,
                  "mkb_id": element.mkb_id,
                  "name": element.name,
                  "datetime": date_time,
@@ -1402,39 +1400,55 @@ class RegistrationController {
               id: req.params.id
             }
         });
-        await Registration_doctorModel.destroy({
+        console.log(model);
+      const doctor = await Registration_doctorModel.destroy({
             where:{
-                id: req.params.id
+                registration_id: req.params.id
             }
            })
            await Registration_filesModel.destroy({
                where:{
-                id: req.params.id
+                registration_id: req.params.id
                }
               })
-              await Registration_inspectionModel.destroy({
+            const inspection = await Registration_inspectionModel.destroy({
                where:{
-                id: req.params.id
+                registration_id: req.params.id
                }
               })
               await Registration_inspection_childModel.destroy({
                where:{
-                id: req.params.id
+                registration_id: req.params.id
                }
               })
-              await Registration_payModel.destroy({
+              await Register_inspectionModel.destroy({
+                where:{
+                    doc_id: req.params.id
+                }
+              })
+              await RegisterDoctorModel.destroy({
+                where:{
+                    doc_id: req.params.id
+                }
+              })
+              await register_mkb.destroy({
+                where:{
+                    registration_id: req.params.id
+                }
+              })
+           const pay = await Registration_payModel.destroy({
                where:{
-                id: req.params.id
+                registration_id: req.params.id
                }
               })
               await Registration_recipeModel.destroy({
                where:{
-                id: req.params.id
+                registration_id: req.params.id
                }
               })
               await Register_kassaModel.destroy({
                   where:{
-                      id: req.params.id
+                      doctor_id: req.params.id
                   }
               })
         if(!model){
