@@ -35,6 +35,7 @@ const Registration_doctor_arxivModel = require('../../models/registration_doctor
 const Registration_recipe_arxivModel = require('../../models/registration_recipe_arxiv.model');
 const Registration_files_arxivModel = require('../../models/registration_files_arxiv.model');
 const RegistrationModel = require('../../models/registration.model');
+const uplataModel = require('../../models/uplata.model')
 const moment = require('moment');
 const register_mkb = require('../../models/register_mkb.model');
 class RegistrationController {
@@ -709,7 +710,7 @@ class RegistrationController {
         var date_time = Math.floor(new Date().getTime() / 1000);
         for(var element of (register_mkb)){
             asas={
-                'registration_id':models.registration_id,
+                'registration_id':models.id,
                  "mkb_id": element.mkb_id,
                  "name": element.name,
                  "datetime": date_time,
@@ -1395,12 +1396,21 @@ class RegistrationController {
     };
     
     deleted = async (req, res, next) => {
-      const model =  await ModelModel.destroy({ 
+        const user = await ModelModel.findOne({
             where:{
-              id: req.params.id
+                id: req.params.id
             }
-        });
-        console.log(model);
+          })
+          await QueueModel.destroy({
+            where:{
+                patient_id: user.dataValues.patient_id
+            }
+          })
+          await this.uplataModel.destroy({
+            where:{
+                user_id: user.dataValues.user_id
+            }
+          })
       const doctor = await Registration_doctorModel.destroy({
             where:{
                 registration_id: req.params.id
@@ -1451,6 +1461,11 @@ class RegistrationController {
                       doctor_id: req.params.id
                   }
               })
+              const model =  await ModelModel.destroy({ 
+                where:{
+                  id: req.params.id
+                }
+            });
         if(!model){
             throw new HttpException(404, "bunday id yoq")
         }
