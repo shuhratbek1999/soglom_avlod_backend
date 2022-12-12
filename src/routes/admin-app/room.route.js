@@ -7,9 +7,9 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 
 const  {roomValidate}  = require('../../middleware/validators/admin-app/roomValidator.middleware');
 
-router.get('/all', auth(Role.Admin, Role.Dasturchi), awaitHandlerFactory(roomController.getAll));
-router.get('/one/:id', auth(Role.Admin, Role.Dasturchi), awaitHandlerFactory(roomController.getOne));
-router.post('/create', roomValidate, auth(Role.Admin, Role.Dasturchi), awaitHandlerFactory(roomController.create));
-router.patch('/update/:id', roomValidate, auth(Role.Admin, Role.Dasturchi), awaitHandlerFactory(roomController.update));
-router.delete('/delete/:id', auth(Role.Admin, Role.Dasturchi), awaitHandlerFactory(roomController.delete));
+router.get('/all', auth(), awaitHandlerFactory(roomController.getAll));
+router.get('/one/:id', auth(), awaitHandlerFactory(roomController.getOne));
+router.post('/create', roomValidate, auth(), awaitHandlerFactory(roomController.create));
+router.patch('/update/:id', roomValidate, auth(), awaitHandlerFactory(roomController.update));
+router.delete('/delete/:id', auth(), awaitHandlerFactory(roomController.delete));
 module.exports = router;
