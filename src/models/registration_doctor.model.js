@@ -62,7 +62,7 @@ date_time:{
     }
   }
 });
-Registration_doctorModel.hasMany(register_mkb, {as:'register_mkb', foreignKey: 'doctor_id'})
+Registration_doctorModel.hasMany(register_mkb, {as:'register_mkb', foreignKey: 'registration_id'})
 // Registration_recipeModel.hasOne(Registration_doctorModel, {as: 'registration_recipe', foreignKey: 'registration_doctor_id'})
 Registration_doctorModel.hasMany(Registration_recipeModel, {as: 'registration_recipe',  foreignKey: 'registration_doctor_id'})
 Registration_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
