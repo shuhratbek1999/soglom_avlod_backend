@@ -96,7 +96,6 @@ tramma_type:{
   ],
    
 });
-RegistrationModel.hasMany(register_mkb, {as: 'register_mkb', foreignKey: 'registration_id'})
 Register_kassaModel.belongsTo(RegistrationModel, {as: 'registration', foreignKey: 'doctor_id'})
 RegistrationModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 RegistrationModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})

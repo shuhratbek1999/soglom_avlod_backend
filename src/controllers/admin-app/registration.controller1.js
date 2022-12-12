@@ -91,10 +91,7 @@ class RegistrationController {
                   include:[
                     {model: palataModel, as: 'palatas', attributes: ['name']}
                   ]
-                },  
-                {
-                    model: register_mkb, as: 'register_mkb'
-                },
+                }, 
                 { model: Registration_doctorModel,as: 'registration_doctor', 
                     include : [
                         { model: Registration_recipeModel, as: 'registration_recipe',
@@ -104,7 +101,8 @@ class RegistrationController {
                         { model: DoctorModel, as: 'doctor',
                     include:[
                         {model:DoctorCategory,as:'doctor_category',attributes:['name']},
-                    ]}
+                    ]},
+                    {model: register_mkb, as: 'register_mkb'}
                     ]
                 },
                 { model: Registration_inspectionModel,as: 'registration_inspection', 
@@ -578,7 +576,7 @@ class RegistrationController {
     #doctoradd = async(model, registration_doctor, insert = true) => {
         if(!insert){
             await this.#deletedoctor(model.id);
-            await this.#deleteDoctor(model.id)
+            await this.#deleteDoctor(model.id);
         }
         for(var element of registration_doctor){
             var {Registration_recipe, register_mkb,...data} = element;
@@ -663,7 +661,7 @@ class RegistrationController {
                 }
             }
             await this.#recieptadd(models, element.registration_recipe, false); 
-            await this.#tashxisAdd(models, element.register_mkb, false)
+            await this.#tashxisAdd(model,models, element.register_mkb, false)
         }
     }
     #recieptadd = async(model, registration_recipe, insert = true) => {
@@ -705,16 +703,15 @@ class RegistrationController {
             await Registration_filesModel.create(asas); 
         }
     }
-    #tashxisAdd = async(model, register_mkb, insert = true) => {
+    #tashxisAdd = async(model,models, register_mkb, insert = true) => {
         if(!insert){
             await this.#deleteTashxis(model.id);
         }
         var asas;
         var date_time = Math.floor(new Date().getTime() / 1000);
-        for(var element of register_mkb){
+        for(var element of (register_mkb)){
             asas={
-                'registration_id':model.id,
-                "href":element.href,
+                'registration_id':models.id,
                  "mkb_id": element.mkb_id,
                  "name": element.name,
                  "datetime": date_time,

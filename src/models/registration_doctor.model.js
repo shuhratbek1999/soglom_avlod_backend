@@ -3,6 +3,7 @@ const sequelize = require('../db/db-sequelize');
 const DoctorModel = require('./doctor.model');
 const DoctorCategory = require('../models/doctor_category.model');
 const Registration_recipeModel = require('./registration_recipe.model');
+const register_mkb = require('./register_mkb.model');
 class Registration_doctorModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -61,6 +62,7 @@ date_time:{
     }
   }
 });
+Registration_doctorModel.hasMany(register_mkb, {as:'register_mkb', foreignKey: 'doctor_id'})
 // Registration_recipeModel.hasOne(Registration_doctorModel, {as: 'registration_recipe', foreignKey: 'registration_doctor_id'})
 Registration_doctorModel.hasMany(Registration_recipeModel, {as: 'registration_recipe',  foreignKey: 'registration_doctor_id'})
 Registration_doctorModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
