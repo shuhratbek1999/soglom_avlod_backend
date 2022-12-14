@@ -21,10 +21,6 @@ var upload = multer({
     }
 }).single('href');
 
-router.post('/img', upload, awaitHandlerFactory(async (req, res, next) => {   
-    res.send("salom") 
-    console.log(req.body);
-}));
 router.post("/imgs", upload, function(request, response) {
     response.json({
         img: `http://localhost:${port}/href/${request.file.filename}`

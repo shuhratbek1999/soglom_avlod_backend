@@ -7,6 +7,7 @@ exports.registrationValidate = [
        .withMessage("decimal"),
        body('patient_id')
        .exists()
+       .withMessage('bemor kiritilishi shart')
        .isInt()
        .withMessage('Bemor tanlanilishi kerak'),
        body('registration_doctor')
