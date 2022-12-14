@@ -730,7 +730,6 @@ class RegistrationController {
                         patient_id: element.patient_id
                     }
                 });
-                console.log(has, "has");
                 if(has!=null){
                     if(element.status!=has.status){
                         has.status=element.status;
@@ -745,7 +744,6 @@ class RegistrationController {
                             ['number', 'DESC']
                         ],
                     });
-                    console.log(que, "que");
                     if(que!=null){
                         element.number=que.number+1;
                     }else{
