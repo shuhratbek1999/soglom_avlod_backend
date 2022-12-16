@@ -33,7 +33,7 @@ var upload = multer({
 
 router.post('/file', upload, awaitHandlerFactory(async (req, res, next) => {    
     res.json({
-        file: `http://localhost:${port}/href/${req.file.filename}`
+        file: `http://185.196.213.31:${port}/href/${req.file.filename}`
     })
 }));
 
