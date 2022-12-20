@@ -1,30 +1,26 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const DoctorModel = require('../../models/doctor.model')
+const med_directModel = require('../../models/med_direct.model')
 const { validationResult } = require('express-validator');
-const InspectionModel = require('../../models/inspector_category.model');
-const DoctorCategory = require('../../models/doctor_category.model')
-const client = require('../../startup/client');
+
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class DoctorController {
+class med_directController {
     getAll = async (req, res, next) => {
-        const model = await DoctorModel.findAll({ 
-            // include: InspectionModel
-            include:[
-                {model: DoctorCategory, as: 'doctor_category'}
-            ]
-        }); 
-        console.log(model);
-        res.send("salom")
-        client.setex("doctor", 3600, JSON.stringify(model))
+        const model = await med_directModel.findAll(req.body);
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
     }
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await DoctorModel.findOne({
+        const model = await med_directModel.findOne({
             where:{
                 id: req.params.id
             }
@@ -32,42 +28,32 @@ class DoctorController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
-        res.send(model)
-        client.setex("doctorOne", 3600, JSON.stringify(model))
-    }
-
-    byName = async (req, res, next) => {
-        this.checkValidation(req);
-        const model = await DoctorModel.findAll({
-            attributes: ['category_id']
-        })
         res.status(200).send({
             error: false,
-            error_code: 201,
-            message: "malumot keldi",
+            error_code: 200,
+            message: 'Malumot chiqdi',
             data: model
-        })
+        });
     }
-
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await DoctorModel.create(req.body);
+       const model = await med_directModel.create(req.body);
        res.status(200).send({
         error: false,
         error_code: 200,
-        message: 'Malumotlar qoshildi',
+        message: 'Malumotlar qo\'shildi',
         data: model
     });
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await DoctorModel.findOne({
+    const model = await med_directModel.findOne({
         where:{
             id: req.params.id
         }
     });
     model.name = req.body.name;
-    model.category_id = req.body.category_id
+    model.bonus = req.body.bonus;
     model.save();
     res.status(200).send({
         error: false,
@@ -77,7 +63,7 @@ class DoctorController {
     });
 }
 delete = async (req, res, next) => {
- const model =   await DoctorModel.destroy({
+  const model = await med_directModel.destroy({
         where:{
           id: req.params.id
         }
@@ -107,4 +93,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new DoctorController;
+module.exports = new med_directController;

@@ -1,6 +1,6 @@
 const client = require('../../startup/client');
 
-function doctor(req, res, next) {
+function doctors(req, res, next) {
     client.get('doctor', (err, data) => {
         if (err) throw err;
 
@@ -24,6 +24,6 @@ function doctorOne(req, res, next) {
 }
 
 module.exports = {
-    doctor,
+    doctors,
     doctorOne
 };

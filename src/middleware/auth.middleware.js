@@ -22,8 +22,6 @@ const auth = (...roles) => {
             if (!user) {
                 throw new HttpException(402, 'Autentifikatsiya amalga oshmadi!');
             }
-            console.log(user);
-            console.log(roles);
 
             // check if the current user is the owner user
             const ownerAuthorized = req.params.id == user.id;

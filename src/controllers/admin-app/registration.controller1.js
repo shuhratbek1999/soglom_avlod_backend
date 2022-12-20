@@ -22,8 +22,10 @@ const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
 const DoctorCategory = require('../../models/doctor_category.model')
 const InspectionModel = require('../../models/inspection.model')
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const directModel = require('../../models/direct.model')
+const registerDirectModel = require('../../models/register_direct.model')
+const registerMedDirectModel = require('../../models/register_med_direct.model')
 const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay.model');
@@ -187,7 +189,6 @@ class RegistrationController {
         res.send('deleted');
     };
     
-   
     getPechat = async (req, res, next) => {
         this.checkValidation(req);
         const Prixod = await QueueModel.findAll({
@@ -248,6 +249,23 @@ class RegistrationController {
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
+        // const direct = await directModel.findOne({
+        //     where:{
+        //         id: model.direct_id
+        //     },
+        //     raw: true
+        // })
+        // console.log(direct);
+        // await registerDirectModel.create({
+        //     "date_time": Math.floor(new Date().getTime() / 1000),
+        //     "type": 0,
+        //     "price": (model.summa * direct.bonus)/100,
+        //     "doc_id": model.id,
+        //     "doc_type": "kirim",
+        //     "comment": "",
+        //     "place": "Registration",
+        //     "direct_id": model.direct_id
+        // })
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
