@@ -4,7 +4,7 @@ const userController = require('../../controllers/admin-app/user.controller');
 const auth = require('../../middleware/auth.middleware');
 const Role = require('../../utils/roles.utils');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
-
+ 
 const  {validateLogin}  = require('../../middleware/validators/admin-app/userValidator.middleware');
 const  {loginValidate}  = require('../../middleware/validators/admin-app/loginValidator.middleware');
 router.post('/login', loginValidate, awaitHandlerFactory(userController.userLogin));

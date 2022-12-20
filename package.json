@@ -25,6 +25,7 @@
     "moment": "^2.29.4",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.1.0",
+    "redis": "^3.1.2",
     "sequelize": "^6.6.5",
     "vue-filter-number-format": "^3.0.1",
     "vue-numeric": "^2.5.0",

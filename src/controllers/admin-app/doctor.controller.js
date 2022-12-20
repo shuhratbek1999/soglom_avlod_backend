@@ -5,7 +5,7 @@ const DoctorModel = require('../../models/doctor.model')
 const { validationResult } = require('express-validator');
 const InspectionModel = require('../../models/inspector_category.model');
 const DoctorCategory = require('../../models/doctor_category.model')
-
+const client = require('../../startup/client');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -19,10 +19,11 @@ class DoctorController {
         }); 
         res.status(200).send({
             error: false,
-            error_code: 200,
+            error_code: 200, 
             message: 'Malumotlar chiqdi',
             data: model
         });
+        client.setex("doctor", 3600, JSON.stringify(model))
     }
 
     getOne = async (req, res, next) => {
@@ -35,12 +36,8 @@ class DoctorController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
-        res.status(200).send({
-            error: false,
-            error_code: 200,
-            message: 'Malumot chiqdi',
-            data: model
-        });
+        res.send(model)
+        client.setex("doctorOne", 3600, JSON.stringify(model))
     }
 
     byName = async (req, res, next) => {

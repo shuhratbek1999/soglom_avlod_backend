@@ -4,7 +4,8 @@ const { validationResult } = require('express-validator');
 const inspectionModel = require('../../models/inspection.model');
 const inspectionChildModel = require('../../models/inspectionChild.model');
 const UserModel = require('../../models/user.model');
-const inspector_categoryModel = require('../../models/inspector_category.model')
+const inspector_categoryModel = require('../../models/inspector_category.model');
+const client = require('../../startup/client')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -19,10 +20,11 @@ class InspectionController {
         });
         res.status(200).send({
             error: false,
-            error_code: 200,
+            error_code: 200, 
             message: 'Malumotlar chiqdi',
             data: model
         });
+        client.setex('inspection', 3600, JSON.stringify(model))
     }
 
     getOne = async (req, res, next) => {
@@ -38,12 +40,8 @@ class InspectionController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
-        res.status(200).send({
-            error: false,
-            error_code: 200,
-            message: 'malumot chiqdi',
-            data: model
-        });
+        res.send(model)
+        client.setex('inspectionOne', 3600, JSON.stringify(model))
     }
   
     create = async (req, res, next) => {
