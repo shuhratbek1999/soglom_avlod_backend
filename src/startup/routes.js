@@ -28,6 +28,7 @@ const register_mkb = require('../routes/admin-app/register_mkb.route')
 const inspection_info = require('../routes/admin-app/inspection_info.route')
 const directRouter = require('../routes/admin-app/direct.route')
 const med_directRouter = require('../routes/admin-app/med_direct.route')
+const ReagentRouter = require('../routes/admin-app/reagent.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -64,6 +65,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/info`, inspection_info);
         app.use(`/api/v1/admin-app/direct`, directRouter);
         app.use(`/api/v1/admin-app/med_direct`, med_directRouter);
+        app.use(`/api/v1/admin-app/reagent`, ReagentRouter);
 
         app.use(`/href`, express.static('upload'));
 

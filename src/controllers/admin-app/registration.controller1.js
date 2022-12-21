@@ -1305,6 +1305,52 @@ class RegistrationController {
         res.send(result);
     };
     
+    medHisobot = async (req, res, next) => {
+        this.checkValidation(req);
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.direct_id !== null){
+            query.id = {[Op.eq] : body.direct_id }  
+            queryx.direct_id = {[Op.eq]: body.direct_id}
+        };
+        const model = await registerMedDirectModel.findAll({
+            attributes: [
+                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("COUNT(Case WHEN register_med_direct.date_time >=" + datetime1 + " and register_med_direct.date_time <= " + datetime2 + ` and register_med_direct.direct_id = ${body.direct_id} then register_med_direct.direct_id else 0 end)`), 'count']
+           ],
+           where: queryx
+        })
+        res.send(model)
+    };
+    
+    medSverka = async (req, res, next) => {
+        this.checkValidation(req);
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.direct_id !== null){
+            query.id = {[Op.eq] : body.direct_id }  
+            queryx.direct_id = {[Op.eq]: body.direct_id}
+        };
+          
+        let result = await registerMedDirectModel.findAll({
+            attributes: [
+                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
+           ], 
+           where: queryx,
+           group: ['id']
+           
+        })
+        res.send(result);
+    };
     deleted = async (req, res, next) => {
         const user = await ModelModel.findOne({
             where:{
