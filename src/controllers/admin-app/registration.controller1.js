@@ -338,7 +338,7 @@ class RegistrationController {
       await this.#medDirect(direc, model, direct, false);
 
      }
-     #medDirect = async(direc, model, direct, insert = true,) =>{
+     #medDirect = async(direc, model, direct, insert = true) =>{
         if(!insert){
             await this.#medDelete(model.id)
         }
