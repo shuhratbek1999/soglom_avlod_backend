@@ -297,7 +297,6 @@ class RegistrationController {
             await this.#payAdd(model, registration_pay,false);
             await this.#queue(false);
             await this.#directAdd(model, false);
-            await this.#medDirect(direc, model, direct, false);
             
             res.status(200).send({
                 error: false,
@@ -336,7 +335,7 @@ class RegistrationController {
            "direct_id": model.direct_id
         }
       const direc =  await registerDirectModel.create(directs);
-      await this.#medDirect(direc, model, direct);
+      await this.#medDirect(direc, model, direct, false);
 
      }
      #medDirect = async(direc, model, direct, insert = true,) =>{
