@@ -775,8 +775,8 @@ class RegistrationController {
      {
         await Register_inspectionModel.destroy({where: {doc_id: doc_id}})
     }
-    #medDelete = async(doc_id) => {
-        await registerMedDirectModel.destroy({where: {id: doc_id}})
+    #medDelete = async(id) => {
+        await registerMedDirectModel.destroy({where: {doc_id: id}})
     }
     #deleteKassa = async(doc_id) =>
      {
