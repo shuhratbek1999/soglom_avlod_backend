@@ -40,6 +40,7 @@ const RegistrationModel = require('../../models/registration.model');
 const uplataModel = require('../../models/uplata.model')
 const moment = require('moment');
 const register_mkb = require('../../models/register_mkb.model');
+const med_directModel = require('../../models/med_direct.model');
 class RegistrationController {
     q=[];
     getAll = async (req, res, next) => {
@@ -267,29 +268,6 @@ class RegistrationController {
         });
 
     };
-      #directAdd = async(model, insert = true) => {
-         if(!insert){
-           await this.#deleteDirect(model.id)
-         }
-         const direct = await directModel.findOne({
-            where:{
-                id: model.direct_id
-            },
-            raw: true
-        })
-         var directs = {
-            "date_time": Math.floor(new Date().getTime() / 1000),
-            "type": 0,
-            "price": (model.summa * direct.bonus)/100,
-            "doc_id": model.id,
-            "doc_type": "kirim",
-            "comment": "",
-            "place": "Registration",
-            "direct_id": model.direct_id
-         }
-         await registerDirectModel.create(directs)
-
-      }
     update = async (req, res, next) => {
         this.checkValidation(req);
         var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, ...data} = req.body;
@@ -318,6 +296,9 @@ class RegistrationController {
             await this.#palataadd(model, registration_palata,false);
             await this.#payAdd(model, registration_pay,false);
             await this.#queue(false);
+            await this.#directAdd(model, false);
+            await this.#medDirect(direc, model, direct, false);
+            
             res.status(200).send({
                 error: false,
                 error_code: 200,
@@ -333,6 +314,53 @@ class RegistrationController {
         }
 
     };
+
+    #directAdd = async(model, insert = true) => {
+        if(!insert){
+          await this.#deleteDirect(model.id)
+        }
+        const direct = await directModel.findOne({
+           where:{
+               id: model.direct_id
+           },
+           raw: true
+       })
+        var directs = {
+           "date_time": Math.floor(new Date().getTime() / 1000),
+           "type": 0,
+           "price": (model.summa * direct.bonus)/100,
+           "doc_id": model.id,
+           "doc_type": "kirim",
+           "comment": "",
+           "place": "Registration",
+           "direct_id": model.direct_id
+        }
+      const direc =  await registerDirectModel.create(directs);
+      await this.#medDirect(direc, model, direct);
+
+     }
+     #medDirect = async(direc, model, direct, insert = true,) =>{
+        if(!insert){
+            await this.#medDelete(model.id)
+        }
+        const meds = await med_directModel.findOne({
+            where:{
+                id: direct.med_id
+            }
+        })
+        var med = {
+           "date_time": Math.floor(new Date().getTime() / 1000),
+           "type": 0,
+           "price": (model.summa * meds.bonus)/100,
+           "doc_id": direc.doc_id,
+           "doc_type": "kirim",
+           "comment": "",
+           "place": "Registration",
+           "direct_id": direct.med_id
+        }
+        await registerMedDirectModel.create(med);
+     }
+
     palataDel = async(req, res, next) => {
     const model = await register_palataModel.destroy({
         where: {
@@ -421,15 +449,6 @@ class RegistrationController {
                 "doc_type": 'Kirim',
                 "place": "registration"
             })
-            // setTimeout(() => {
-            //     Registration_pay_arxivModel.create({
-            //         "user_id": element.user_id,
-            //         "registration_id": Models.id,
-            //         "pay_type": element.pay_type,
-            //         "summa": element.summa,
-            //         "discount": element.discount      
-            //     }) 
-            // }, 86400);
         }
     }
 
@@ -501,16 +520,6 @@ class RegistrationController {
                   })
             }
            }, 1000);
-            //   setTimeout(() => 
-            //      Registration_inspection_arxivModel.create({
-            //         "inspection_id":data.inspection_id, 
-            //         "user_id": data.user_id,
-            //         "registration_id":Models.id,
-            //         "type":data.type,"price":data.price,
-            //         "category_id":data.category_id,
-            //         'status':Models.status
-            //      })
-            //   }, 86400);
                 function isHave(item) { 
                     return item.room_id == user.room_id&&item.patient_id == model.patient_id;
                   }
@@ -537,19 +546,6 @@ class RegistrationController {
             dds={"parent_id":models.id,"text":element.text,"norm":element.norm,"name":element.name,"registration_id":models.registration_id,"status":element.status,"price":element.price,"checked":element.checked,"file":element.file}
 
             await Registration_inspection_childModel.create(dds); 
-            // setTimeout(() => {
-            //     Registration_inspection_child_arxxivModel.create({
-            //         "parent_id":models.id,
-            //         "text":element.text,
-            //         "norm":element.norm,
-            //         "name":element.name,
-            //         "registration_id":models.registration_id,
-            //         "status":element.status,
-            //         "price":element.price,
-            //         "checked":element.checked,
-            //         "file":element.file
-            //     })
-            // }, 86400);
         }
     }
     #palataadd = async(model, registration_palata,  insert = true) =>{
@@ -580,18 +576,6 @@ class RegistrationController {
                 "date_do": element.date_do,
                 "date_time": element.date_time
             })
-        //    setTimeout(() => {
-        //     registration_palata_arxivModel.create({
-        //         "palata_id": element.palata_id,
-        //         "registration_id":Models.id,
-        //         'price':element.price,
-        //         "date_time":date_time,
-        //         "date_do": element.date_do,
-        //         "date_to": element.date_to,
-        //         "day":element.day,
-        //         "total_price":element.total_price               
-        //     }) 
-        //    }, 86400);
 
         }
     }
@@ -653,15 +637,6 @@ class RegistrationController {
                 }
                 
             }, 1000);
-            //  setTimeout(() => {
-            //     Registration_doctor_arxivModel.create({
-            //         "doctor_id":element.doctor_id,
-            //         "registration_id":Models.id,
-            //         "price":data.price,
-            //         "status": Models.status,
-            //         "text":data.text    
-            //     })
-            //  }, 86400);
             function isHave(item) { 
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
@@ -702,18 +677,7 @@ class RegistrationController {
                 "comment":element.comment,
                 "name": element.name
             };
-            await Registration_recipeModel.create(adds); 
-            // setTimeout(() => {
-            //     Registration_recipe_arxivModel.create({
-            //         "registration_doctor_id":Models.id,
-            //         "registration_id":Models.registration_id,
-            //         'pill_id':element.pill_id,
-            //         "time":element.time,
-            //         "day":element.day,
-            //         "comment":element.comment,
-            //         "name": element.name     
-            //     })
-            // }, 86400);
+            await Registration_recipeModel.create(adds);
         }
     }
     #filesadd = async(model, registration_files, insert = true) => {
@@ -811,6 +775,9 @@ class RegistrationController {
     #deleteIns = async(doc_id) =>
      {
         await Register_inspectionModel.destroy({where: {doc_id: doc_id}})
+    }
+    #medDelete = async(doc_id) => {
+        await registerMedDirectModel.destroy({where: {id: doc_id}})
     }
     #deleteKassa = async(doc_id) =>
      {
@@ -1291,75 +1258,7 @@ class RegistrationController {
         })
     }
     
-    direct = async (req, res, next) => {
-        const model = await directModel.create(req.body);
-    
-        res.send({
-            error_code: 200,
-            error: false,
-            message: "malumotlar qoshildi",
-            data: model
-        })
-    }
-    
-    directAll = async (req, res, next) => {
-        const model = await directModel.findAll();
-        res.send({
-            error_code: 200,
-            error: false,
-            message: "malumotlar chiqdi",
-            data: model
-        })
-    }
-    
-    directDelete = async (req, res, next) =>{
-        const model  = await directModel.destroy({
-            where: {
-                id: req.params.id
-            }
-        })
-        res.send({
-            error_code: 200,
-            error: false,
-            message: "malumot o'chirildi",
-            data: model
-        })
-    }
-    
-    directUpdate = async (req, res, next) =>{
-        const model = await directModel.findOne({
-            where:{
-                id: req.params.id
-            }
-        })
-        model.name = req.body.name,
-        model.bonus = req.body.bonus
-        model.save();
-        res.send({
-            error_code: 200,
-            error: false,
-            message: "malumotlar tahrirlandi",
-            data: model
-        })
-    }
-    
-    directOne = async (req, res, next) =>{
-        const model = await directModel.findOne({
-            where:{
-                id: req.params.id
-            }
-        })
-        if(!model){
-            throw new HttpException(404, "bu id da malumot topilmadi")
-        }
-        res.send({
-            error_code: 200,
-            error: false,
-            message: "malumot chiqdi",
-            data: model
-        })
-    }
-    
+   
     directHisobot = async (req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};
@@ -1370,46 +1269,39 @@ class RegistrationController {
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
-          
-        let result = await ModelModel.findAll({
+        const model = await registerDirectModel.findAll({
             attributes: [
-                 'id', "type_service", "created_at", "direct_id","summa",
-                [sequelize.literal("SUM(CASE WHEN registration.created_at >= " + datetime1 + " and registration.created_at <= " + datetime2 + " AND registration.direct_id = direct.id THEN direct.bonus ELSE 0 END)"), 'tushum'],
-                [sequelize.literal("COUNT(Case WHEN registration.created_at >=" + datetime1 + " and registration.created_at <= " + datetime2 + " and registration.type_service = 1 then registration.direct_id else 0 end)"), 'count']
-            ],
-            include: [
-                { model: directModel, as: 'direct', where: query},
-            ],
-            where: queryx,
-            raw: true,
-            group: ['direct_id'],
-            order: [
-                ['id', 'ASC']
-            ],
+                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("COUNT(Case WHEN register_direct.date_time >=" + datetime1 + " and register_direct.date_time <= " + datetime2 + ` and register_direct.direct_id = ${body.direct_id} then register_direct.direct_id else 0 end)`), 'count']
+           ],
+           where: queryx
         })
-        res.send(result);
+        res.send(model)
     };
     
     directSverka = async (req, res, next) => {
         this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
         if(body.direct_id !== null){
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
-        let result = await ModelModel.findAll({
-            include: [
-                { model: directModel, as: 'direct', where: query},
-            ],
-                where: {
-                    created_at: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
-                    direct_id: body.direct_id
-                  },
-            order: [
-                ['id', 'ASC']
-            ],
+        let result = await registerDirectModel.findAll({
+            attributes: [
+                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("SUM(CASE WHEN register_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
+           ], 
+           where: queryx,
+           group: ['id']
+           
         })
         res.send(result);
     };
