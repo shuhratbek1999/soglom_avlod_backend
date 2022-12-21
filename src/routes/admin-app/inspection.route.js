@@ -7,8 +7,8 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 const branchCache = require('../../middleware/cashe/inspection.middleware');
 const  {InspectionsVAlidator}  = require('../../middleware/validators/admin-app/InspectionsValidator.middleware');
 
-router.get('/all', auth(), branchCache.inspection, awaitHandlerFactory(inspectionController.getAll));
-router.get('/one/:id', auth(), branchCache.inspectionOne, awaitHandlerFactory(inspectionController.getOne));
+router.get('/all', auth(),  awaitHandlerFactory(inspectionController.getAll));
+router.get('/one/:id', auth(),  awaitHandlerFactory(inspectionController.getOne));
 router.post('/create', auth(),InspectionsVAlidator, awaitHandlerFactory(inspectionController.create));
 router.patch('/update/:id', auth(), InspectionsVAlidator, awaitHandlerFactory(inspectionController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(inspectionController.delete));

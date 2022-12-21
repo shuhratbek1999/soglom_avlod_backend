@@ -19,7 +19,7 @@ router.get('/one_arxiv/:id', auth(), awaitHandlerFactory(registrationControl.get
 router.get('/all_arxiv', auth(), awaitHandlerFactory(registrationControl.getAll_arxiv));
 router.get('/directOne/:id', auth(), awaitHandlerFactory(registrationControl.directOne));
 router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
-router.post('/create', auth(), registrationValidate, awaitHandlerFactory(registrationControl.create));
+router.post('/create', auth(), awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));

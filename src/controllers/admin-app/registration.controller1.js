@@ -249,23 +249,22 @@ class RegistrationController {
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
-        // const direct = await directModel.findOne({
-        //     where:{
-        //         id: model.direct_id
-        //     },
-        //     raw: true
-        // })
-        // console.log(direct);
-        // await registerDirectModel.create({
-        //     "date_time": Math.floor(new Date().getTime() / 1000),
-        //     "type": 0,
-        //     "price": (model.summa * direct.bonus)/100,
-        //     "doc_id": model.id,
-        //     "doc_type": "kirim",
-        //     "comment": "",
-        //     "place": "Registration",
-        //     "direct_id": model.direct_id
-        // })
+        const direct = await directModel.findOne({
+            where:{
+                id: model.direct_id
+            },
+            raw: true
+        })
+        await registerDirectModel.create({
+            "date_time": Math.floor(new Date().getTime() / 1000),
+            "type": 0,
+            "price": (model.summa * direct.bonus)/100,
+            "doc_id": model.id,
+            "doc_type": "kirim",
+            "comment": "",
+            "place": "Registration",
+            "direct_id": model.direct_id
+        })
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
