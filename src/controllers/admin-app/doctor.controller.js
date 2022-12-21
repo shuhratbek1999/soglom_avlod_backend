@@ -17,8 +17,7 @@ class DoctorController {
                 {model: DoctorCategory, as: 'doctor_category'}
             ]
         }); 
-        console.log(model);
-        res.send("salom")
+        res.send(model)
         client.setex("doctor", 3600, JSON.stringify(model))
     }
 
