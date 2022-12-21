@@ -30,6 +30,10 @@ exports.up = function(db) {
     bonus:{
       type: 'decimal',
       notNull: true
+    },
+    med_id:{
+      type: 'int',
+      notNull: true
     }
   })
 };

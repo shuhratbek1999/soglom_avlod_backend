@@ -21,6 +21,10 @@ bonus : {
 name: {
     type: DataTypes.STRING(600),
     allowNull: false
+},
+med_id: {
+  type: DataTypes.INTEGER,
+  allowNull: false
 }
 
 }, {

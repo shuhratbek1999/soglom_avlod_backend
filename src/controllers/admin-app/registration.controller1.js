@@ -249,22 +249,7 @@ class RegistrationController {
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
-        const direct = await directModel.findOne({
-            where:{
-                id: model.direct_id
-            },
-            raw: true
-        })
-        await registerDirectModel.create({
-            "date_time": Math.floor(new Date().getTime() / 1000),
-            "type": 0,
-            "price": (model.summa * direct.bonus)/100,
-            "doc_id": model.id,
-            "doc_type": "kirim",
-            "comment": "",
-            "place": "Registration",
-            "direct_id": model.direct_id
-        })
+        await this.#directAdd(model);
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
@@ -282,7 +267,29 @@ class RegistrationController {
         });
 
     };
+      #directAdd = async(model, insert = true) => {
+         if(!insert){
+           await this.#deleteDirect(model.id)
+         }
+         const direct = await directModel.findOne({
+            where:{
+                id: model.direct_id
+            },
+            raw: true
+        })
+         var directs = {
+            "date_time": Math.floor(new Date().getTime() / 1000),
+            "type": 0,
+            "price": (model.summa * direct.bonus)/100,
+            "doc_id": model.id,
+            "doc_type": "kirim",
+            "comment": "",
+            "place": "Registration",
+            "direct_id": model.direct_id
+         }
+         await registerDirectModel.create(directs)
 
+      }
     update = async (req, res, next) => {
         this.checkValidation(req);
         var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, ...data} = req.body;
@@ -808,6 +815,9 @@ class RegistrationController {
     #deleteKassa = async(doc_id) =>
      {
         await Register_kassaModel.destroy({where: {doctor_id: doc_id}})
+    }
+    #deleteDirect = async(id) => {
+        await registerDirectModel.destroy({where: {doc_id: id}})
     }
     #deleteRecipe = async(doc_id) => {
         await Registration_recipeModel.destroy({where: {registration_id: doc_id}})

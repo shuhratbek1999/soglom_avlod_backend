@@ -54,6 +54,7 @@ class directController {
     });
     model.name = req.body.name;
     model.bonus = req.body.bonus;
+    model.med_id = req.body.med_id;
     model.save();
     res.status(200).send({
         error: false,
