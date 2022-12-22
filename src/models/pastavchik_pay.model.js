@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-class reagentModel extends Model {
+class pastavchik_payModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
@@ -8,22 +8,40 @@ class reagentModel extends Model {
     }
 } 
 
-reagentModel.init({
+pastavchik_payModel.init({
   id: { 
     type: DataTypes.INTEGER, 
     primaryKey: true, 
     autoIncrement: true, 
     allowNull: false
 },
-name: {
-    type: DataTypes.STRING(600),
+type : {
+    type: DataTypes.BOOLEAN,
     allowNull: false
 },
+price: {
+    type: DataTypes.DECIMAL,
+    allowNull: false
+},
+backlog: {
+  type: DataTypes.DECIMAL
+},
+jami_summa: {
+  type: DataTypes.DECIMAL
+},
+pastavchik_id: {
+  type: DataTypes.INTEGER,
+  allowNull: false
+},
+date_time:{
+  type: DataTypes.INTEGER,
+  allowNull: false
+}
 
 }, {
   sequelize,
-  modelName: 'reagent',
-  tableName: 'reagent',
+  modelName: 'pastavchik_pay',
+  tableName: 'pastavchik_pay',
   timestamps: false,
   indexes: [
     {
@@ -37,4 +55,4 @@ name: {
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-module.exports = reagentModel;
+module.exports = pastavchik_payModel;

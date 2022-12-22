@@ -15,22 +15,40 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable("reagent", {
-    id: {
+  return db.createTable("pastavchik_pay", {
+    id:{
       type: 'int',
       autoIncrement: true,
       primaryKey:true,
       notNull: true
     },
-    name: {
-      type: 'string',
+    type:{
+      type: 'boolean',
+      notNull: true
+    },
+    pastavchik_id:{
+      type: 'int',
+      notNull: true
+    },
+    price:{
+      type: 'decimal',
+      notNull: true
+    },
+    backlog:{
+      type: 'decimal'
+    },
+    jami_summa:{
+      type: 'decimal'
+    },
+    date_time:{
+      type: 'int',
       notNull: true
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable("reagent");
+  return db.dropTable("pastavchik_pay");
 };
 
 exports._meta = {

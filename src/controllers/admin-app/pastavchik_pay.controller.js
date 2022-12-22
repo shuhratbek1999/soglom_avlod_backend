@@ -1,15 +1,15 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const reagentModel = require('../../models/reagent.model')
+const pastavchik_payModel = require('../../models/pastavchik_pay.model')
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class reagentController {
+class pastavchik_payController {
     getAll = async (req, res, next) => {
-        const model = await reagentModel.findAll(req.body);
+        const model = await pastavchik_payModel.findAll(req.body);
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -20,7 +20,7 @@ class reagentController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await reagentModel.findOne({
+        const model = await pastavchik_payModel.findOne({
             where:{
                 id: req.params.id
             }
@@ -37,7 +37,14 @@ class reagentController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await reagentModel.create(req.body);
+       const model = await pastavchik_payModel.create({
+          "type": req.body.type,
+          "price": req.body.price,
+          "backlog": req.body.backlog,
+          "jami_summa": req.body.jami_summa,
+          "pastavchik_id": req.body.pastavchik_id,
+          "date_time": Math.floor(new Date().getTime() / 1000)
+       });
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -47,12 +54,17 @@ class reagentController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await reagentModel.findOne({
+    const model = await pastavchik_payModel.findOne({
         where:{
             id: req.params.id
         }
     });
-    model.name = req.body.name;
+    model.type = req.body.type;
+    model.price = req.body.price;
+    model.backlog = req.body.backlog;
+    model.jami_summa = req.body.jami_summa;
+    model.pastavchik_id = req.body.pastavchik_id;
+    model.date_time = Math.floor(new Date().getTime() / 1000);
     model.save();
     res.status(200).send({
         error: false,
@@ -62,7 +74,7 @@ class reagentController {
     });
 }
 delete = async (req, res, next) => {
-  const model = await reagentModel.destroy({
+  const model = await pastavchik_payModel.destroy({
         where:{
           id: req.params.id
         }
@@ -92,4 +104,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new reagentController;
+module.exports = new pastavchik_payController;
