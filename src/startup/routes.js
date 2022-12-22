@@ -30,6 +30,7 @@ const directRouter = require('../routes/admin-app/direct.route')
 const med_directRouter = require('../routes/admin-app/med_direct.route')
 const ReagentRouter = require('../routes/admin-app/reagent.route')
 const pastavchikRouter = require('../routes/admin-app/pastavchik.route')
+const prixodRouter = require('../routes/admin-app/prixod.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -68,6 +69,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/med_direct`, med_directRouter);
         app.use(`/api/v1/admin-app/reagent`, ReagentRouter);
         app.use(`/api/v1/admin-app/pastavchik`, pastavchikRouter);
+        app.use(`/api/v1/admin-app/prixod`, prixodRouter);
 
         app.use(`/href`, express.static('upload'));
 
