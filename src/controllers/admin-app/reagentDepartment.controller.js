@@ -1,23 +1,18 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const prixod_Model = require('../../models/prixod.model')
+const reagentDepartmentModel = require('../../models/reagent_department.model')
 const { validationResult } = require('express-validator');
-const prixod_tableModel = require('../../models/prixod_table.model');
 const reagentModel = require('../../models/reagent.model');
-const register_supplierModel = require("../../models/register_supplier.model")
+
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class prixodController {
+class reagentDepartmentController {
     getAll = async (req, res, next) => {
-        const model = await prixod_Model.findAll({
-            include:[
-                {model: prixod_tableModel, as: 'prixod_table',
+        const model = await reagentDepartmentModel.findAll({
             include:[
                 {model: reagentModel, as: 'reagent'}
-            ]
-            }
             ]
         });
         res.status(200).send({
@@ -30,16 +25,12 @@ class prixodController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await prixod_Model.findOne({
+        const model = await reagentDepartmentModel.findOne({
             where:{
                 id: req.params.id
             },
             include:[
-                {model: prixod_tableModel, as: 'prixod_table',
-            include:[
                 {model: reagentModel, as: 'reagent'}
-            ]
-            }
             ]
         });
         if(!model){
@@ -52,24 +43,9 @@ class prixodController {
             data: model
         });
     }
-   create =  async(req, res, next) => {
+   create = async (req, res, next) => {
        this.checkValidation(req);
-       const {prixod_table, ...data} = req.body;
-       const model = await prixod_Model.create({
-            "date_time": Math.floor(new Date().getTime() / 1000),
-            "pastavchik_id": req.body.pastavchik_id,
-            "umumiy_summa": req.body.umumiy_summa,
-            "comment": req.body.comment
-       });
-       this.#prixod_table(model, prixod_table);
-       var register = {
-         "date_time": Math.floor(new Date().getTime() / 1000),
-         "doc_id": model.id,
-         "summa": model.umumiy_summa,
-         "doc_type": "chiqim",
-         "type": ""
-       }
-       await register_supplierModel.create(register);
+       const model = await reagentDepartmentModel.create(req.body);
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -79,18 +55,14 @@ class prixodController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await prixod_Model.findOne({
+    const model = await reagentDepartmentModel.findOne({
         where:{
             id: req.params.id
         }
     });
-    const {prixod_table, ...data} = req.body;
-    model.date_time = req.body.date_time;
-    model.pastavchik_id = req.body.pastavchik_id;
-    model.umumiy_summa = req.body.umumiy_summa;
-    model.comment = req.body.comment;
+    model.name = req.body.name;
+    model.reagent_id = req.body.reagent_id;
     model.save();
-    this.#prixod_table(model, prixod_table, false);
     res.status(200).send({
         error: false,
         error_code: 200,
@@ -98,26 +70,8 @@ class prixodController {
         data: model
     });
 }
-#prixod_table = async(model, prixod_table, insert = true) => {
-    if(!insert){
-       await this.#deletePrixodTable(model.id)
-    }
-    for(let key of prixod_table){
-        var tables = {
-            "reagent_id": key.reagent_id,
-            "price": key.price,
-            "prixod_id": model.id,
-            "count": key.count
-           }
-           await prixod_tableModel.create(tables)
-    }
-}
-#deletePrixodTable = async(doc_id) =>{
-   await prixod_tableModel.destroy({where:{prixod_id: doc_id}})
-}
-
 delete = async (req, res, next) => {
-  const model = await prixod_Model.destroy({
+  const model = await reagentDepartmentModel.destroy({
         where:{
           id: req.params.id
         }
@@ -147,4 +101,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new prixodController;
+module.exports = new reagentDepartmentController;

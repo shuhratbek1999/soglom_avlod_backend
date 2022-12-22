@@ -3,7 +3,8 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const pastavchik_payModel = require('../../models/pastavchik_pay.model')
 const { validationResult } = require('express-validator');
-
+const register_supplierModel = require('../../models/register_supplier.model')
+const register_kassaModel = require('../../models/register_kassa.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -45,6 +46,24 @@ class pastavchik_payController {
           "pastavchik_id": req.body.pastavchik_id,
           "date_time": Math.floor(new Date().getTime() / 1000)
        });
+       var register = {
+        "date_time": Math.floor(new Date().getTime() / 1000),
+        "doc_id": model.id,
+        "summa": model.jami_summa,
+        "doc_type": "kirim",
+        "type": model.type
+      }
+      await register_supplierModel.create(register);
+      var kassa = {
+        "date_time": Math.floor(new Date().getTime() / 1000),
+        "doctor_id": model.id,
+        "price": model.jami_summa,
+        "doc_type": "kirim",
+        "pay_type": model.type == 0 ? "Naqd" : "Plastik",
+        "type": model.type,
+        "place": "supplier"
+      }
+         await register_kassaModel.create(kassa)
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -66,6 +85,35 @@ class pastavchik_payController {
     model.pastavchik_id = req.body.pastavchik_id;
     model.date_time = Math.floor(new Date().getTime() / 1000);
     model.save();
+    await register_supplierModel.destroy({
+        where:{
+            doc_id: model.id
+        }
+    })
+    var register = {
+        "date_time": Math.floor(new Date().getTime() / 1000),
+        "doc_id": model.id,
+        "summa": model.jami_summa,
+        "doc_type": "kirim",
+        "type": model.type
+      }
+      await register_supplierModel.create(register);
+      await register_kassaModel.destroy({
+        where:{
+            doctor_id: model.id,
+            place: 'supplier'
+        }
+      })
+      var kassa = {
+        "date_time": Math.floor(new Date().getTime() / 1000),
+        "doctor_id": model.id,
+        "price": model.jami_summa,
+        "doc_type": "kirim",
+        "pay_type": model.type == 0 ? "Naqd" : "Plastik",
+        "type": model.type,
+        "place": "supplier"
+      }
+         await register_kassaModel.create(kassa)
     res.status(200).send({
         error: false,
         error_code: 200,
