@@ -107,7 +107,8 @@ class prixodController {
             "reagent_id": key.reagent_id,
             "price": key.price,
             "prixod_id": model.id,
-            "count": key.count
+            "count": key.count,
+            "summa": key.summa
            }
            await prixod_tableModel.create(tables)
     }

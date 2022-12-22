@@ -36,6 +36,9 @@ exports.up = function(db) {
     prixod_id: {
       type: 'int',
       notNull: true
+    },
+    summa:{
+      type: 'decimal'
     }
   });
 };

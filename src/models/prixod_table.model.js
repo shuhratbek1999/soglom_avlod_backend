@@ -27,6 +27,10 @@ count: {
   type: DataTypes.DECIMAL,
   allowNull: false
 },
+summa:{
+  type: DataTypes.DECIMAL,
+  allowNull: false
+},
 prixod_id:{
   type: DataTypes.INTEGER,
   allowNull: false
