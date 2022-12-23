@@ -115,7 +115,7 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doctor_id": model.id,
         "price": model.jami_summa,
-        "doc_type": "kirim",
+        "doc_type": "chiqim",
         "pay_type": model.type == 0 ? "Naqd" : "Plastik",
         "type": model.type,
         "place": "supplier"
