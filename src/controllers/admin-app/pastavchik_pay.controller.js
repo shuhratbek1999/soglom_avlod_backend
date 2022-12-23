@@ -7,6 +7,7 @@ const register_supplierModel = require('../../models/register_supplier.model')
 const register_kassaModel = require('../../models/register_kassa.model')
 const { Op } = require('sequelize');
 const { sequelize } = require('../../models/register_supplier.model');
+const PrixodModel = require('../../models/prixod.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -159,7 +160,7 @@ class pastavchik_payController {
     })
  } 
   getPastavchik = async(req, res, next) => {
-      const model = await pastavchik_payModel.findAll({
+      const model = await PrixodModel.findAll({
         attributes: ['id', 'umumiy_summa', 'pastavchik_id'],
          where:{
             pastavchik_id: req.body.pastavchik_id
