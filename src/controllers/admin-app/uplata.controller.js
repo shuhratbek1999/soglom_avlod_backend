@@ -125,7 +125,8 @@ class UplateController {
     await Register_kassaModel.destroy({
         where:{
            doctor_id: req.params.id,
-           doc_type: 'chiqim'
+           doc_type: 'chiqim',
+           place: 'uplata'
         }
     })
     const ModelUser = await UserModel.findAll({
