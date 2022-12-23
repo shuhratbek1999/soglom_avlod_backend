@@ -5,7 +5,8 @@ const prixod_Model = require('../../models/prixod.model')
 const { validationResult } = require('express-validator');
 const prixod_tableModel = require('../../models/prixod_table.model');
 const reagentModel = require('../../models/reagent.model');
-const register_supplierModel = require("../../models/register_supplier.model")
+const register_supplierModel = require("../../models/register_supplier.model");
+const register_reagentModel = require('../../models/register_reagent.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -118,6 +119,7 @@ class prixodController {
 #prixod_table = async(model, prixod_table, insert = true) => {
     if(!insert){
        await this.#deletePrixodTable(model.id)
+       await this.#deleteRegister_reagent(model.id)
     }
     for(let key of prixod_table){
         var tables = {
@@ -127,13 +129,24 @@ class prixodController {
             "count": key.count,
             "summa": key.summa
            }
-           await prixod_tableModel.create(tables)
+           await prixod_tableModel.create(tables);
+        var reagent = {
+            "reagent_id": key.reagent_id,
+            "price": key.price,
+            "doc_id": model.id,
+            "count": key.count,
+            "summa": key.summa,
+            "date_time": Math.floor(new Date().getTime() / 1000)
+        }
+        await register_reagentModel.create(reagent);
     }
 }
 #deletePrixodTable = async(doc_id) =>{
    await prixod_tableModel.destroy({where:{prixod_id: doc_id}})
 }
-
+#deleteRegister_reagent = async(id) => {
+    await register_reagentModel.destroy({where: {doc_id: id}})
+}
 delete = async (req, res, next) => {
   const model = await prixod_Model.destroy({
         where:{
