@@ -1263,7 +1263,7 @@ class RegistrationController {
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
-        const model = await registerDirectModel.findAll({
+        let model = await registerDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
@@ -1272,7 +1272,15 @@ class RegistrationController {
            ],
            where: queryx
         })
-        res.send(model)
+        model.forEach(val=> {
+            if(val.dataValues.id == null){
+                model = [];
+                res.send(model)
+            }
+            else{
+                res.send(model)
+            }
+        })
     };
     
     directSverka = async (req, res, next) => {
@@ -1286,7 +1294,7 @@ class RegistrationController {
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
-        let result = await registerDirectModel.findAll({
+        let model = await registerDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
@@ -1297,7 +1305,25 @@ class RegistrationController {
            group: ['id']
            
         })
-        res.send(result);
+        model.forEach(val=> {
+            if(val.dataValues.end_total == 0){
+                model = [];
+                res.send(model)
+            }
+            else{
+                res.send(model)
+            }
+        })
+        // res.send(result)
+        // result.forEach(val=> {
+        //     if(val.dataValues.end_total == 0){
+        //         result = [];
+        //         res.send(result)
+        //     }
+        //     else{
+        //         res.send(result)
+        //     }
+        // })
     };
     
     medHisobot = async (req, res, next) => {
@@ -1310,7 +1336,7 @@ class RegistrationController {
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
-        const model = await registerMedDirectModel.findAll({
+        let model = await registerMedDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
@@ -1319,7 +1345,15 @@ class RegistrationController {
            ],
            where: queryx
         })
-        res.send(model)
+        model.forEach(val=> {
+            if(val.dataValues.total_kirim == 0 && val.dataValues.total_chiqim == 0){
+                model = [];
+                res.send(model)
+            }
+            else{
+                res.send(model)
+            }
+        })
     };
     
     medSverka = async (req, res, next) => {
@@ -1333,7 +1367,7 @@ class RegistrationController {
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
           
-        let result = await registerMedDirectModel.findAll({
+        let model = await registerMedDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
@@ -1344,7 +1378,15 @@ class RegistrationController {
            group: ['id']
            
         })
-        res.send(result);
+        model.forEach(val=> {
+            if(val.dataValues.total_kirim == 0 && val.dataValues.total_chiqim == 0){
+                model = [];
+                res.send(model)
+            }
+            else{
+                res.send(model)
+            }
+        })
     };
     deleted = async (req, res, next) => {
         const user = await ModelModel.findOne({

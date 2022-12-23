@@ -3,6 +3,9 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const reagentModel = require('../../models/reagent.model')
 const { validationResult } = require('express-validator');
+const register_reagentModel = require('../../models/register_reagent.model');
+const { sequelize } = require('../../models/reagent.model');
+const {Op} = require('sequelize')
 
 /******************************************************************************
  *                              Employer Controller
@@ -34,6 +37,34 @@ class reagentController {
             message: 'Malumot chiqdi',
             data: model
         });
+    }
+    Hisobot = async(req, res, next) => {
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.reagent_id !== null){
+            query.id = {[Op.eq] : body.reagent_id }  
+            queryx.reagent_id = {[Op.eq]: body.reagent_id}
+        };
+        let model  = await register_reagentModel.findAll({
+            attributes: [
+                'id', "price", "date_time", "doc_id","count", "summa", "reagent_id",
+                [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+               [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id = ${body.reagent_id} THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
+           ],
+           where: queryx
+        })
+        model.forEach(val => {
+            if(val.dataValues.id == null){
+                model = [];
+                res.send(model)
+            }
+            else{
+                res.send(model)
+            }
+        })
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
