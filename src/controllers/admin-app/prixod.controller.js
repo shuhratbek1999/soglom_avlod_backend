@@ -67,7 +67,9 @@ class prixodController {
          "doc_id": model.id,
          "summa": model.umumiy_summa,
          "doc_type": "chiqim",
-         "type": ""
+         "type": 2,
+         "place": "Prixod",
+         "pastavchik_id": model.pastavchik_id
        }
        await register_supplierModel.create(register);
        res.status(200).send({
@@ -91,6 +93,21 @@ class prixodController {
     model.comment = req.body.comment;
     model.save();
     this.#prixod_table(model, prixod_table, false);
+    await register_supplierModel.destroy({
+        where:{
+            doc_id: model.id
+        }
+    })
+    var register = {
+        "date_time": Math.floor(new Date().getTime() / 1000),
+        "doc_id": model.id,
+        "summa": model.umumiy_summa,
+        "doc_type": "chiqim",
+        "type": 2,
+        "place": "Prixod",
+        "pastavchik_id": model.pastavchik_id
+      }
+      await register_supplierModel.create(register);
     res.status(200).send({
         error: false,
         error_code: 200,

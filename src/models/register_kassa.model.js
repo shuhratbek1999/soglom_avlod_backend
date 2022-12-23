@@ -59,5 +59,6 @@ Register_kassaModel.init({
   ],
  
 });
+Register_kassaModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 // Register_kassaModel.belongsTo(RegistrationModel, {as: 'registration', foreignKey: 'doctor_id'})
 module.exports = Register_kassaModel;

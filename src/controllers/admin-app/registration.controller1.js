@@ -855,7 +855,6 @@ class RegistrationController {
         query_end.date_time =  {
             [Op.lte]: body.datetime2,
         };
-        
         if(req.body.datetime1 < req.body.datetime2){
             result = await Register_kassaModel.findAll({
                 where: {
@@ -872,9 +871,7 @@ class RegistrationController {
                 ]
                 }
                 ],
-                order: [
-                    ['date_time', 'ASC']
-                ]
+                group: ['id']
             })
             result.forEach(val => {
                 if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
@@ -912,9 +909,7 @@ class RegistrationController {
                 ]
                 }
                 ],
-                order: [
-                    ['date_time', 'ASC']
-                ]
+                group: ['id']
             })
             result.forEach(val => {
                 if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){

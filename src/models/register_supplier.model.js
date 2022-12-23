@@ -32,6 +32,13 @@ doc_type: {
 },
 type:{
   type: DataTypes.BOOLEAN
+},
+place:{
+  type:DataTypes.STRING
+},
+pastavchik_id:{
+  type: DataTypes.INTEGER,
+  allowNull: false
 }
 
 }, {

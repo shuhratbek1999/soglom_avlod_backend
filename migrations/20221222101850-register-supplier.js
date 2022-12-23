@@ -30,6 +30,10 @@ exports.up = function(db) {
       type: 'int',
       notNull: true
     },
+    pastavchik_id:{
+      type: 'int',
+      notNull: true
+    },
     summa:{
       type: 'decimal'
     },
@@ -38,6 +42,9 @@ exports.up = function(db) {
     },
     type:{
       type: 'boolean'
+    },
+    place:{
+      type: 'string'
     }
   });
 };

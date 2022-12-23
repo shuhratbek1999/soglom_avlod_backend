@@ -5,6 +5,8 @@ const pastavchik_payModel = require('../../models/pastavchik_pay.model')
 const { validationResult } = require('express-validator');
 const register_supplierModel = require('../../models/register_supplier.model')
 const register_kassaModel = require('../../models/register_kassa.model')
+const { Op } = require('sequelize');
+const { sequelize } = require('../../models/register_supplier.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -51,14 +53,16 @@ class pastavchik_payController {
         "doc_id": model.id,
         "summa": model.jami_summa,
         "doc_type": "kirim",
-        "type": model.type
+        "type": model.type,
+        "place": "Pastavchik",
+        "pastavchik_id": model.pastavchik_id
       }
       await register_supplierModel.create(register);
       var kassa = {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doctor_id": model.id,
         "price": model.jami_summa,
-        "doc_type": "kirim",
+        "doc_type": "chiqim",
         "pay_type": model.type == 0 ? "Naqd" : "Plastik",
         "type": model.type,
         "place": "supplier"
@@ -95,7 +99,9 @@ class pastavchik_payController {
         "doc_id": model.id,
         "summa": model.jami_summa,
         "doc_type": "kirim",
-        "type": model.type
+        "type": model.type,
+        "place": "Pastavchik",
+        "pastavchik_id": model.pastavchik_id
       }
       await register_supplierModel.create(register);
       await register_kassaModel.destroy({
@@ -121,6 +127,78 @@ class pastavchik_payController {
         data: model
     });
 }
+
+ pastavchikHisobot = async(req, res, next) => {
+    let body = req.body; 
+    let query = {}, queryx = {};
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.pastavchik_id !== null){
+            query.id = {[Op.eq] : body.pastavchik_id }  
+            queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
+            
+        };
+    let model = await register_supplierModel.findAll({
+        attributes : [ 
+            'id', 'doc_id', "type", "date_time", "doc_type", "summa", "pastavchik_id",
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime1 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'total'],
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'kirim' THEN register_supplier.summa ELSE 0 END)"), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'chiqim' THEN register_supplier.summa ELSE 0 END)"), 'total_chiqim'],
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime2 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'end_total'],
+        ],
+        where: queryx
+    })
+    model.forEach(val => {
+        if(val.dataValues.id == null){
+            model = [];
+            res.send(model);
+        }
+        else{
+            res.send(model)
+        }
+    })
+ } 
+  getPastavchik = async(req, res, next) => {
+      const model = await pastavchik_payModel.findAll({
+        attributes: ['id', 'umumiy_summa', 'pastavchik_id'],
+         where:{
+            pastavchik_id: req.body.pastavchik_id
+         }
+      })
+      res.send(model)
+  }
+ pastavchikSverka = async(req, res, next) => {
+    let body = req.body; 
+    let query = {}, queryx = {};
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.pastavchik_id !== null){
+            query.id = {[Op.eq] : body.pastavchik_id }  
+            queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
+            
+        };
+    let model = await register_supplierModel.findAll({
+        attributes : [ 
+            'id', 'pastavchik_id', "type", "date_time", "doc_type", "summa", "doc_id",
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime1 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'total'],
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'kirim' THEN register_supplier.summa ELSE 0 END)"), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'chiqim' THEN register_supplier.summa ELSE 0 END)"), 'total_chiqim'],
+            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime2 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'end_total'],
+        ],
+        where: queryx,
+        group: ['id']
+    })
+    model.forEach(val => {
+        if(val.dataValues.id == null){
+            model = [];
+            res.send(model);
+        }
+        else{
+            res.send(model)
+        }
+    })
+ } 
+
 delete = async (req, res, next) => {
   const model = await pastavchik_payModel.destroy({
         where:{
