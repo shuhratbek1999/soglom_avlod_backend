@@ -1,7 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const reagentModel = require('./reagent.model');
-class reagentDepartmentModel extends Model {
+class departmentModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
@@ -9,30 +8,22 @@ class reagentDepartmentModel extends Model {
     }
 } 
 
-reagentDepartmentModel.init({
+departmentModel.init({
   id: { 
     type: DataTypes.INTEGER, 
     primaryKey: true, 
     autoIncrement: true, 
     allowNull: false
 },
-department_id: {
-    type: DataTypes.INTEGER(),
+name: {
+    type: DataTypes.STRING(600),
     allowNull: false
 },
-reagent_id: {
-  type: DataTypes.INTEGER,
-  allowNull: false
-},
-count:{
-  type: DataTypes.DECIMAL,
-  allowNull: false
-}
 
 }, {
   sequelize,
-  modelName: 'reagent_department',
-  tableName: 'reagent_department',
+  modelName: 'department',
+  tableName: 'department',
   timestamps: false,
   indexes: [
     {
@@ -46,5 +37,4 @@ count:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-reagentDepartmentModel.belongsTo(reagentModel, {as: 'reagent', foreignKey: 'reagent_id'})
-module.exports = reagentDepartmentModel;
+module.exports = departmentModel;

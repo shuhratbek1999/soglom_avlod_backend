@@ -1,20 +1,18 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const reagentDepartmentModel = require('../../models/reagent_department.model')
+const departmentModel = require('../../models/department.model')
 const { validationResult } = require('express-validator');
-const reagentModel = require('../../models/reagent.model');
+const register_departmentModel = require('../../models/register_reagent.model');
+const { sequelize } = require('../../models/reagent.model');
+const {Op} = require('sequelize')
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class reagentDepartmentController {
+class departmentController {
     getAll = async (req, res, next) => {
-        const model = await reagentDepartmentModel.findAll({
-            include:[
-                {model: reagentModel, as: 'reagent'}
-            ]
-        });
+        const model = await departmentModel.findAll(req.body);
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -25,13 +23,10 @@ class reagentDepartmentController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await reagentDepartmentModel.findOne({
+        const model = await departmentModel.findOne({
             where:{
                 id: req.params.id
-            },
-            include:[
-                {model: reagentModel, as: 'reagent'}
-            ]
+            }
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
@@ -43,9 +38,37 @@ class reagentDepartmentController {
             data: model
         });
     }
+    Hisobot = async(req, res, next) => {
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.reagent_id !== null){
+            query.id = {[Op.eq] : body.reagent_id }  
+            queryx.reagent_id = {[Op.eq]: body.reagent_id}
+        };
+        let model  = await register_departmentModel.findAll({
+            attributes: [
+                'id', "price", "date_time", "doc_id","count", "summa", "reagent_id",
+                [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+               [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id = ${body.reagent_id} THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
+           ],
+           where: queryx
+        })
+        model.forEach(val => {
+            if(val.dataValues.id == null){
+                model = [];
+                res.send(model)
+            }
+            else{
+                res.send(model)
+            }
+        })
+    }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await reagentDepartmentModel.create(req.body);
+       const model = await departmentModel.create(req.body);
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -55,14 +78,12 @@ class reagentDepartmentController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await reagentDepartmentModel.findOne({
+    const model = await departmentModel.findOne({
         where:{
             id: req.params.id
         }
     });
-    model.department_id = req.body.department_id;
-    model.reagent_id = req.body.reagent_id;
-    model.count = req.body.count;
+    model.name = req.body.name;
     model.save();
     res.status(200).send({
         error: false,
@@ -72,7 +93,7 @@ class reagentDepartmentController {
     });
 }
 delete = async (req, res, next) => {
-  const model = await reagentDepartmentModel.destroy({
+  const model = await departmentModel.destroy({
         where:{
           id: req.params.id
         }
@@ -102,4 +123,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new reagentDepartmentController;
+module.exports = new departmentController;

@@ -15,29 +15,22 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable("reagent_department", {
-    id:{
+  return db.createTable("department", {
+    id: {
       type: 'int',
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey:true,
       notNull: true
     },
-    department_id:{
-      type: 'int',
+    name: {
+      type: 'string',
       notNull: true
-    },
-    reagent_id:{
-      type: 'int',
-      notNull: true
-    },
-    count:{
-      type: 'decimal'
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable("reagent_department");
+  return db.dropTable("department");
 };
 
 exports._meta = {

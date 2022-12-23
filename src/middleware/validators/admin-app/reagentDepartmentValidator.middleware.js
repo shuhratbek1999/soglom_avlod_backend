@@ -1,12 +1,10 @@
 const { body } = require('express-validator');
 
 exports.directModels = [
-   body('name')
+   body('department_id')
         .exists()
-        .isString()
-        .withMessage('string typeda kiriting')
-        .isLength({min: 3, max: 300})
-        .withMessage('eng kamida 4 ta harfdan iborat bolsin'),
+        .isInt()
+        .withMessage('string typeda kiriting'),
     body('reagent_id')
          .exists()
          .isInt()

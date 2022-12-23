@@ -33,6 +33,7 @@ const pastavchikRouter = require('../routes/admin-app/pastavchik.route')
 const prixodRouter = require('../routes/admin-app/prixod.route')
 const pastavchikPay = require('../routes/admin-app/pastavchik_pay.route')
 const reagentDepartment = require('../routes/admin-app/reagent_department.route')
+const department = require('../routes/admin-app/department.route')
 const HttpException = require('../utils/HttpException.utils');
 
 module.exports = function(app){
@@ -74,6 +75,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/prixod`, prixodRouter);
         app.use(`/api/v1/admin-app/pastavchik_pay`, pastavchikPay);
         app.use(`/api/v1/admin-app/reagent_department`, reagentDepartment);
+        app.use(`/api/v1/admin-app/department`, department);
 
         app.use(`/href`, express.static('upload'));
 
