@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const pastavchikModel = require('./pastavchik.model')
 class pastavchik_payModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -55,4 +56,5 @@ date_time:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+pastavchik_payModel.belongsTo(pastavchikModel, {as: 'pastavchik', foreignKey: 'pastavchik_id'})
 module.exports = pastavchik_payModel;

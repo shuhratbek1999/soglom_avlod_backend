@@ -7,13 +7,18 @@ const register_supplierModel = require('../../models/register_supplier.model')
 const register_kassaModel = require('../../models/register_kassa.model')
 const { Op } = require('sequelize');
 const { sequelize } = require('../../models/register_supplier.model');
-const PrixodModel = require('../../models/prixod.model')
+const PrixodModel = require('../../models/prixod.model');
+const pastavchikModel = require('../../models/pastavchik.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class pastavchik_payController {
     getAll = async (req, res, next) => {
-        const model = await pastavchik_payModel.findAll(req.body);
+        const model = await pastavchik_payModel.findAll({
+            include:[
+                {model: pastavchikModel, as: 'pastavchik'}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -27,7 +32,10 @@ class pastavchik_payController {
         const model = await pastavchik_payModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: pastavchikModel, as: 'pastavchik'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
@@ -166,7 +174,9 @@ class pastavchik_payController {
             pastavchik_id: req.body.pastavchik_id
          }
       })
-      res.send(model)
+      model.forEach(val => {
+        res.send(val.dataValues)
+      })
   }
  pastavchikSverka = async(req, res, next) => {
     let body = req.body; 
