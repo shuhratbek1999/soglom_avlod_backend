@@ -29,7 +29,7 @@ class pastavchik_payController {
 
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await pastavchik_payModel.findOne({
+        let model = await pastavchik_payModel.findOne({
             where:{
                 id: req.params.id
             },
@@ -39,6 +39,14 @@ class pastavchik_payController {
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
+        }
+        if(model.dataValues.type == false){
+            model.dataValues.type = 0;
+            model.dataValues.date_time = String(model.dataValues.date_time)
+        }
+        else{
+            model.dataValues.type = 1;
+            model.dataValues.date_time = String(model.dataValues.date_time)
         }
         res.status(200).send({
             error: false,
