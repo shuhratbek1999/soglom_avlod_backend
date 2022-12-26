@@ -7,6 +7,7 @@ const prixod_tableModel = require('../../models/prixod_table.model');
 const reagentModel = require('../../models/reagent.model');
 const register_supplierModel = require("../../models/register_supplier.model");
 const register_reagentModel = require('../../models/register_reagent.model');
+const pastavchikModel = require('../../models/pastavchik.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -18,7 +19,8 @@ class prixodController {
             include:[
                 {model: reagentModel, as: 'reagent'}
             ]
-            }
+            },
+            {model: pastavchikModel, as: 'pastavchik'}
             ]
         });
         res.status(200).send({
@@ -40,7 +42,8 @@ class prixodController {
             include:[
                 {model: reagentModel, as: 'reagent'}
             ]
-            }
+            },
+            {model: pastavchikModel, as: 'pastavchik'}
             ]
         });
         if(!model){

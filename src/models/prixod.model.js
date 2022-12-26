@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const pastavchikModel = require('./pastavchik.model');
 const prixod_tableModel = require('./prixod_table.model');
 class prixodModel extends Model {
     toJSON () {//Api da ishladi
@@ -49,4 +50,5 @@ comment:{
   //findOne da yoki findAll da chaqirish kerak
 });
 prixodModel.hasMany(prixod_tableModel, {as: 'prixod_table', foreignKey: 'prixod_id'})
+prixodModel.belongsTo(pastavchikModel, {as: 'pastavchik', foreignKey: 'pastavchik_id'})
 module.exports = prixodModel;
