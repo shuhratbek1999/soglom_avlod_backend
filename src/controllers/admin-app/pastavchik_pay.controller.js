@@ -60,7 +60,7 @@ class pastavchik_payController {
        var register = {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doc_id": model.id,
-        "summa": model.jami_summa,
+        "summa": model.price,
         "doc_type": "kirim",
         "type": model.type,
         "place": "Pastavchik",
@@ -70,7 +70,7 @@ class pastavchik_payController {
       var kassa = {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doctor_id": model.id,
-        "price": model.jami_summa,
+        "price": model.price,
         "doc_type": "chiqim",
         "pay_type": model.type == 0 ? "Naqd" : "Plastik",
         "type": model.type,
@@ -106,7 +106,7 @@ class pastavchik_payController {
     var register = {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doc_id": model.id,
-        "summa": model.jami_summa,
+        "summa": model.price,
         "doc_type": "kirim",
         "type": model.type,
         "place": "Pastavchik",
@@ -122,7 +122,7 @@ class pastavchik_payController {
       var kassa = {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doctor_id": model.id,
-        "price": model.jami_summa,
+        "price": model.price,
         "doc_type": "chiqim",
         "pay_type": model.type == 0 ? "Naqd" : "Plastik",
         "type": model.type,
