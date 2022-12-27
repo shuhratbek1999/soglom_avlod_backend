@@ -13,5 +13,6 @@ router.post('/create',auth(), directModels, awaitHandlerFactory(pastavchik_payCo
 router.patch('/update/:id', auth(), directModels, awaitHandlerFactory(pastavchik_payController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(pastavchik_payController.delete));
 router.post('/PastavchikHisobot', auth(), awaitHandlerFactory(pastavchik_payController.pastavchikHisobot));
+router.post('/PastavchikSverka', auth(), awaitHandlerFactory(pastavchik_payController.pastavchikSverka));
 router.post('/getPastavchik', auth(), awaitHandlerFactory(pastavchik_payController.getPastavchik));
 module.exports = router;
