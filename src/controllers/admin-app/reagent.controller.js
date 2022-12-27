@@ -8,6 +8,7 @@ const register_reagentModel = require('../../models/register_reagent.model');
 const { sequelize } = require('../../models/reagent.model');
 const {Op} = require('sequelize');
 const reagentDepartmentModel = require('../../models/reagent_department.model');
+const departmentModel = require('../../models/department.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -57,7 +58,12 @@ class reagentController {
                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ],
             include:[
-                {model: reagentDepartmentModel, as: 'reagent_department'}
+                {model: reagentDepartmentModel, as: 'reagent_department',
+            include:[
+                {model: reagentModel, as: 'reagent'},
+                {model: departmentModel, as:'department'}
+            ]
+            }
              ],
            where: queryx
         })
@@ -88,7 +94,12 @@ class reagentController {
                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ],
            include:[
-            {model: reagentDepartmentModel, as: 'reagent_department'}
+            {model: reagentDepartmentModel, as: 'reagent_department',
+        include:[
+            {model: reagentModel, as: 'reagent'},
+            {model: departmentModel, as:'department'}
+        ]
+        }
          ],
            where: queryx,
            group: ['id']
