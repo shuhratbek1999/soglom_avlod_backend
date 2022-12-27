@@ -11,9 +11,9 @@ const reagentModel = require('../../models/reagent.model');
 class reagentDepartmentController {
     getAll = async (req, res, next) => {
         const model = await reagentDepartmentModel.findAll({
-            include:[
-                {model: reagentModel, as: 'reagent'}
-            ]
+            // include:[
+            //     {model: reagentModel, as: 'reagent'}
+            // ]
         });
         res.status(200).send({
             error: false,
@@ -29,9 +29,9 @@ class reagentDepartmentController {
             where:{
                 id: req.params.id
             },
-            include:[
-                {model: reagentModel, as: 'reagent'}
-            ]
+            // include:[
+            //     {model: reagentModel, as: 'reagent'}
+            // ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
