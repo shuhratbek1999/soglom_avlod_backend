@@ -210,15 +210,16 @@ class pastavchik_payController {
         where: queryx,
         group: ['id']
     })
-    model.forEach(val => {
-        if(val.dataValues.id == null){
-            model = [];
-            res.send(model);
-        }
-        else{
-            res.send(model)
-        }
-    })
+    // for(let key in model){
+    //     if(model[key].dataValues.total_kirim == 0 && model[key].dataValues.total_chiqim == 0){
+    //        model = [];
+    //        res.send(model)
+    //     }
+    //     else{
+    //         res.send(model)
+    //     }
+    // }
+    res.send(model)
  } 
 
 delete = async (req, res, next) => {

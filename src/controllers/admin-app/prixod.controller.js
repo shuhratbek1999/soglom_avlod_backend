@@ -49,6 +49,7 @@ class prixodController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
+        model.dataValues.date_time = String(model.dataValues.date_time);
         res.status(200).send({
             error: false,
             error_code: 200,
