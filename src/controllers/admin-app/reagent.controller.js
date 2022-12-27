@@ -104,15 +104,16 @@ class reagentController {
            where: queryx,
            group: ['id']
         })
-        model.forEach(val => {
-            if(val.dataValues.id == null){
-                model = [];
-                res.send(model)
-            }
-            else{
-                res.send(model)
-            }
-        })
+        res.send(model)
+        // model.forEach(val => {
+        //     if(val.dataValues.id == null){
+        //         model = [];
+        //         res.send(model)
+        //     }
+        //     else{
+        //         res.send(model)
+        //     }
+        // })
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
