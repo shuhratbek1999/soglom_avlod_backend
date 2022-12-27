@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const reagent_departmentModel = require('./reagent_department.model')
 class reagentModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -37,4 +38,5 @@ name: {
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+reagentModel.hasMany(reagent_departmentModel, {as: 'reagent_department', foreignKey: 'reagent_id'})
 module.exports = reagentModel;

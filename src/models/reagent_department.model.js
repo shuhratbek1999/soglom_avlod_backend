@@ -46,5 +46,5 @@ count:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-reagentDepartmentModel.belongsTo(reagentModel, {as: 'reagent', foreignKey: 'reagent_id'})
+// reagentDepartmentModel.belongsTo(reagentModel, {as: 'reagent', foreignKey: 'reagent_id'})
 module.exports = reagentDepartmentModel;

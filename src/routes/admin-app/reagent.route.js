@@ -11,6 +11,7 @@ router.get('/all', auth(),  awaitHandlerFactory(reagentController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(reagentController.getOne));
 router.post('/create',auth(), reagent, awaitHandlerFactory(reagentController.create));
 router.post('/Hisobot',auth(), reagent, awaitHandlerFactory(reagentController.Hisobot));
+router.post('/Sverka',auth(), reagent, awaitHandlerFactory(reagentController.Sverka));
 router.patch('/update/:id', auth(), reagent, awaitHandlerFactory(reagentController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(reagentController.delete));
 module.exports = router;
