@@ -163,6 +163,9 @@ class pastavchik_payController {
             [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'chiqim' THEN register_supplier.summa ELSE 0 END)"), 'total_chiqim'],
             [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime2 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'end_total'],
         ],
+        include:[
+            {model: pastavchikModel, as: 'pastavchik'}
+        ],
         where: queryx
     })
     model.forEach(val => {
