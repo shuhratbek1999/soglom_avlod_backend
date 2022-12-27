@@ -56,12 +56,9 @@ class reagentController {
                [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id = ${body.reagent_id} THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ],
-           include:[
-            {model: reagentModel, as: 'reagent',
             include:[
                 {model: reagentDepartmentModel, as: 'reagent_department'}
-             ]}
-           ],
+             ],
            where: queryx
         })
         model.forEach(val => {
@@ -91,12 +88,8 @@ class reagentController {
                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ],
            include:[
-            {model: reagentModel, as: 'reagent', 
-         include:[
             {model: reagentDepartmentModel, as: 'reagent_department'}
-         ]
-        }
-           ],
+         ],
            where: queryx,
            group: ['id']
         })
