@@ -54,7 +54,7 @@ class reagentController {
             attributes: [
                 'id', "price", "date_time", "doc_id","count", "summa", "reagent_id",
                 [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
-               [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id = ${body.reagent_id} THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id > 0 THEN register_reagent.summa ELSE 0 END)`), 'total_chiqim'],
                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ],
             include:[
@@ -90,7 +90,7 @@ class reagentController {
             attributes: [
                 'id', "price", "date_time", "doc_id","count", "summa", "reagent_id",
                 [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
-               [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id = ${body.reagent_id} THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.reagent_id = ${body.reagent_id} THEN register_reagent.summa ELSE 0 END)`), 'total_chiqim'],
                [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ],
            include:[
