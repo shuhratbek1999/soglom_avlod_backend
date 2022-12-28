@@ -69,7 +69,7 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doc_id": model.id,
         "summa": model.price,
-        "doc_type": "kirim",
+        "doc_type": "chiqim",
         "type": model.type,
         "place": "Pastavchik",
         "pastavchik_id": model.pastavchik_id
@@ -115,7 +115,7 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doc_id": model.id,
         "summa": model.price,
-        "doc_type": "kirim",
+        "doc_type": "chiqim",
         "type": model.type,
         "place": "Pastavchik",
         "pastavchik_id": model.pastavchik_id
