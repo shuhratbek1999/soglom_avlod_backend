@@ -140,7 +140,8 @@ class prixodController {
             "doc_id": model.id,
             "count": key.count,
             "summa": key.summa,
-            "date_time": Math.floor(new Date().getTime() / 1000)
+            "date_time": Math.floor(new Date().getTime() / 1000),
+            "doc_type": "chiqim"
         }
         await register_reagentModel.create(reagent);
     }
