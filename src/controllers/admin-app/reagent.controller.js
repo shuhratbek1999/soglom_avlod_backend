@@ -67,17 +67,19 @@ class reagentController {
             },
             {model: reagentModel, as: 'reagent'}
              ],
-           where: queryx
+           where: queryx,
+           group: ['reagent_id']
         })
-        model.forEach(val => {
-            if(val.dataValues.id == null){
-                model = [];
-                res.send(model)
-            }
-            else{
-                res.send(model)
-            }
-        })
+        res.send(model)
+        // model.forEach(val => {
+        //     if(val.dataValues.id == null){
+        //         model = [];
+        //         res.send(model)
+        //     }
+        //     else{
+        //         res.send(model)
+        //     }
+        // })
     }
     Sverka = async(req, res, next) => {
         let query = {}, queryx = {};

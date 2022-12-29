@@ -166,17 +166,10 @@ class pastavchik_payController {
         include:[
             {model: pastavchikModel, as: 'pastavchik'}
         ],
-        where: queryx
+        where: queryx,
+        group: ['pastavchik_id']
     })
-    model.forEach(val => {
-        if(val.dataValues.id == null){
-            model = [];
-            res.send(model);
-        }
-        else{
-            res.send(model)
-        }
-    })
+    res.send(model)
  } 
   getPastavchik = async(req, res, next) => {
     let prixod = await register_supplierModel.findAll({
