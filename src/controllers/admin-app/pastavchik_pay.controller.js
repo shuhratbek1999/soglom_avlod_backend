@@ -108,7 +108,8 @@ class pastavchik_payController {
     model.save();
     await register_supplierModel.destroy({
         where:{
-            doc_id: model.id
+            doc_id: model.id,
+            place: 'Pastavchik'
         }
     })
     var register = {

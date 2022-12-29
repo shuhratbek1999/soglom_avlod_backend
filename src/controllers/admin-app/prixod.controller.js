@@ -100,7 +100,8 @@ class prixodController {
     this.#prixod_table(model, prixod_table, false);
     await register_supplierModel.destroy({
         where:{
-            doc_id: model.id
+            doc_id: model.id,
+            place: 'Prixod'
         }
     })
     var register = {
