@@ -69,7 +69,7 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doc_id": model.id,
         "summa": model.price,
-        "doc_type": "chiqim",
+        "doc_type": "kirim",
         "type": model.type,
         "place": "Pastavchik",
         "pastavchik_id": model.pastavchik_id
@@ -115,7 +115,7 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doc_id": model.id,
         "summa": model.price,
-        "doc_type": "chiqim",
+        "doc_type": "kirim",
         "type": model.type,
         "place": "Pastavchik",
         "pastavchik_id": model.pastavchik_id
@@ -179,15 +179,41 @@ class pastavchik_payController {
     })
  } 
   getPastavchik = async(req, res, next) => {
-      const model = await PrixodModel.findAll({
-        attributes: ['id', 'umumiy_summa', 'pastavchik_id'],
-         where:{
-            pastavchik_id: req.body.pastavchik_id
+    let prixod = await register_supplierModel.findAll({
+        where:{
+            pastavchik_id: req.body.pastavchik_id,
+            place: 'Prixod'
+        },
+        raw: true
+    })
+    let pastavchik = await register_supplierModel.findAll({
+            where:{
+                pastavchik_id: req.body.pastavchik_id,
+                place: 'Pastavchik'
+            },
+            raw: true
+    })
+    let umumiy, sum1, sum2;
+    function prixodSumma(prixod){
+        sum1 = 0;
+        for(let key of prixod){
+            sum1 += key.summa;
+        }
+        return sum1;
+    }
+    prixodSumma(prixod);
+    function pastavchikSumma(pastavchik){
+         sum2 = 0;
+         for(let key of pastavchik){
+            sum2 += key.summa;
          }
-      })
-      model.forEach(val => {
-        res.send(val.dataValues)
-      })
+         return sum2;
+    }
+    pastavchikSumma(pastavchik);
+    umumiy = sum2 - sum1;
+     res.send({
+        "backlog": umumiy
+     })
   }
  pastavchikSverka = async(req, res, next) => {
     let body = req.body; 
