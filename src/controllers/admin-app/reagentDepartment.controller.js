@@ -4,7 +4,7 @@ const HttpException = require('../../utils/HttpException.utils');
 const reagentDepartmentModel = require('../../models/reagent_department.model')
 const { validationResult } = require('express-validator');
 const reagentModel = require('../../models/reagent.model');
-
+const doctor_categoryModel = require('../../models/doctor_category.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -12,7 +12,8 @@ class reagentDepartmentController {
     getAll = async (req, res, next) => {
         const model = await reagentDepartmentModel.findAll({
             include:[
-                {model: reagentModel, as: 'reagent'}
+                {model: reagentModel, as: 'reagent'},
+                {model: doctor_categoryModel, as: 'department'}
             ]
         });
         res.status(200).send({
@@ -30,7 +31,8 @@ class reagentDepartmentController {
                 id: req.params.id
             },
             include:[
-                {model: reagentModel, as: 'reagent'}
+                {model: reagentModel, as: 'reagent'},
+                {model: doctor_categoryModel, as: 'department'}
             ]
         });
         if(!model){
