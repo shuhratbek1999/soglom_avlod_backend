@@ -13,26 +13,17 @@ const storage = multer.diskStorage({
     }
 })
 
-const fileFilter = (req, file, cb) => {
-    if(file.mimetype == 'image/jpeg' || file.mimetype == 'image/png' || file.mimetype == 'application/pdf' || file.mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'){
-        cb(null, true);
-    }else{
-        cb(null, false);
-        return cb(new Error('Only images are allowed'))
-    } 
-}
 
 var upload = multer({
     storage: storage,
     limits:{
         fileSize: 1024 * 1024 * 5
-    },
-    fileFilter: fileFilter
+    }
 }).single('href');
 
 router.post('/file', upload, awaitHandlerFactory(async (req, res, next) => {    
     res.json({
-        file: `http://185.196.213.31:${port}/href/${req.file.filename}`
+        file: `${req.file.filename}`
     })
 }));
 

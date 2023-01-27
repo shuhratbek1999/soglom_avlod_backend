@@ -77,7 +77,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/reagent_department`, reagentDepartment);
         app.use(`/api/v1/admin-app/department`, department);
 
-        app.use(`/href`, express.static('upload'));
+        app.use(`/api/v1/admin-app/`, express.static('upload'));
 
         // 404 error
         app.all('*', (req, res, next) => {
