@@ -327,7 +327,7 @@ class RegistrationController {
         var directs = {
            "date_time": Math.floor(new Date().getTime() / 1000),
            "type": 0,
-           "price": model.summa != undefined ? (model.summa * direct.bonus)/100 : 0,
+           "price": direct.bonus != null ? (model.summa * direct.bonus)/100 : 0,
            "doc_id": model.id,
            "doc_type": "kirim",
            "comment": "",
@@ -350,7 +350,7 @@ class RegistrationController {
         var med = {
            "date_time": Math.floor(new Date().getTime() / 1000),
            "type": 0,
-           "price": model.summa != undefined ? (model.summa * meds.bonus)/100 : 0,
+           "price": direct.bonus != null ? (model.summa * meds.bonus)/100 : 0,
            "doc_id": direc.doc_id,
            "doc_type": "kirim",
            "comment": "",
