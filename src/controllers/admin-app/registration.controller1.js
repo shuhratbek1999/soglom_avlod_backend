@@ -70,6 +70,9 @@ class RegistrationController {
                     ]
                 } 
              ],
+             order: [
+                ['created_at', 'desc']
+             ]
         });
         res.status(200).send({  
             error: false,
