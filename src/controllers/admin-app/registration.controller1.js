@@ -327,7 +327,7 @@ class RegistrationController {
         var directs = {
            "date_time": Math.floor(new Date().getTime() / 1000),
            "type": 0,
-           "price": direct.bonus != null ? (model.summa * direct.bonus)/100 : 0,
+           "price": direct != null ? (model.summa * direct.bonus)/100 : 0,
            "doc_id": model.id,
            "doc_type": "kirim",
            "comment": "",
@@ -342,20 +342,23 @@ class RegistrationController {
         if(!insert){
             await this.#medDelete(model.id)
         }
-        const meds = await med_directModel.findOne({
-            where:{
-                id: direct.med_id
-            }
-        })
+        let meds;
+        if(direct != null){
+             meds = await med_directModel.findOne({
+                where:{
+                    id: direct.med_id
+                }
+            })
+        }
         var med = {
            "date_time": Math.floor(new Date().getTime() / 1000),
            "type": 0,
-           "price": direct.bonus != null ? (model.summa * meds.bonus)/100 : 0,
+           "price": meds != undefined ? (model.summa * meds.bonus)/100 : 0,
            "doc_id": direc.doc_id,
            "doc_type": "kirim",
            "comment": "",
            "place": "Registration",
-           "direct_id": direct.med_id
+           "direct_id": direct != null ? direct.med_id : 0
         }
         await registerMedDirectModel.create(med);
      }
