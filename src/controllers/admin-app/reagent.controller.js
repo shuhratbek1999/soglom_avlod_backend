@@ -62,7 +62,7 @@ class reagentController {
                 {model: reagentDepartmentModel, as: 'reagent_department',
             include:[
                 {model: reagentModel, as: 'reagent'},
-                {model: departmentModel, as:'department'}
+                // {model: departmentModel, as:'department'}
             ]
             },
             {model: reagentModel, as: 'reagent'}
@@ -102,7 +102,7 @@ class reagentController {
             {model: reagentDepartmentModel, as: 'reagent_department',
         include:[
             {model: reagentModel, as: 'reagent'},
-            {model: departmentModel, as:'department'}
+            // {model: departmentModel, as:'department'}
         ]
         },
         {model: reagentModel, as: 'reagent'}

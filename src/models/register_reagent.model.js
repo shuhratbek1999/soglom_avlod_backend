@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const departmentModel = require('./department.model');
 const reagentModel = require('./reagent.model');
 // const reagentModel = require('./reagent.model');
 const reagentDepartmentModel = require('./reagent_department.model');
