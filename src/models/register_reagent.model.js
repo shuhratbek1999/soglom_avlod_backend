@@ -65,5 +65,5 @@ doc_type:{
   //findOne da yoki findAll da chaqirish kerak
 });
 register_reagentModel.belongsTo(reagentModel, {as:'reagent', foreignKey: 'reagent_id'});
-register_reagentModel.belongsTo(reagentDepartmentModel, {as:'reagent_department', foreignKey: 'reagent_id'});
+register_reagentModel.hasMany(reagentDepartmentModel, {as:'reagent_department', foreignKey: 'reagent_id'});
 module.exports = register_reagentModel;

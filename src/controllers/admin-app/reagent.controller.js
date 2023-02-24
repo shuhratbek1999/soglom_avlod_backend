@@ -8,7 +8,7 @@ const register_reagentModel = require('../../models/register_reagent.model');
 const { sequelize } = require('../../models/reagent.model');
 const {Op} = require('sequelize');
 const reagentDepartmentModel = require('../../models/reagent_department.model');
-const departmentModel = require('../../models/department.model');
+const doctorCategory = require('../../models/doctor_category.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -102,7 +102,7 @@ class reagentController {
             {model: reagentDepartmentModel, as: 'reagent_department',
         include:[
             {model: reagentModel, as: 'reagent'},
-            // {model: departmentModel, as:'department'}
+            {model: doctorCategory, as:'department'}
         ]
         },
         {model: reagentModel, as: 'reagent'}

@@ -4,7 +4,7 @@ const HttpException = require('../../utils/HttpException.utils');
 const reagentDepartmentModel = require('../../models/reagent_department.model')
 const { validationResult } = require('express-validator');
 const reagentModel = require('../../models/reagent.model');
-const inspectionCategoryModel = require('../../models/inspector_category.model')
+const inspectionCategoryModel = require('../../models/doctor_category.model')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
