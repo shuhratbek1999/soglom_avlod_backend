@@ -31,5 +31,6 @@ router.post('/medHisobot', auth(),  awaitHandlerFactory(registrationControl.medH
 router.post('/medSverka', auth(),  awaitHandlerFactory(registrationControl.medSverka));
 router.post('/directSverka', auth(),  awaitHandlerFactory(registrationControl.directSverka));
 router.patch('/update/:id', auth(), registrationValidate, awaitHandlerFactory(registrationControl.update));
-router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.deleted));
+router.delete('/deleted', auth(), awaitHandlerFactory(registrationControl.deleted));
+router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
 module.exports = router;

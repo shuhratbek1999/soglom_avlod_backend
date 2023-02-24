@@ -445,15 +445,25 @@ class RegistrationController {
             else{
                 doc_type = 'kirim'
             }
-            Register_kassaModel.create({
-                "date_time": date_time,
-                "doctor_id": model.id,
-                "pay_type": element.pay_type,
-                "price": element.summa,    
-                "type": type,
-                "doc_type": 'Kirim',
-                "place": "registration"
+            let tolov = await Registration_payModel.findOne({
+                where:{
+                    registration_id: model.id
+                }
             })
+            console.log(tolov.dataValues.backlog, "salom");
+           if(tolov != null){
+            if(tolov.dataValues.backlog == 0){
+                Register_kassaModel.create({
+                    "date_time": date_time,
+                    "doctor_id": model.id,
+                    "pay_type": element.pay_type,
+                    "price": element.summa,    
+                    "type": type,
+                    "doc_type": 'Kirim',
+                    "place": "registration"
+                })
+               }
+           }
         }
     }
 
@@ -486,43 +496,28 @@ class RegistrationController {
             }
             const models = await Registration_inspectionModel.create(dds);
            setTimeout(async() => {
-            let pay = await Registration_payModel.findOne({
+            let tolov = await Registration_payModel.findOne({
                 where:{
-                    registration_id: models.dataValues.registration_id
-                },
-                raw: true
+                    registration_id: model.id
+                }
             })
-            if(pay != null){
-                var date_time = Math.floor(new Date().getTime() / 1000);
-                Register_inspectionModel.create({
-                    "date_time": date_time,
-                    "type": data.type,
-                    "price": Math.floor((data.price * user.percent)/100),
-                    "doc_id": data.registration_id,
-                    "user_id": data.user_id,
-                    "inspection_id": data.inspection_id,
-                    "inspection_category": data.category_id,
-                    "skidka": data.skidka,
-                    "doc_type": 'kirim',
-                    "place": "Registration",
-                    "comment": pay.comment
-                  })
-            }
-            else{
-                var date_time = Math.floor(new Date().getTime() / 1000);
-                Register_inspectionModel.create({
-                    "date_time": date_time,
-                    "type": data.type,
-                    "price": Math.floor((data.price * user.percent)/100),
-                    "doc_id": data.registration_id,
-                    "user_id": data.user_id,
-                    "inspection_id": data.inspection_id,
-                    "inspection_category": data.category_id,
-                    "skidka": data.skidka,
-                    "doc_type": 'kirim',
-                    "place": "Registration",
-                    "comment": ""
-                  })
+            if(tolov != null){
+                if(tolov.dataValues.backlog == 0){
+                    var date_time = Math.floor(new Date().getTime() / 1000);
+                    Register_inspectionModel.create({
+                        "date_time": date_time,
+                        "type": data.type,
+                        "price": Math.floor((data.price * user.percent)/100),
+                        "doc_id": data.registration_id,
+                        "user_id": data.user_id,
+                        "inspection_id": data.inspection_id,
+                        "inspection_category": data.category_id,
+                        "skidka": data.skidka,
+                        "doc_type": 'kirim',
+                        "place": "Registration",
+                        "comment": tolov.comment
+                      })
+                }
             }
            }, 1000);
                 function isHave(item) { 
@@ -571,16 +566,25 @@ class RegistrationController {
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
             var date_time = Math.floor(new Date().getTime() / 1000);
-            register_palataModel.create({
-                "palata_id": element.palata_id,
-                "patient_id": model.id,
-                "registration_id": model.id,
-                "price": element.price,
-                "day": element.day,
-                "date_to": element.date_to,
-                "date_do": element.date_do,
-                "date_time": element.date_time
+            let tolov = await Registration_payModel.findOne({
+                where:{
+                    registration_id: model.id
+                }
             })
+            if(tolov != null){
+                if(tolov.dataValues.backlog == 0){
+                    register_palataModel.create({
+                        "palata_id": element.palata_id,
+                        "patient_id": model.id,
+                        "registration_id": model.id,
+                        "price": element.price,
+                        "day": element.day,
+                        "date_to": element.date_to,
+                        "date_do": element.date_do,
+                        "date_time": element.date_time
+                    })
+                }
+            }
 
         }
     }
@@ -608,37 +612,25 @@ class RegistrationController {
             };
             const models = await Registration_doctorModel.create(news);
             setTimeout(async() => {
-                let pay = await Registration_payModel.findOne({
+                let tolov = await Registration_payModel.findOne({
                     where:{
-                        registration_id: models.dataValues.registration_id
-                    },
-                    raw: true
+                        registration_id: model.id
+                    }
                 })
-                if(pay != null){
-                    var date_time = Math.floor(new Date().getTime() / 1000);
-                    RegisterDoctorModel.create({
-                        "date_time": date_time,
-                        "type": data.text,
-                        "price": Math.floor((data.price * user.percent)/100),
-                        "doc_id": model.id, 
-                        "doctor_id": data.doctor_id,
-                        "doc_type": 'kirim',
-                         "place": "Registration",
-                         "comment": pay.comment
-                     })
-                }
-                else{
-                    var date_time = Math.floor(new Date().getTime() / 1000);
-                RegisterDoctorModel.create({
-                    "date_time": date_time,
-                    "type": data.text,
-                    "price": Math.floor((data.price * user.percent)/100),
-                    "doc_id": model.id, 
-                    "doctor_id": data.doctor_id,
-                    "doc_type": 'kirim',
-                     "place": "Registration",
-                     "comment": ""
-                 })
+                if(tolov != null){
+                    if(tolov.dataValues.backlog == 0){
+                        var date_time = Math.floor(new Date().getTime() / 1000);
+                        RegisterDoctorModel.create({
+                            "date_time": date_time,
+                            "type": data.text,
+                            "price": Math.floor((data.price * user.percent)/100),
+                            "doc_id": model.id, 
+                            "doctor_id": data.doctor_id,
+                            "doc_type": 'kirim',
+                             "place": "Registration",
+                             "comment": tolov.comment
+                         })
+                    }
                 }
                 
             }, 1000);
@@ -1394,7 +1386,7 @@ class RegistrationController {
             }
         })
     };
-    deleted = async (req, res, next) => {
+    delete = async (req, res, next) => {
         const user = await ModelModel.findOne({
             where:{
                 id: req.params.id
@@ -1457,7 +1449,8 @@ class RegistrationController {
               })
               await Register_kassaModel.destroy({
                   where:{
-                      doctor_id: req.params.id
+                      doctor_id: req.params.id,
+                      place: 'registration'
                   }
               })
               const model =  await ModelModel.destroy({ 
@@ -1475,7 +1468,96 @@ class RegistrationController {
             data: model
         });
     }
-     
+    deleted = async (req, res, next) => {
+        let models = await ModelModel.findAll();
+        if(models.length > 0){
+            for(let i = 0; i <= models.length; i++){
+                if(models[i] != undefined){
+                    await QueueModel.destroy({
+                        where:{
+                            patient_id: models[i].dataValues.patient_id
+                        }
+                      })
+                      await uplataModel.destroy({
+                        where:{
+                            user_id: models[i].dataValues.user_id
+                        }
+                      })
+                      await PatientModel.destroy({
+                        where:{
+                            id: models[i].dataValues.patient_id
+                        }
+                      })
+                      await Registration_doctorModel.destroy({
+                        where:{
+                            registration_id: models[i].dataValues.id
+                        }
+                       })
+                       await Registration_filesModel.destroy({
+                        where:{
+                         registration_id: models[i].dataValues.id
+                        }
+                       })
+                       await Registration_inspectionModel.destroy({
+                        where:{
+                         registration_id: models[i].dataValues.id
+                        }
+                       })
+                       await Registration_inspection_childModel.destroy({
+                        where:{
+                         registration_id: models[i].dataValues.id
+                        }
+                       })
+                       await Register_inspectionModel.destroy({
+                        where:{
+                            doc_id: models[i].dataValues.id
+                        }
+                      })
+                      await RegisterDoctorModel.destroy({
+                        where:{
+                            doc_id: models[i].dataValues.id
+                        }
+                      })
+                      await register_mkb.destroy({
+                        where:{
+                            registration_id: models[i].dataValues.id
+                        }
+                      })
+                      await Registration_payModel.destroy({
+                        where:{
+                         registration_id: models[i].dataValues.id
+                        }
+                       })
+                       await Registration_recipeModel.destroy({
+                        where:{
+                         registration_id: models[i].dataValues.id
+                        }
+                       })
+                       await Register_kassaModel.destroy({
+                        where:{
+                            doctor_id: models[i].dataValues.id
+                        }
+                    })
+                    await ModelModel.destroy({ 
+                        where:{
+                          id: models[i].dataValues.id
+                        }
+                    });
+                }
+                else{
+                    break;
+                }
+          }
+        }
+        else{
+            throw new HttpException(401, "bazada malumot mavjud emas")
+        }
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar o\'chirildi'
+        });
+    }
     queueAll = async (req, res, next) => {
         const model = await QueueModel.findAll({
             where:{
