@@ -450,7 +450,7 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
-            console.log(tolov.dataValues.backlog, "salom");
+            console.log(tolov.dataValues, "salom");
            if(tolov != null){
             if(tolov.dataValues.backlog == 0){
                 Register_kassaModel.create({
@@ -501,6 +501,7 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
+            console.log(tolov.dataValues, "salom");
             if(tolov != null){
                 if(tolov.dataValues.backlog == 0){
                     var date_time = Math.floor(new Date().getTime() / 1000);
@@ -571,6 +572,7 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
+            console.log(tolov.dataValues, "salom");
             if(tolov != null){
                 if(tolov.dataValues.backlog == 0){
                     register_palataModel.create({
