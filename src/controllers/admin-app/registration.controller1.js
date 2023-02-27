@@ -450,7 +450,7 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
-            console.log(tolov, "salom");
+            console.log(tolov.dataValues, "salom");
            if(tolov != null){
             if(tolov.backlog == 0){
                 Register_kassaModel.create({
@@ -624,7 +624,7 @@ class RegistrationController {
                         var date_time = Math.floor(new Date().getTime() / 1000);
                         RegisterDoctorModel.create({
                             "date_time": date_time,
-                            "type": data.text,
+                            "type": 0,
                             "price": Math.floor((data.price * user.percent)/100),
                             "doc_id": model.id, 
                             "doctor_id": data.doctor_id,
