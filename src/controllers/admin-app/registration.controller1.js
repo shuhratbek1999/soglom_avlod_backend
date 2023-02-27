@@ -450,9 +450,9 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
-            console.log(tolov.dataValues, "salom");
+            console.log(tolov, "salom");
            if(tolov != null){
-            if(tolov.dataValues.backlog == 0){
+            if(tolov.backlog == 0){
                 Register_kassaModel.create({
                     "date_time": date_time,
                     "doctor_id": model.id,
@@ -501,7 +501,7 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
-            console.log(tolov.dataValues, "salom");
+            console.log(tolov, "salom");
             if(tolov != null){
                 if(tolov.dataValues.backlog == 0){
                     var date_time = Math.floor(new Date().getTime() / 1000);
@@ -572,9 +572,9 @@ class RegistrationController {
                     registration_id: model.id
                 }
             })
-            console.log(tolov.dataValues, "salom");
+            console.log(tolov, "salom");
             if(tolov != null){
-                if(tolov.dataValues.backlog == 0){
+                if(tolov.backlog == 0){
                     register_palataModel.create({
                         "palata_id": element.palata_id,
                         "patient_id": model.id,
@@ -620,7 +620,7 @@ class RegistrationController {
                     }
                 })
                 if(tolov != null){
-                    if(tolov.dataValues.backlog == 0){
+                    if(tolov.backlog == 0){
                         var date_time = Math.floor(new Date().getTime() / 1000);
                         RegisterDoctorModel.create({
                             "date_time": date_time,
