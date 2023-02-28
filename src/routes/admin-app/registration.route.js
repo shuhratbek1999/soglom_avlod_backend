@@ -15,7 +15,7 @@ router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
 router.get('/one_arxiv/:id', auth(), awaitHandlerFactory(registrationControl.getOneArxiv));
 router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
-router.post('/create', auth(), awaitHandlerFactory(registrationControl.create));
+router.post('/create', registrationValidate, auth(), awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));
