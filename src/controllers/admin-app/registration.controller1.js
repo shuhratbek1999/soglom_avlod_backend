@@ -1394,12 +1394,16 @@ class RegistrationController {
                 id: req.params.id
             }
           })
+          if(user == null){
+            throw new HttpException(401, "registratsiya mavjud emas")
+          }
+          console.log(user.dataValues.user_id);
           await QueueModel.destroy({
             where:{
                 patient_id: user.dataValues.patient_id
             }
           })
-          await this.uplataModel.destroy({
+          await uplataModel.destroy({
             where:{
                 user_id: user.dataValues.user_id
             }
