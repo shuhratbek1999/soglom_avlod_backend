@@ -42,6 +42,9 @@ Registration_inspection_arxivModel.init({
   status:{
       type: DataTypes.STRING(20),
       allowNull: false
+  },
+  skidka:{
+    type: DataTypes.DECIMAL
   }
 }, {
   sequelize,

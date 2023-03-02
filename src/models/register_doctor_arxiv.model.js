@@ -1,14 +1,15 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-class register_med_direct_arxivModel extends Model {
+const DoctorModel = require('./doctor.model');
+class register_doctor_arxivModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
         return values;
     }
-} 
+}
 
-register_med_direct_arxivModel.init({
+register_doctor_arxivModel.init({
   id: {
     autoIncrement: true,
     type: DataTypes.INTEGER,
@@ -27,7 +28,7 @@ register_med_direct_arxivModel.init({
  doc_id:{
    type: DataTypes.INTEGER
  },
- direct_id:{
+ doctor_id:{
   type: DataTypes.INTEGER
 },
 doc_type: {
@@ -42,8 +43,8 @@ place:{
 
 }, {
   sequelize,
-  modelName: 'register_med_direct_arxiv',
-  tableName: 'register_med_direct_arxiv',
+  modelName: 'register_doctor_arxiv',
+  tableName: 'register_doctor_arxiv',
   timestamps: false,
   indexes: [
     {
@@ -54,7 +55,22 @@ place:{
         { name: "id" },
       ]
     },
+    {
+      name: "PRIMARY",
+      using: "BTREE",
+      fields: [
+        { name: "doc_id" },
+      ]
+    },
+    {
+      name: "PRIMARY",
+      using: "BTREE",
+      fields: [
+        { name: "doctor_id" },
+      ]
+    }
   ],
-  //findOne da yoki findAll da chaqirish kerak
+ 
 });
-module.exports = register_med_direct_arxivModel;
+register_doctor_arxivModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
+module.exports = register_doctor_arxivModel;

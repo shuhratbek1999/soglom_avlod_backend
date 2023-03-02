@@ -35,6 +35,15 @@ summa:{
     },
     discount:{
       type: DataTypes.DECIMAL
+    },
+    umumiy_sum:{
+      type: DataTypes.DECIMAL
+    },
+    backlog:{
+      type: DataTypes.DECIMAL
+    },
+    comment:{
+      type: DataTypes.STRING
     }
 }, {
   sequelize,

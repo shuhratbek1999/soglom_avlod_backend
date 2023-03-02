@@ -1,17 +1,17 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const registration_doctor_arxivModel = require('./registration_doctor_arxiv.model');
-const Registration_inspectionModel = require('./registration_inspection_arxiv.model')
+const Registration_doctorModel = require('./registration_doctor_arxiv.model');
+const Registration_inspectionModel = require('../models/registration_inspection_arxiv.model')
 const UserModel = require('./user.model');
-const Register_kassaModel = require('./register_kassa.model');
+// const Register_kassaModel = require('./register_kassa.model');
 const PatientModel = require('./patient.model');
 const DoctorModel = require('./doctor.model');
-const directModel = require('./direct.model');
 // const Registration_inspection_childModel = require('./registration_inspection_child.model');
 // const palataModel = require('./palata.model');
 const registration_palataModel = require('./registration_palata_arxiv.model');
 const Registration_filesModel = require('./registration_files_arxiv.model');
 const Registration_payModel = require('./registration_pay_arxiv.model');
+const register_mkb = require('./register_mkb.model');
 
 class Registration_arxivModel extends Model {
     toJSON () {//Api da ishladi
@@ -73,6 +73,9 @@ hospital_summa:{
 },
 direct_id:{
     type: DataTypes.INTEGER
+},
+imtiyoz_type:{
+    type: DataTypes.STRING() 
 }
 
 }, {
@@ -89,18 +92,39 @@ direct_id:{
         { name: "id" },
       ]
     },
+    {
+        name: "PRIMARY",
+        using: "BTREE",
+        fields: [
+          { name: "user_id" },
+        ]
+      },
+      {
+        name: "PRIMARY",
+        using: "BTREE",
+        fields: [
+          { name: "patient_id" },
+        ]
+      },
+      {
+        name: "PRIMARY",
+        using: "BTREE",
+        fields: [
+          { name: "direct_id" },
+        ]
+      }
   ],
    
 });
-Registration_arxivModel.hasMany(registration_doctor_arxivModel, {as: 'registration_doctor_arxiv', foreignKey: 'registration_id'})
+// Register_kassaModel.belongsTo(Registration_arxivModel, {as: 'registrations', foreignKey: 'doctor_id'})
+Registration_arxivModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'registration_id'})
 Registration_arxivModel.hasMany(Registration_inspectionModel, {as: 'registration_inspection', foreignKey: 'registration_id'})
 // Registration_arxivModel.hasMany(Registration_inspection_childModel, {as: 'registration_inspection_child', foreignKey: 'id'})
-Registration_arxivModel.hasMany(Register_kassaModel, {as: 'register_kassa', foreignKey: 'doctor_id'})
+// Registration_arxivModel.hasMany(Register_kassaModel, {as: 'register_kassas', foreignKey: 'doctor_id'})
 Registration_arxivModel.hasMany(Registration_filesModel, {as: 'registration_files', foreignKey: 'registration_id'})
 Registration_arxivModel.belongsTo(PatientModel, {as: 'patient', foreignKey: 'patient_id'})
 Registration_arxivModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'id'})
 Registration_arxivModel.belongsTo(UserModel, {as: 'user', foreignKey: 'user_id'})
-Registration_arxivModel.belongsTo(directModel, {as: 'direct', foreignKey: 'direct_id'})
 Registration_arxivModel.hasMany(registration_palataModel, {as: 'registration_palata', foreignKey: 'registration_id'});
 Registration_arxivModel.hasMany(Registration_payModel, {as: 'registration_pay', foreignKey: 'registration_id'});
 module.exports = Registration_arxivModel;

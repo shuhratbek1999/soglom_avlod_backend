@@ -63,7 +63,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/register_doctor`, RegDoctor);
         app.use(`/api/v1/admin-app/upload`, UploadRouter);
         app.use(`/api/v1/admin-app/uploads`, imgRouter);
-        app.use(`/api/v1/admin-app/arxiv`, arxiv);
+        app.use(`/api/v1/admin-app/registration_arxiv`, arxiv);
         app.use(`/api/v1/admin-app/uplata`, uplata);
         app.use(`/api/v1/admin-app/shablon_doctor`, shablon_Doctor);
         app.use(`/api/v1/admin-app/register_mkb`, register_mkb);

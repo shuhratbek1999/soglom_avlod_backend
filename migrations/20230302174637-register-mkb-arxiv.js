@@ -15,50 +15,42 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('registration_inspection_arxiv', {
-    id: { 
-      type: 'int', 
-      primaryKey: true, 
-      autoIncrement: true, 
-      notNull: true
+  return db.createTable("register_mkb_arxiv", {
+    id:{
+      type: 'int',
+      notNull: true,
+      autoIncrement: true,
+      primaryKey: true
     },
-    inspection_id:{
-      type: 'int'
-    },
-    user_id:{
-      type: 'int'
-    },
-    registration_id:{
-      type: 'int'
-    },
-    type:{
+    mkb_id:{
       type: 'int',
       notNull: true
     },
-    price:{
-      type: 'decimal',
-      notNull: true
-    },
-    category_id:{
-      type: 'int'
-    },
-    status:{
+    name: {
       type: 'string',
-      notNull: true,
-      length: 20
-    },
-    date_time:{
-      type: "int",
       notNull: true
     },
-    skidka:{
-      type: 'decimal'
+    datetime:{
+      type: 'int',
+      notNull: true
+    },
+    registration_id:{
+      type: 'int',
+      notNull: true
+    },
+    patient_id:{
+      type: 'int',
+      notNull: true
+    },
+    doctor_id:{
+      type: 'int',
+      notNull: true
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable('registration_inspection_arxiv');
+  return db.dropTable("register_mkb_arxiv");
 };
 
 exports._meta = {

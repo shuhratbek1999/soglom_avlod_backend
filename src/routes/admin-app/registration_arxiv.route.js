@@ -4,13 +4,20 @@ const registrationControl = require('../../controllers/admin-app/registration_ar
 const auth = require('../../middleware/auth.middleware');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
 
-const  {registrationValidate}  = require('../../middleware/validators/admin-app/RegistrationValidator.middleware');
+// const  {registrationValidate}  = require('../../middleware/validators/admin-app/RegistrationValidator.middleware');
 
-router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
-router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
+router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll_arxiv));
 router.get('/one/:id', auth(), awaitHandlerFactory(registrationControl.getOne));
-router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
-router.post('/create', auth(), registrationValidate, awaitHandlerFactory(registrationControl.create));
-router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
-router.patch('/update/:id', auth(), registrationValidate, awaitHandlerFactory(registrationControl.update));
+router.post('/inspection', auth(), awaitHandlerFactory(registrationControl.inspection));
+router.post('/inspectionSverka', auth(), awaitHandlerFactory(registrationControl.InspectionSverka));
+router.post('/kassa', auth(), awaitHandlerFactory(registrationControl.kassa));
+router.post('/kassasverka', auth(), awaitHandlerFactory(registrationControl.kassaSverka));
+router.post('/sverkaDoctor', auth(), awaitHandlerFactory(registrationControl.DoctorSverka));
+router.post('/hisobotDoctor', auth(), awaitHandlerFactory(registrationControl.create));
+router.post('/hisobotDirect', auth(), awaitHandlerFactory(registrationControl.directHisobot));
+router.post('/sverkaDirect', auth(), awaitHandlerFactory(registrationControl.directSverka));
+router.post('/hisobotMed', auth(), awaitHandlerFactory(registrationControl.medHisobot));
+router.post('/sverkaMed', auth(), awaitHandlerFactory(registrationControl.medSverka));
+router.post('/register', auth(), awaitHandlerFactory(registrationControl.register));
+router.post('/DoctorCount', auth(), awaitHandlerFactory(registrationControl.TekshiruvSoni));
 module.exports = router;

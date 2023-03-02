@@ -15,46 +15,43 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('registration_pay_arxiv', {
+  return db.createTable('register_doctor_arxiv', {
     id: { 
       type: 'int', 
       primaryKey: true, 
       autoIncrement: true, 
       notNull: true
     },
-    user_id:{
-      type: 'int'
-    },
-    discount:{
-      type: 'decimal'
-    },
-    registration_id:{
-      type: 'int'
-    },
-    pay_type:{
-      type: 'string',
-    },
-    summa:{
-      type: 'decimal',
-      notNull: true
-    },
     date_time:{
       type: 'int'
     },
-    umumiy_sum:{
+    type:{
+      type: 'int',
+      notNull: true
+    },
+    price:{
       type: 'decimal'
     },
-    backlog:{
-      type: 'decimal'
+    doc_id:{
+      type: 'int'
+    },
+    doc_type:{
+      type: 'string'
+    },
+    doctor_id: {
+      type: 'int'
     },
     comment:{
+      type: 'string'
+    },
+    place:{
       type: 'string'
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable('registration_pay_arxiv');
+  return db.dropTable('register_doctor_arxiv');
 };
 
 exports._meta = {
