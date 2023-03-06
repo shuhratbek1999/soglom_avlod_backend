@@ -19,7 +19,6 @@ const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay_arxiv.model');
 const Registration_doctorModel = require('../../models/registration_doctor_arxiv.model');
-const register_mkb = require('../../models/register_mkb_arxiv.model');
 const Register_inspectionModel = require('../../models/register_inspection_arxiv.model');
 const inspectionCategory = require('../../models/inspector_category.model');
 const Register_kassaModel = require('../../models/register_kassa_arxiv.model');
@@ -68,11 +67,7 @@ class Registration_arxivController {
     }
     searchsArxiv = async (req, res, next) => {
         let ModelList = await ModelModel.findAll({
-            include:[ 
-                {
-                    model: UserModel, as: 'users', attributes: ['user_name']
-                },
-
+            include:[
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
                     include:[
@@ -176,8 +171,7 @@ class Registration_arxivController {
                         { model: DoctorModel, as: 'doctor',
                     include:[
                         {model:DoctorCategory,as:'doctor_category',attributes:['name']},
-                    ]},
-                    {model: register_mkb, as: 'register_mkb'}
+                    ]}
                     ]
                 },
                 { model: Registration_inspectionModel,as: 'registration_inspection', 

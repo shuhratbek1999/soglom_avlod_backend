@@ -9,6 +9,7 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 const  {registrationValidate}  = require('../../middleware/validators/admin-app/RegistrationValidator.middleware');
 
 router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
+router.get('/statsionar', auth(), awaitHandlerFactory(registrationControl.statsionar));
 router.get('/register_kassa', auth(), awaitHandlerFactory(registrationControl.registerAll));
 router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
 router.get('/kassaAll', auth(), awaitHandlerFactory(registrationControl.kassaAll));

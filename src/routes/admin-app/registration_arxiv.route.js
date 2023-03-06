@@ -19,5 +19,6 @@ router.post('/sverkaDirect', auth(), awaitHandlerFactory(registrationControl.dir
 router.post('/hisobotMed', auth(), awaitHandlerFactory(registrationControl.medHisobot));
 router.post('/sverkaMed', auth(), awaitHandlerFactory(registrationControl.medSverka));
 router.post('/register', auth(), awaitHandlerFactory(registrationControl.register));
+router.post('/search_arxiv', auth(), awaitHandlerFactory(registrationControl.searchsArxiv));
 router.post('/DoctorCount', auth(), awaitHandlerFactory(registrationControl.TekshiruvSoni));
 module.exports = router;
