@@ -24,7 +24,7 @@ exports.up = function(db) {
     },
     palata_id:{
       type: 'int',
-    },
+    }, 
     registration_id:{
       type: 'int',
     },

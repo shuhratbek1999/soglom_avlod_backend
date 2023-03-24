@@ -44,6 +44,9 @@ summa:{
     },
     backlog:{
       type: DataTypes.DECIMAL()
+    },
+    filial_id:{
+      type: DataTypes.INTEGER
     }
 }, {
   sequelize,

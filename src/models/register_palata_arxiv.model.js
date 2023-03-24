@@ -39,7 +39,12 @@ date_to:{
 date_do:{
   type: DataTypes.INTEGER
 },
-
+user_id:{
+  type: DataTypes.INTEGER
+},
+filial_id:{
+  type: DataTypes.INTEGER
+}
 
 }, {
   sequelize,

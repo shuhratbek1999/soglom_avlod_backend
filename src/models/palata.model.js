@@ -25,6 +25,12 @@ palataModel.init({
   },
   status: {
     type: DataTypes.BOOLEAN
+  },
+  user_id:{
+    type: DataTypes.INTEGER
+  },
+  filial_id:{
+    type: DataTypes.INTEGER
   }
 
 }, {

@@ -47,7 +47,7 @@ class RegistrationController {
     q=[];
   cron = () => {
     const cronJob = require('node-cron');
-        cronJob.schedule('* * * * *', () => {
+        cronJob.schedule('0 0 * * *', () => {
         this.setArchive();
 })
   }
@@ -55,12 +55,12 @@ setArchive=async (req, res, next) => {
     try{
      let qarz  =  await ModelModel.findAll({
         where:{
-            backlog: 0
+            backlog: 0,
+            type_service: 'Ambulator'
         }
      });
     if(qarz.length > 0){
         let sum =  qarz.every(item => item.backlog <= 0);
-        console.log(sum, "summmmmmm");
         if(sum){
             await db.query("INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child");
             await db.query("DELETE from registration_inspection_child");
@@ -102,6 +102,58 @@ setArchive=async (req, res, next) => {
     }
        // res.send('okey');
    };
+
+arxive = async(req, res, next) => {
+    try{
+        await this.cron();
+        let qarz  =  await ModelModel.findAll({
+           where:{
+               backlog: 0,
+               type_service: 'Statsionar'
+           }
+        });
+       if(qarz.length > 0){
+           let sum =  qarz.every(item => item.backlog <= 0);
+           if(sum){
+               await db.query("INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child");
+               await db.query("DELETE from registration_inspection_child");
+               await db.query("INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection");        
+               await db.query("DELETE from registration_inspection");
+               await db.query("INSERT INTO registration_files_arxiv SELECT * FROM registration_files");
+               await db.query("DELETE from registration_files");
+               await db.query("INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor");
+               await db.query("DELETE from register_doctor");
+               await db.query("INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa");
+               await db.query("DELETE from register_kassa");
+               await db.query("INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb");
+               await db.query("DELETE from register_mkb");
+               await db.query("INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection");
+               await db.query("DELETE from register_inspection");
+               await db.query("INSERT INTO register_palata_arxiv SELECT * FROM register_palata");
+               await db.query("DELETE from register_palata");
+               await db.query("INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe");
+               await db.query("DELETE from registration_recipe");
+               await db.query("INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor");
+               await db.query("DELETE from registration_doctor");
+               await db.query("INSERT INTO registration_arxiv SELECT * FROM registration");
+               await db.query("DELETE from registration");
+               await db.query("INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay");
+               await db.query("DELETE from registration_pay");
+               await db.query("INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata");
+               await db.query("DELETE from registration_palata");
+               await db.query("INSERT INTO register_direct_arxiv SELECT * FROM register_direct");
+               await db.query("DELETE from register_direct");
+               await db.query("INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct");
+               await db.query("DELETE from register_med_direct");
+           }
+       }else{
+           throw new HttpException(401, "pul tolanmagan")
+       }
+       }
+       catch(err){
+          console.log(err);
+       }
+}
     getAll = async (req, res, next) => {
        await this.cron();
         const model = await ModelModel.findAll({

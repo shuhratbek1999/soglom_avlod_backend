@@ -44,6 +44,9 @@ summa:{
     },
     comment:{
       type: DataTypes.STRING
+    },
+    filial_id:{
+      type: DataTypes.INTEGER
     }
 }, {
   sequelize,
