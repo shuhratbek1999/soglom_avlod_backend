@@ -14,7 +14,7 @@ const PatientModel = require('../../models/patient.model');
 const DoctorModel = require('../../models/doctor.model');
 const DoctorCategory = require('../../models/doctor_category.model');
 const InspectionModel = require('../../models/inspection.model')
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay_arxiv.model');
@@ -25,6 +25,7 @@ const Register_kassaModel = require('../../models/register_kassa_arxiv.model');
 const Register_DoctorModel = require('../../models/register_doctor_arxiv.model');
 const registerDirectModel= require('../../models/register_direct_arxiv.model');
 const registerMedDirectModel= require('../../models/register_med_direct_arxiv.model');
+const register_palataModel = require('../../models/register_palata_arxiv.model');
 class Registration_arxivController {
     getAll_arxiv = async (req, res, next) => {
         // this.#arxiv();
@@ -339,7 +340,36 @@ class Registration_arxivController {
         res.send(result);
         }
     }
-    
+    sverkaKassa = async(req, res, next) => {
+        let result;
+        let body = req.body; 
+        let query = {}, query_begin = {}, query_end = {}, queryx = {};
+        query.date_time =  {
+            [Op.gte]: body.datetime1,
+            [Op.lte]: body.datetime2,
+        };
+        query_begin.date_time =  {
+            [Op.lt]: body.datetime1,
+        };
+        query_end.date_time =  {
+            [Op.lte]: body.datetime2,
+        };
+        result = await Register_kassaModel.findAll({
+            attributes : [ 
+                'id', 'doctor_id', "type", "date_time", "doc_type",
+                [sequelize.literal("SUM(CASE WHEN register_kassa_arxiv.date_time < " + body.datetime1 + " and register_kassa_arxiv.doc_type = 'Kirim' THEN register_kassa_arxiv.price * power(-1, 'type') ELSE 0 END)"), 'kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa_arxiv.date_time < " + body.datetime1 + " and register_kassa_arxiv.doc_type = 'chiqim' THEN register_kassa_arxiv.price * power(-1, 'type') ELSE 0 END)"), 'chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa_arxiv.date_time >= " + body.datetime1 + " and register_kassa_arxiv.date_time <= " + body.datetime2 + " AND register_kassa_arxiv.doc_type = 'Kirim' and pay_type = 'Plastik' THEN register_kassa_arxiv.price ELSE 0 END)"), 'plasKirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa_arxiv.date_time >= " + body.datetime1 + " and register_kassa_arxiv.date_time <= " + body.datetime2 + " AND register_kassa_arxiv.doc_type = 'chiqim' and pay_type = 'Plastik' THEN register_kassa_arxiv.price ELSE 0 END)"), 'plasChiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa_arxiv.date_time >= " + body.datetime1 + " and register_kassa_arxiv.date_time <= " + body.datetime2 + " AND register_kassa_arxiv.doc_type = 'Kirim' and (pay_type = 'Naqd' || pay_type = 'Naqt') THEN register_kassa_arxiv.price ELSE 0 END)"), 'naqdKirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa_arxiv.date_time >= " + body.datetime1 + " and register_kassa_arxiv.date_time <= " + body.datetime2 + " AND register_kassa_arxiv.doc_type = 'chiqim' and (pay_type = 'Naqd' || pay_type = 'Naqt') THEN register_kassa_arxiv.price ELSE 0 END)"), 'naqdChiqim'],
+            ],
+            group: [
+                ['doctor_id']
+            ]
+        })
+        res.send(result)
+    }
     kassa = async (req, res, next) => {
         try{
             let result;
@@ -641,7 +671,6 @@ class Registration_arxivController {
    }
     }
     directHisobot = async (req, res, next) => {
-        this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
         let datetime1 = body.datetime1;
@@ -671,7 +700,6 @@ class Registration_arxivController {
     };
     
     directSverka = async (req, res, next) => {
-        this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
         let datetime1 = body.datetime1;
@@ -703,7 +731,6 @@ class Registration_arxivController {
         })
     }
     medHisobot = async (req, res, next) => {
-        this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
         let datetime1 = body.datetime1;
@@ -733,7 +760,6 @@ class Registration_arxivController {
     };
     
     medSverka = async (req, res, next) => {
-        this.checkValidation(req);
         let query = {}, queryx = {};
         let body = req.body;
         let datetime1 = body.datetime1;
@@ -764,6 +790,24 @@ class Registration_arxivController {
             }
         })
     };
+
+    palata = async(req, res, next) => {
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        query.date_time = {
+            [Op.gte]: body.datetime1,
+            [Op.lte]: body.datetime2,
+        }
+        if(body.palata_id !== null){
+            query.id = {[Op.eq] : body.palata_id }  
+            queryx.palata_id = {[Op.eq]: body.palata_id}
+        };
+        let model = await register_palataModel.findAll({where: query});
+
+        res.send(model);
+    }
 }
 
 

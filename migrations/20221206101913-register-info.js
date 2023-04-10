@@ -45,6 +45,9 @@ exports.up = function(db) {
     doctor_id:{
       type: 'int',
       notNull: true
+    },
+    filial_id:{
+      type: 'int'
     }
   });
 };

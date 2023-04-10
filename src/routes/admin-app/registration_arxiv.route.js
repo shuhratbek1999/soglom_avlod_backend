@@ -12,6 +12,7 @@ router.post('/inspection', auth(), awaitHandlerFactory(registrationControl.inspe
 router.post('/inspectionSverka', auth(), awaitHandlerFactory(registrationControl.InspectionSverka));
 router.post('/kassa', auth(), awaitHandlerFactory(registrationControl.kassa));
 router.post('/kassasverka', auth(), awaitHandlerFactory(registrationControl.kassaSverka));
+router.post('/sverkaKassa', auth(), awaitHandlerFactory(registrationControl.sverkaKassa));
 router.post('/sverkaDoctor', auth(), awaitHandlerFactory(registrationControl.DoctorSverka));
 router.post('/hisobotDoctor', auth(), awaitHandlerFactory(registrationControl.create));
 router.post('/hisobotDirect', auth(), awaitHandlerFactory(registrationControl.directHisobot));
@@ -21,4 +22,5 @@ router.post('/sverkaMed', auth(), awaitHandlerFactory(registrationControl.medSve
 router.post('/register', auth(), awaitHandlerFactory(registrationControl.register));
 router.post('/search_arxiv', auth(), awaitHandlerFactory(registrationControl.searchsArxiv));
 router.post('/DoctorCount', auth(), awaitHandlerFactory(registrationControl.TekshiruvSoni));
+router.post('/palata', auth(), awaitHandlerFactory(registrationControl.palata));
 module.exports = router;

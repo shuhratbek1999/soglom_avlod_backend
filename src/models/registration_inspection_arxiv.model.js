@@ -43,6 +43,9 @@ Registration_inspection_arxivModel.init({
       type: DataTypes.STRING(20),
       allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  },
   skidka:{
     type: DataTypes.DECIMAL
   }

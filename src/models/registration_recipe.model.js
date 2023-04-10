@@ -37,6 +37,9 @@ registration_doctor_id: {
       type: DataTypes.STRING,
       allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  },
   name:{
     type: DataTypes.STRING()
   }

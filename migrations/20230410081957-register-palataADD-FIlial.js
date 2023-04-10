@@ -15,29 +15,19 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('registration_files_arxiv', {
-    id: { 
-      type: 'int', 
-      primaryKey: true, 
-      autoIncrement: true, 
-      notNull: true
-    },
-    registration_id:{
-      type: 'int'
-    },
-    href:{
-      type: 'string',
-      notNull: true,
-      length: 100
-    },
-    filial_id:{
-      type: 'int'
-    }
-  });
+  return db.addColumn('registration_palata', 'filial_id', 
+  {
+    type: 'int'
+  }
+  );
 };
 
 exports.down = function(db) {
-  return db.dropTable('registration_files_arxiv');
+  return db.removeColumn('registration_palata', 'filial_id', 
+  {
+    type: 'int'
+  }
+  );;
 };
 
 exports._meta = {

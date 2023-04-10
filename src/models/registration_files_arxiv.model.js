@@ -18,6 +18,9 @@ Registration_files_arxivModel.init({
 registration_id: {
     type: DataTypes.INTEGER
 },
+filial_id:{
+  type: DataTypes.INTEGER
+},
 href : {
     type: DataTypes.STRING(100),
     allowNull: false

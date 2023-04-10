@@ -28,6 +28,9 @@ register_doctorModel.init({
  doc_id:{
    type: DataTypes.INTEGER
  },
+ filial_id:{
+  type: DataTypes.INTEGER
+},
  doctor_id:{
   type: DataTypes.INTEGER
 },

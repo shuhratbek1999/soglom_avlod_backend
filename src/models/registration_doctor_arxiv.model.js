@@ -31,6 +31,9 @@ Registration_doctor_arxivModel.init({
       type: DataTypes.DECIMAL(),
       allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  },
   text:{
       type:DataTypes.STRING,
       allowNull: false

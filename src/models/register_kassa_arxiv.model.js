@@ -40,6 +40,9 @@ register_kassa_arxivModel.init({
  doctor_id:{
    type: DataTypes.INTEGER
  },
+ filial_id:{
+  type: DataTypes.INTEGER
+},
  place:{
   type:DataTypes.STRING()
  }

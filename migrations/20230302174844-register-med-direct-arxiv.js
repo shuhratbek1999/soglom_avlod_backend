@@ -46,6 +46,9 @@ exports.up = function(db) {
     },
     direct_id:{
       type: 'int'
+    },
+    filial_id:{
+      type: 'int'
     }
   });
 };

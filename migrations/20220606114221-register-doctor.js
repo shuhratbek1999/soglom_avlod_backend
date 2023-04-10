@@ -46,6 +46,9 @@ exports.up = function(db) {
     },
     place:{
       type: 'string'
+    },
+    filial_id:{
+      type: 'int'
     }
   });
 };

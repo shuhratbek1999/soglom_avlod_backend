@@ -36,6 +36,9 @@ Registration_doctorModel.init({
       type:DataTypes.STRING,
       allowNull: false
 },
+filial_id:{
+  type: DataTypes.INTEGER
+},
 date_time:{
   type: DataTypes.STRING(),
   allowNull: false

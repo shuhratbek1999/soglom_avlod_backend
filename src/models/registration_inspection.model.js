@@ -47,6 +47,9 @@ Registration_inspectionModel.init({
       type: DataTypes.STRING(200),
       allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  },
   date_time:{
     type: DataTypes.STRING(),
     allowNull: false

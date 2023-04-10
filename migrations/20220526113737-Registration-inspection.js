@@ -53,6 +53,9 @@ exports.up = function(db) {
     },
     skidka:{
       type : 'decimal'
+    },
+    filial_id:{
+      type: 'int'
     }
   });
 };

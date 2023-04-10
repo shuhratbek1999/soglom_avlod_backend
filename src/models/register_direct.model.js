@@ -36,6 +36,9 @@ doc_type: {
 comment:{
   type: DataTypes.STRING()
 },
+filial_id:{
+  type: DataTypes.INTEGER
+},
 place:{
   type: DataTypes.STRING()
 }

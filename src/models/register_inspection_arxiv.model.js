@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const InspectionCategory = require('./inspector_category.model')
-const RegistrationModel = require('./registration.model')
+const RegistrationModel = require('./registration_arxiv.model')
 class register_inspection_arxivModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());

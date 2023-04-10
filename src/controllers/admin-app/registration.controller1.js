@@ -51,109 +51,114 @@ class RegistrationController {
         this.setArchive();
 })
   }
-setArchive=async (req, res, next) => {
-    try{
-     let qarz  =  await ModelModel.findAll({
-        where:{
-            backlog: 0,
-            type_service: 'Ambulator'
-        }
-     });
+  setArchive=async (req, res, next) => {
+    let qarz  =  await ModelModel.findAll({
+       where:{
+           backlog: 0,
+           status: 'complate',
+           type_service: 'Ambulator'
+       }
+   });
     if(qarz.length > 0){
-        let sum =  qarz.every(item => item.backlog <= 0);
-        if(sum){
-            await db.query("INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child");
-            await db.query("DELETE from registration_inspection_child");
-            await db.query("INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection");        
-            await db.query("DELETE from registration_inspection");
-            await db.query("INSERT INTO registration_files_arxiv SELECT * FROM registration_files");
-            await db.query("DELETE from registration_files");
-            await db.query("INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor");
-            await db.query("DELETE from register_doctor");
-            await db.query("INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa");
-            await db.query("DELETE from register_kassa");
-            await db.query("INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb");
-            await db.query("DELETE from register_mkb");
-            await db.query("INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection");
-            await db.query("DELETE from register_inspection");
-            await db.query("INSERT INTO register_palata_arxiv SELECT * FROM register_palata");
-            await db.query("DELETE from register_palata");
-            await db.query("INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe");
-            await db.query("DELETE from registration_recipe");
-            await db.query("INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor");
-            await db.query("DELETE from registration_doctor");
-            await db.query("INSERT INTO registration_arxiv SELECT * FROM registration");
-            await db.query("DELETE from registration");
-            await db.query("INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay");
-            await db.query("DELETE from registration_pay");
-            await db.query("INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata");
-            await db.query("DELETE from registration_palata");
-            await db.query("INSERT INTO register_direct_arxiv SELECT * FROM register_direct");
-            await db.query("DELETE from register_direct");
-            await db.query("INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct");
-            await db.query("DELETE from register_med_direct");
-        }
-    }else{
-        throw new HttpException(401, "pul tolanmagan")
-    }
-    }
-    catch(err){
-       console.log(err);
-    }
-       // res.send('okey');
-   };
+        qarz.forEach(async item => {
+            await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${item.dataValues.id}`);
+            await db.query(`DELETE from registration_inspection_child where registration_id = ${item.dataValues.id}`);
+            await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${item.dataValues.id}`);        
+            await db.query(`DELETE from registration_inspection where registration_id = ${item.dataValues.id}`);
+            await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${item.dataValues.id}`);
+            await db.query(`DELETE from registration_files where registration_id = ${item.dataValues.id}`);
+            await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${item.dataValues.id}`);
+            await db.query(`DELETE from registration_recipe where registration_id = ${item.dataValues.id}`);
+            await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${item.dataValues.id}`);
+            await db.query(`DELETE from registration_doctor where registration_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complate' and id = ${item.dataValues.id}`);
+           await db.query(`DELETE from registration where backlog = 0 and status = 'complate' and id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from registration_pay where registration_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from registration_palata where registration_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_direct_arxiv SELECT * FROM register_direct where doc_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_direct where doc_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct where doc_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_med_direct where doc_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa where doctor_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_kassa where doctor_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection where doc_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_inspection where doc_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor where doc_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_doctor where doc_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb where registration_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_mkb where registration_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_palata_arxiv SELECT * FROM register_palata where registration_id = ${item.dataValues.id}`);
+           await db.query(`DELETE from register_palata where registration_id = ${item.dataValues.id}`);
+       })
+   }
+  };
 
-arxive = async(req, res, next) => {
-    try{
-        await this.cron();
-        let qarz  =  await ModelModel.findAll({
-           where:{
-               backlog: 0,
-               type_service: 'Statsionar'
-           }
-        });
-       if(qarz.length > 0){
-           let sum =  qarz.every(item => item.backlog <= 0);
-           if(sum){
-               await db.query("INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child");
-               await db.query("DELETE from registration_inspection_child");
-               await db.query("INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection");        
-               await db.query("DELETE from registration_inspection");
-               await db.query("INSERT INTO registration_files_arxiv SELECT * FROM registration_files");
-               await db.query("DELETE from registration_files");
-               await db.query("INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor");
-               await db.query("DELETE from register_doctor");
-               await db.query("INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa");
-               await db.query("DELETE from register_kassa");
-               await db.query("INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb");
-               await db.query("DELETE from register_mkb");
-               await db.query("INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection");
-               await db.query("DELETE from register_inspection");
-               await db.query("INSERT INTO register_palata_arxiv SELECT * FROM register_palata");
-               await db.query("DELETE from register_palata");
-               await db.query("INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe");
-               await db.query("DELETE from registration_recipe");
-               await db.query("INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor");
-               await db.query("DELETE from registration_doctor");
-               await db.query("INSERT INTO registration_arxiv SELECT * FROM registration");
-               await db.query("DELETE from registration");
-               await db.query("INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay");
-               await db.query("DELETE from registration_pay");
-               await db.query("INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata");
-               await db.query("DELETE from registration_palata");
-               await db.query("INSERT INTO register_direct_arxiv SELECT * FROM register_direct");
-               await db.query("DELETE from register_direct");
-               await db.query("INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct");
-               await db.query("DELETE from register_med_direct");
-           }
-       }else{
-           throw new HttpException(401, "pul tolanmagan")
-       }
-       }
-       catch(err){
-          console.log(err);
-       }
-}
+ ArxivgaOlish = async (req, res, next) => {
+   const cronJob = require('node-cron');
+       cronJob.schedule('*/2 * * * *', () => {
+       arxiv(req.params.id);
+})
+async function arxiv(doc_id){
+   try{
+       let qarz  =  await ModelModel.findAll({
+          where:{
+              id: doc_id,
+              backlog: 0, 
+              status: 'complate'
+          }
+       });
+      if(qarz.length > 0){
+              await db.query(`INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor where doc_id = ${req.params.id}`);
+              await db.query(`DELETE from register_doctor where doc_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection where doc_id = ${req.params.id}`);
+              await db.query(`DELETE from register_inspection where doc_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa where doctor_id = ${req.params.id}`);
+              await db.query(`DELETE from register_kassa where doctor_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_direct_arxiv SELECT * FROM register_direct where doc_id = ${req.params.id}`);
+              await db.query(`DELETE from register_direct where doc_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct where doc_id = ${req.params.id}`);
+              await db.query(`DELETE from register_med_direct where doc_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from register_mkb where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_palata_arxiv SELECT * FROM register_palata where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from register_palata where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
+              await db.query(`DELETE from registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${req.params.id}`);        
+              await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
+              await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_files where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_inspection where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_pay where registration_id = ${req.params.id}`);
+              await db.query(`DELETE from registration_palata where registration_id = ${req.params.id}`);
+          res.send({
+              error: false,
+              error_code: 201,
+              message: "Malumot arhivga olindi"
+          })
+      }else{
+          console.log("pul tolamagan");
+      }
+      res.send({
+       error: false,
+       error_code: 201,
+       message: "Arxivga olindi"
+      })
+      }
+      catch(err){
+         console.log(err);
+      }
+  }
+  };
     getAll = async (req, res, next) => {
        await this.cron();
         const model = await ModelModel.findAll({
@@ -584,7 +589,8 @@ arxive = async(req, res, next) => {
                 "discount": element.discount,
                 "umumiy_sum": element.umumiy_sum,
                 "backlog": element.backlog,
-                "comment": element.comment
+                "comment": element.comment,
+                "filial_id": element.filial_id
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -610,13 +616,13 @@ arxive = async(req, res, next) => {
                     registration_id: model.id
                 }
             })
-            console.log(tolov.dataValues, "salom");
            if(tolov != null){
             if(tolov.backlog == 0){
                 Register_kassaModel.create({
                     "date_time": date_time,
                     "doctor_id": model.id,
                     "pay_type": element.pay_type,
+                    "filial_id": element.filial_id,
                     "price": element.summa,    
                     "type": type,
                     "doc_type": 'Kirim',
@@ -652,7 +658,8 @@ arxive = async(req, res, next) => {
                 "category_id":data.category_id,
                 'status':model.status,
                 "date_time": date,
-                "skidka": data.skidka
+                "skidka": data.skidka,
+                "filial_id": data.filial_id
             }
             const models = await Registration_inspectionModel.create(dds);
            setTimeout(async() => {
@@ -661,7 +668,6 @@ arxive = async(req, res, next) => {
                     registration_id: model.id
                 }
             })
-            console.log(tolov, "salom");
             if(tolov != null){
                 if(tolov.dataValues.backlog == 0){
                     var date_time = Math.floor(new Date().getTime() / 1000);
@@ -674,6 +680,7 @@ arxive = async(req, res, next) => {
                         "inspection_id": data.inspection_id,
                         "inspection_category": data.category_id,
                         "skidka": data.skidka,
+                        "filial_id": data.filial_id,
                         "doc_type": 'kirim',
                         "place": "Registration",
                         "comment": tolov.comment
@@ -724,17 +731,19 @@ arxive = async(req, res, next) => {
                 "date_do": element.date_do,
                 "date_to": element.date_to,
                 "day":element.day,
+                "filial_id":element.filial_id,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
-            var date_time = Math.floor(new Date().getTime() / 1000);
+            setTimeout(async() => {
+                var date_time = Math.floor(new Date().getTime() / 1000);
             let tolov = await Registration_payModel.findOne({
                 where:{
                     registration_id: model.id
                 }
             })
-            console.log(tolov, "salom");
+            console.log(tolov, 'tolov');
             if(tolov != null){
-                if(tolov.backlog == 0){
+                if(tolov.dataValues.backlog == 0){
                     register_palataModel.create({
                         "palata_id": element.palata_id,
                         "patient_id": model.id,
@@ -743,10 +752,12 @@ arxive = async(req, res, next) => {
                         "day": element.day,
                         "date_to": element.date_to,
                         "date_do": element.date_do,
-                        "date_time": element.date_time
+                        "filial_id": element.filial_id,
+                        "date_time": date_time
                     })
                 }
             }
+            }, 1000);
 
         }
     }
@@ -770,7 +781,8 @@ arxive = async(req, res, next) => {
                 "price":data.price,
                 "status": model.status,
                 "text":data.text,
-                "date_time": element.date_time
+                "date_time": element.date_time,
+                "filial_id": element.filial_id
             };
             const models = await Registration_doctorModel.create(news);
             setTimeout(async() => {
@@ -788,6 +800,7 @@ arxive = async(req, res, next) => {
                             "price": Math.floor((data.price * user.percent)/100),
                             "doc_id": model.id, 
                             "doctor_id": data.doctor_id,
+                            "filial_id": data.filial_id,
                             "doc_type": 'kirim',
                              "place": "Registration",
                              "comment": tolov.comment
@@ -834,6 +847,7 @@ arxive = async(req, res, next) => {
                 "time":element.time,
                 "day":element.day,
                 "comment":element.comment,
+                "filial_id":element.filial_id,
                 "name": element.name
             };
             await Registration_recipeModel.create(adds);
@@ -845,7 +859,7 @@ arxive = async(req, res, next) => {
         }
         var asas;
         for(var element of registration_files){
-            asas={'registration_id':model.id,"href":element.href};
+            asas={'registration_id':model.id,"href":element.href, "filial_id":element.filial_id};
             await Registration_filesModel.create(asas); 
         }
     }
@@ -1557,7 +1571,6 @@ arxive = async(req, res, next) => {
           if(user == null){
             throw new HttpException(401, "registratsiya mavjud emas")
           }
-          console.log(user.dataValues.user_id);
           await QueueModel.destroy({
             where:{
                 patient_id: user.dataValues.patient_id

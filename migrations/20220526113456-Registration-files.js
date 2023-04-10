@@ -29,6 +29,9 @@ exports.up = function(db) {
       type: 'string',
       notNull: true,
       length: 200
+    },
+    filial_id:{
+      type: 'int'
     }
   });
 };

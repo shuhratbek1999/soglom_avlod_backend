@@ -42,6 +42,9 @@ exports.up = function(db) {
       type: 'int',
       notNull: true
     },
+    filial_id:{
+      type: 'int'
+    },
     doctor_id:{
       type: 'int',
       notNull: true

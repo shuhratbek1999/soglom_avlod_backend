@@ -33,8 +33,11 @@ name:{
   type: DataTypes.STRING(),
   allowNull: false
 },
+filial_id:{
+  type: DataTypes.INTEGER
+},
 doctor_id:{
-  type: 'int',
+  type: DataTypes.INTEGER,
   allowNull: false
 }
 

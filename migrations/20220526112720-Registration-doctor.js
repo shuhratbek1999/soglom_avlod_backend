@@ -42,6 +42,9 @@ exports.up = function(db) {
     date_time:{
       type: 'string',
       notNull: true
+    },
+    filial_id:{
+      type: 'int'
     }
   });
 };

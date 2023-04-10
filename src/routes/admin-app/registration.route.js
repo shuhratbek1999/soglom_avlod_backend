@@ -9,7 +9,6 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 const  {registrationValidate}  = require('../../middleware/validators/admin-app/RegistrationValidator.middleware');
 
 router.get('/all', auth(), awaitHandlerFactory(registrationControl.getAll));
-router.get('/arxiv', auth(), awaitHandlerFactory(registrationControl.arxive));
 router.get('/statsionar', auth(), awaitHandlerFactory(registrationControl.statsionar));
 router.get('/register_kassa', auth(), awaitHandlerFactory(registrationControl.registerAll));
 router.get('/queue', auth(), awaitHandlerFactory(registrationControl.queueAll));
@@ -19,11 +18,12 @@ router.get('/one_arxiv/:id', auth(), awaitHandlerFactory(registrationControl.get
 router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
 router.post('/create', registrationValidate, auth(), awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
+router.get('/arxive', auth(),  awaitHandlerFactory(registrationControl.setArchive));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));
 router.post('/search', auth(),  awaitHandlerFactory(registrationControl.search));
 router.post('/searchs', auth(),  awaitHandlerFactory(registrationControl.searchs));
-router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
+// router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
 router.post('/inspectionSverka', auth(),  awaitHandlerFactory(registrationControl.InspectionSverka));
 router.post('/palata', auth(),  awaitHandlerFactory(registrationControl.palata));
 router.post('/kassa', auth(),  awaitHandlerFactory(registrationControl.kassa));
@@ -34,5 +34,7 @@ router.post('/medSverka', auth(),  awaitHandlerFactory(registrationControl.medSv
 router.post('/directSverka', auth(),  awaitHandlerFactory(registrationControl.directSverka));
 router.patch('/update/:id', auth(), registrationValidate, awaitHandlerFactory(registrationControl.update));
 router.delete('/deleted', auth(), awaitHandlerFactory(registrationControl.deleted));
+router.post('/statsionar', auth(),  awaitHandlerFactory(registrationControl.statsionarHisobot));
+router.get('/arxivga_olish/:id', auth(),  awaitHandlerFactory(registrationControl.ArxivgaOlish));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
 module.exports = router;

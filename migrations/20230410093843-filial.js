@@ -15,45 +15,22 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable('register_kassa', {
-    id: { 
-      type: 'int', 
-      primaryKey: true, 
-      autoIncrement: true, 
-      notNull: true
-    },
-    date_time:{
-      type: 'int'
-    },
-    type:{
+  return db.createTable("filial", {
+    id: {
       type: 'int',
+      autoIncrement: true,
+      primaryKey:true,
       notNull: true
     },
-    price:{
-      type: 'decimal',
-      notNull: true
-    },
-    pay_type:{
+    name: {
       type: 'string',
       notNull: true
-    },
-    doc_type:{
-      type: 'string'
-    },
-    doctor_id:{
-      type: 'int'
-    },
-    place: {
-      type: 'string'
-    },
-    filial_id:{
-      type: 'int'
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable('register_kassa');
+  return db.dropTable("filial");
 };
 
 exports._meta = {
