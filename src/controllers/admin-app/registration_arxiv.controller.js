@@ -18,6 +18,7 @@ const { Op, Sequelize } = require("sequelize");
 const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay_arxiv.model');
+const Registration_payModels = require('../../models/registration_pay.model');
 const Registration_doctorModel = require('../../models/registration_doctor_arxiv.model');
 const Register_inspectionModel = require('../../models/register_inspection_arxiv.model');
 const inspectionCategory = require('../../models/inspector_category.model');
@@ -25,7 +26,7 @@ const Register_kassaModel = require('../../models/register_kassa_arxiv.model');
 const Register_DoctorModel = require('../../models/register_doctor_arxiv.model');
 const registerDirectModel= require('../../models/register_direct_arxiv.model');
 const registerMedDirectModel= require('../../models/register_med_direct_arxiv.model');
-const register_palataModel = require('../../models/register_palata_arxiv.model');
+const register_palataModel = require('../../models/register_palata.model');
 class Registration_arxivController {
     getAll_arxiv = async (req, res, next) => {
         // this.#arxiv();
@@ -799,12 +800,18 @@ class Registration_arxivController {
         query.date_time = {
             [Op.gte]: body.datetime1,
             [Op.lte]: body.datetime2,
-        }
+        } 
         if(body.palata_id !== null){
             query.id = {[Op.eq] : body.palata_id }  
             queryx.palata_id = {[Op.eq]: body.palata_id}
         };
         let model = await register_palataModel.findAll({where: query});
+        let tolov = await Registration_payModels.findAll();
+        for(let i = 0; i < model.length; i++){
+            if(model[i].dataValues.registration_id == tolov[i].dataValues.registration_id){
+                console.log(model[i].dataValues);  
+            }
+        }
 
         res.send(model);
     }

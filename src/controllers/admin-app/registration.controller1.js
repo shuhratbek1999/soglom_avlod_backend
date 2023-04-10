@@ -47,7 +47,7 @@ class RegistrationController {
     q=[];
   cron = () => {
     const cronJob = require('node-cron');
-        cronJob.schedule('0 0 * * *', () => {
+        cronJob.schedule('*/2 * * * *', () => {
         this.setArchive();
 })
   }
@@ -968,6 +968,7 @@ async function arxiv(doc_id){
     }
     #deletePalata = async(doc_id) => {
         await registration_palataModel.destroy({where: {registration_id: doc_id}})
+        await register_palataModel.destroy({where: {registration_id: doc_id}})
     }
     #deletepay = async(doc_id) => {
         await Registration_payModel.destroy({where: {registration_id: doc_id}})
