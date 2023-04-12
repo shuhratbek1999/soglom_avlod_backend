@@ -748,7 +748,7 @@ async function arxiv(doc_id){
                         "palata_id": element.palata_id,
                         "patient_id": model.id,
                         "registration_id": model.id,
-                        "price": element.price,
+                        "price": element.total_price,
                         "day": element.day,
                         "date_to": element.date_to,
                         "date_do": element.date_do,

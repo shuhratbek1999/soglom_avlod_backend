@@ -10,6 +10,7 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 router.get('/all', auth(), awaitHandlerFactory(palataController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(palataController.getOne));
 router.post('/create',auth(), awaitHandlerFactory(palataController.create));
+router.post('/hisobot',auth(), awaitHandlerFactory(palataController.palata));
 router.patch('/update/:id', auth(), awaitHandlerFactory(palataController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(palataController.delete));
 module.exports = router;

@@ -5,7 +5,6 @@ const DoctorModel = require('../../models/doctor.model')
 const { validationResult } = require('express-validator');
 const InspectionModel = require('../../models/inspector_category.model');
 const DoctorCategory = require('../../models/doctor_category.model')
-const client = require('../../startup/client');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/

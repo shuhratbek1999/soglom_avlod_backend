@@ -1,7 +1,8 @@
 const ModelModel = require('../../models/registration_arxiv.model');
 const HttpException = require('../../utils/HttpException.utils');
 const { validationResult } = require('express-validator');
-const registration_palataModel = require('../../models/registration_palata_arxiv.model');
+const registration_palata_arxivModel = require('../../models/registration_palata_arxiv.model');
+const registration_palataModel = require('../../models/registration_palata.model');
 const Registration_inspectionModel = require('../../models/registration_inspection_arxiv.model');
 const Registration_inspection_childModel = require('../../models/registration_inspection_child_arxiv.model');
 const Registration_recipeModel = require('../../models/registration_recipe_arxiv.model');
@@ -14,7 +15,7 @@ const PatientModel = require('../../models/patient.model');
 const DoctorModel = require('../../models/doctor.model');
 const DoctorCategory = require('../../models/doctor_category.model');
 const InspectionModel = require('../../models/inspection.model')
-const { Op, Sequelize } = require("sequelize");
+const { Op, Sequelize, where } = require("sequelize");
 const palataModel = require('../../models/palata.model')
 const PillModel = require('../../models/pill.model');
 const Registration_payModel = require('../../models/registration_pay_arxiv.model');
@@ -159,7 +160,7 @@ class Registration_arxivController {
                   model: UserModel, as: 'user', attributes:['user_name']
                 }, 
                 {
-                  model: registration_palataModel, as: 'registration_palata',
+                  model: registration_palata_arxivModel, as: 'registration_palata',
                   include:[
                     {model: palataModel, as: 'palatas', attributes: ['name']}
                   ]
@@ -223,7 +224,7 @@ class Registration_arxivController {
 
         let result = await palataModel.findAll({
                 include:[
-                    {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time', 'date_do']}
+                    {model: registration_palata_arxivModel, as: 'palatas', attributes: ['id','date_time', 'date_do']}
                 ],
                 raw: true
         })
@@ -792,29 +793,6 @@ class Registration_arxivController {
         })
     };
 
-    palata = async(req, res, next) => {
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        query.date_time = {
-            [Op.gte]: body.datetime1,
-            [Op.lte]: body.datetime2,
-        } 
-        if(body.palata_id !== null){
-            query.id = {[Op.eq] : body.palata_id }  
-            queryx.palata_id = {[Op.eq]: body.palata_id}
-        };
-        let model = await register_palataModel.findAll({where: query});
-        let tolov = await Registration_payModels.findAll();
-        for(let i = 0; i < model.length; i++){
-            if(model[i].dataValues.registration_id == tolov[i].dataValues.registration_id){
-                console.log(model[i].dataValues);  
-            }
-        }
-
-        res.send(model);
-    }
 }
 
 

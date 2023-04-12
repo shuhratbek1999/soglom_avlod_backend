@@ -4,7 +4,6 @@ const inspectionController = require('../../controllers/admin-app/inspection.con
 const auth = require('../../middleware/auth.middleware');
 const Role = require('../../utils/roles.utils');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
-const branchCache = require('../../middleware/cashe/inspection.middleware');
 const  {InspectionsVAlidator}  = require('../../middleware/validators/admin-app/InspectionsValidator.middleware');
 
 router.get('/all', auth(),  awaitHandlerFactory(inspectionController.getAll));

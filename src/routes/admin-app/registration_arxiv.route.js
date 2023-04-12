@@ -22,5 +22,4 @@ router.post('/sverkaMed', auth(), awaitHandlerFactory(registrationControl.medSve
 router.post('/register', auth(), awaitHandlerFactory(registrationControl.register));
 router.post('/search_arxiv', auth(), awaitHandlerFactory(registrationControl.searchsArxiv));
 router.post('/DoctorCount', auth(), awaitHandlerFactory(registrationControl.TekshiruvSoni));
-router.post('/palata', auth(), awaitHandlerFactory(registrationControl.palata));
 module.exports = router;

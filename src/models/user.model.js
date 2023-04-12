@@ -32,8 +32,7 @@ UserModel.init({
     allowNull: false
   },
   token:{
-    type: DataTypes.STRING(100),
-    allowNull: false
+    type: DataTypes.STRING(100)
   },
   room_id:{
     type: DataTypes.INTEGER,
