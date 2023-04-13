@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const filialModel = require('./filial.model');
 class Registration_payModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -70,5 +71,5 @@ summa:{
     }
   }
 });
-
+Registration_payModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = Registration_payModel;

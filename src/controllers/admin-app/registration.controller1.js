@@ -42,6 +42,7 @@ const moment = require('moment');
 const register_mkb = require('../../models/register_mkb.model');
 const med_directModel = require('../../models/med_direct.model');
 const db = require('../../db/db-sequelize');
+const filialModel = require('../../models/filial.model');
 
 class RegistrationController {
     q=[];
@@ -287,7 +288,9 @@ async function arxiv(doc_id){
                 },
                 { model: Registration_filesModel,as: 'registration_files'},
                 { model: PatientModel,as: 'patient'},
-                {model: Registration_payModel, as: 'registration_pay'}
+                {model: Registration_payModel, as: 'registration_pay', include: [
+                    {model: filialModel, as: 'filial'}
+                ]}
             ]
         });
         if (Prixod === null) {
