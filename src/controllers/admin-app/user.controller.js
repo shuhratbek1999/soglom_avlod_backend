@@ -27,6 +27,9 @@ class UserController {
         {
             model: InspectionModel, as: 'inspecton',
             attributes: ['id', 'name']
+        },
+        {
+            model: filialModel, as: 'filial'
         }
             ],
             where:{
