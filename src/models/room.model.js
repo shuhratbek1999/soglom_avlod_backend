@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const UserModel = require('./user.model');
+const filialModel = require('./filial.model')
 class RoomModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -47,4 +47,5 @@ RoomModel.init({
   }
 });
 // RoomModel.hasMany(UserModel, {as: 'users', foreignKey: 'room_id'});
+RoomModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = RoomModel;

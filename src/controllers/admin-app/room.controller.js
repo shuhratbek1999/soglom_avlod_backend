@@ -3,13 +3,18 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const RoomModel = require('../../models/room.model')
 const { validationResult } = require('express-validator');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class RoomController {
     getAll = async (req, res, next) => {
-        const model = await RoomModel.findAll();
+        const model = await RoomModel.findAll({
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -22,7 +27,10 @@ class RoomController {
         const model = await RoomModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
