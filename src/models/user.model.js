@@ -54,6 +54,9 @@ UserModel.init({
   },
   percent:{
     type: DataTypes.DECIMAL()
+  },
+  filial_id:{
+    type: DataTypes.INTEGER
   }
  
 }, {

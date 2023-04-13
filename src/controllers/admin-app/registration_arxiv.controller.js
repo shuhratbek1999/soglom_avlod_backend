@@ -684,9 +684,9 @@ class Registration_arxivController {
         let model = await registerDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("COUNT(Case WHEN register_direct.date_time >=" + datetime1 + " and register_direct.date_time <= " + datetime2 + ` and register_direct.direct_id = ${body.direct_id} then register_direct.direct_id else 0 end)`), 'count']
+               [sequelize.literal("SUM(CASE WHEN register_direct_arxiv.date_time >= " + datetime1 + " and register_direct_arxiv.date_time <= " + datetime2 + " AND register_direct_arxiv.doc_type = 'kirim' THEN register_direct_arxiv.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_direct_arxiv.date_time >= " + datetime1 + " and register_direct_arxiv.date_time <= " + datetime2 + " AND register_direct_arxiv.doc_type = 'chiqim' THEN register_direct_arxiv.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("COUNT(Case WHEN register_direct_arxiv.date_time >=" + datetime1 + " and register_direct_arxiv.date_time <= " + datetime2 + ` and register_direct_arxiv.direct_id = ${body.direct_id} then register_direct_arxiv.direct_id else 0 end)`), 'count']
            ],
            where: queryx
         })
@@ -714,9 +714,9 @@ class Registration_arxivController {
         let model = await registerDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
+               [sequelize.literal("SUM(CASE WHEN register_direct_arxiv.date_time >= " + datetime1 + " and register_direct_arxiv.date_time <= " + datetime2 + " AND register_direct_arxiv.doc_type = 'kirim' THEN register_direct_arxiv.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_direct_arxiv.date_time >= " + datetime1 + " and register_direct_arxiv.date_time <= " + datetime2 + " AND register_direct_arxiv.doc_type = 'chiqim' THEN register_direct_arxiv.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("SUM(CASE WHEN register_direct_arxiv.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ], 
            where: queryx,
            group: ['id']
@@ -744,9 +744,9 @@ class Registration_arxivController {
         let model = await registerMedDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("COUNT(Case WHEN register_med_direct.date_time >=" + datetime1 + " and register_med_direct.date_time <= " + datetime2 + ` and register_med_direct.direct_id = ${body.direct_id} then register_med_direct.direct_id else 0 end)`), 'count']
+               [sequelize.literal("SUM(CASE WHEN register_med_direct_arxiv.date_time >= " + datetime1 + " and register_med_direct_arxiv.date_time <= " + datetime2 + " AND register_med_direct_arxiv.doc_type = 'kirim' THEN register_med_direct_arxiv.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_med_direct_arxiv.date_time >= " + datetime1 + " and register_med_direct_arxiv.date_time <= " + datetime2 + " AND register_med_direct_arxiv.doc_type = 'chiqim' THEN register_med_direct_arxiv.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("COUNT(Case WHEN register_med_direct_arxiv.date_time >=" + datetime1 + " and register_med_direct_arxiv.date_time <= " + datetime2 + ` and register_med_direct_arxiv.direct_id = ${body.direct_id} then register_med_direct_arxiv.direct_id else 0 end)`), 'count']
            ],
            where: queryx
         })
@@ -774,9 +774,9 @@ class Registration_arxivController {
         let model = await registerMedDirectModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
+               [sequelize.literal("SUM(CASE WHEN register_med_direct_arxiv.date_time >= " + datetime1 + " and register_med_direct_arxiv.date_time <= " + datetime2 + " AND register_med_direct_arxiv.doc_type = 'kirim' THEN register_med_direct_arxiv.price ELSE 0 END)"), 'total_kirim'],
+               [sequelize.literal("SUM(CASE WHEN register_med_direct_arxiv.date_time >= " + datetime1 + " and register_med_direct_arxiv.date_time <= " + datetime2 + " AND register_med_direct_arxiv.doc_type = 'chiqim' THEN register_med_direct_arxiv.price ELSE 0 END)"), 'total_chiqim'],
+               [sequelize.literal("SUM(CASE WHEN register_med_direct_arxiv.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ], 
            where: queryx,
            group: ['id']

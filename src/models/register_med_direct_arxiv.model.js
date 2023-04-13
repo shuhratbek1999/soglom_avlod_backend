@@ -45,8 +45,8 @@ place:{
 
 }, {
   sequelize,
-  modelName: 'register_med_direct',
-  tableName: 'register_med_direct',
+  modelName: 'register_med_direct_arxiv',
+  tableName: 'register_med_direct_arxiv',
   timestamps: false,
   indexes: [
     {
