@@ -19,7 +19,6 @@ class RoomController {
     }
 
     getOne = async (req, res, next) => {
-        this.checkValidation(req);
         const model = await RoomModel.findOne({
             where:{
                 id: req.params.id
@@ -45,6 +44,20 @@ class RoomController {
         data: model
     });
    }
+   filial = async(req, res, next) => {
+    const model = await RoomModel.findAll({
+        where:{
+            fill_id: req.params.id
+        }
+    })
+    res.status(200).send({
+        error: false,
+        error_code: 200,
+        message: 'Malumotlar chiqdi',
+        data: model
+    });
+   }
+
    update = async (req, res, next) => {
        this.checkValidation(req);
     const model = await RoomModel.findOne({
@@ -53,6 +66,7 @@ class RoomController {
         }
     });
     model.name = req.body.name;
+    model.filial_id = req.body.filial_id;
     model.save();
     res.status(200).send({
         error: false,

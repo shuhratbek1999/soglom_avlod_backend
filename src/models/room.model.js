@@ -20,6 +20,9 @@ RoomModel.init({
     type: DataTypes.STRING(100),
     allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER()
+  }
 
 }, {
   sequelize,
