@@ -136,6 +136,7 @@ class UserController {
         model.pay_type = req.body.pay_type;
         model.salary = req.body.salary;
         model.percent = req.body.percent;
+        model.filial_id = req.body.filial_id;
         model.save();
         res.status(200).send({
             error: false,
