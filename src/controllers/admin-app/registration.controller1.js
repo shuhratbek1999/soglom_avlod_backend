@@ -368,7 +368,8 @@ async function arxiv(doc_id){
             include: [
                 { model: RoomModel,as: 'room',
                 include: [
-                    { model: UserModel,as: 'users'}
+                    { model: UserModel,as: 'users'},
+                    {model: filialModel, as: 'filial'}
                 ],
             },
                 { model: PatientModel,as: 'patient'},
@@ -1753,7 +1754,8 @@ async function arxiv(doc_id){
                 include:[
                     {model: DoctorModel, as: 'doctor', attributes: ['name']}
                 ]
-            }
+            },
+            {model: filialModel, as: 'filial'}
             ]
             },
                 {model: PatientModel, as: 'patient', attributes: ['fullname']},
