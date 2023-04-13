@@ -9,6 +9,7 @@ const DoctorModel = require('../../models/doctor.model');
 const InspectionModel = require('../../models/inspector_category.model');
 const { error } = require('winston');
 const RoomModel = require('../../models/room.model');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              User Controller
@@ -77,6 +78,9 @@ class UserController {
         {
             model: RoomModel, as: 'Room',
             attributes: ['id', 'name']
+        },
+        {
+            model: filialModel, as: 'filial'
         }
             ],
         }); 
