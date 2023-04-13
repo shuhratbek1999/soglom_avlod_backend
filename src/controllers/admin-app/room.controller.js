@@ -47,7 +47,7 @@ class RoomController {
    filial = async(req, res, next) => {
     const model = await RoomModel.findAll({
         where:{
-            fill_id: req.params.id
+            filial_id: req.body.filial_id
         }
     })
     res.status(200).send({
