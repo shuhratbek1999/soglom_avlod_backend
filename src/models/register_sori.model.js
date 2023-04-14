@@ -36,7 +36,7 @@ doc_type: {
 
 }, {
   sequelize,
-  modelName: 'register_soriModel',
+  modelName: 'register_sori',
   tableName: 'register_sori',
   timestamps: false,
   indexes: [

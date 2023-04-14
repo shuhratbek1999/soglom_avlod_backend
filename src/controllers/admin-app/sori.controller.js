@@ -6,6 +6,7 @@ const { validationResult } = require('express-validator');
 const Register_kassaModel = require('../../models/register_kassa.model');
 const register_soriModel = require('../../models/register_sori.model');
 const { Op, Sequelize } = require('sequelize');
+const sequelize = require('sequelize');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -116,10 +117,44 @@ class soriController {
     }
     const model = await register_soriModel.findAll({
             attributes:[
+                'id', 'date_time',
+                [sequelize.literal('sori.name'), 'sori_name'],
+                [sequelize.literal("SUM(CASE WHEN register_sori.date_time <=" + body.datetime1 + " THEN register_sori.price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'Kirim' THEN register_sori.price ELSE 0 END)"), 'total_kirim'],
                 [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'chiqim' THEN register_sori.price ELSE 0 END)"), 'total_chiqim'],
+            ],
+            include:[
+                {model: soriModel, as: 'sori', attributes: []}
             ]
     })
+    res.send(model)
+   }
+   sverka = async(req, res, next) => {
+    let query = {}, body = req.body, queryx = {};
+    query.date_time = {
+        [Op.gte]: body.datetime1,
+        [Op.lte]: body.datetime2,
+    }
+    if(body.sori_id != null){
+        queryx.id = {[Op.eq]: body.sori_id},
+        query.doc_id = {[Op.eq]: body.sori_id}
+    }
+    const model = await register_soriModel.findAll({
+            attributes:[
+                'id', 'date_time',
+                [sequelize.literal('sori.name'), 'sori_name'],
+                [sequelize.literal("SUM(CASE WHEN register_sori.date_time <=" + body.datetime1 + " THEN register_sori.price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+                [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'Kirim' THEN register_sori.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'chiqim' THEN register_sori.price ELSE 0 END)"), 'total_chiqim'],
+            ],
+            include:[
+                {model: soriModel, as: 'sori', attributes: []}
+            ],
+            group:[
+                ['doc_id', 'DESC']
+            ]
+    })
+    res.send(model)
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
