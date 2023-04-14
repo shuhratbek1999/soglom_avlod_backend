@@ -10,7 +10,12 @@ const Register_kassaModel = require('../../models/register_kassa.model');
 class soriController {
     getAll = async (req, res, next) => {
         const model = await soriModel.findAll(); 
-        res.send(model)
+        res.send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdii',
+            data: model
+         })
     }
 
     getOne = async (req, res, next) => {
@@ -22,7 +27,12 @@ class soriController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
-        res.send(model)
+        res.send({
+            error: false,
+            error_code: 200,
+            message: 'Malumot chiqdi',
+            data: model
+         })
         // client.setex("doctorOne", 3600, JSON.stringify(model))
     }
 
@@ -41,6 +51,7 @@ class soriController {
 
    create = async (req, res, next) => {
        this.checkValidation(req);
+       req.body.status = false;
        const model = await soriModel.create(req.body);
        res.status(200).send({
         error: false,
@@ -50,18 +61,29 @@ class soriController {
     });
    }
    kassa = async(req, res, next) => {
-    let body = req.body, date = Math.floor(new Date().getTime() / 1000);
+    let body = req.body, date = Math.floor(new Date().getTime() / 1000), sori;
+    if(body.status == 0){
+        sori = await soriModel.findOne({
+             where:{
+                 id: body.id
+             }
+          })
+       sori.name = body.name;
+       sori.price = body.price;
+       sori.status = true;
+       sori.save();
+      }
     let kassa = {
          "date_time": date,
          "type": 0,
          "price": body.price,
          "pay_type": "Naqd",
          "doc_type": "Kirim",
-         "doctor_id": body.id,
+         "doctor_id": sori.id,
          "place": "Sori",
          "filial_id": 0
     }
-     const model = await Register_kassaModel.create(kassa)
+     const model = await Register_kassaModel.create(kassa);
      res.send({
         error: false,
         error_code: 200,
@@ -78,6 +100,7 @@ class soriController {
     });
     model.name = req.body.name;
     model.price = req.body.price;
+    model.status = false;
     model.save();
     res.status(200).send({
         error: false,

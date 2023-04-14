@@ -22,6 +22,10 @@ soriModel.init({
   price:{
     type: DataTypes.DECIMAL
   },
+  status:{
+    type: DataTypes.BOOLEAN,
+    allowNull: false
+  }
 
 }, {
   sequelize,
