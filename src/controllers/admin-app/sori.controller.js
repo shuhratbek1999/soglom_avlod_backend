@@ -5,6 +5,7 @@ const soriModel = require('../../models/sori.model')
 const { validationResult } = require('express-validator');
 const Register_kassaModel = require('../../models/register_kassa.model');
 const register_soriModel = require('../../models/register_sori.model');
+const { Op } = require('sequelize');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -59,8 +60,6 @@ class soriController {
                  id: body.id
              }
           })
-       sori.name = body.name;
-       sori.price = body.price;
        sori.status = true;
        sori.save();
       }
@@ -69,26 +68,47 @@ class soriController {
         "type": 0,
         "doc_type": "Kirim",
         "price": body.price,
-        "doc_id": body.id
+        "doc_id": body.id,
+        "status": sori.dataValues.status
     }
-    await register_soriModel.create(register_sori);
+   let register = await register_soriModel.create(register_sori);
     let kassa = {
          "date_time": date,
          "type": 0,
          "price": body.price,
          "pay_type": "Naqd",
          "doc_type": "Kirim",
-         "doctor_id": sori.id,
+         "doctor_id": sori.dataValues.id,
          "place": "Sori",
          "filial_id": 0
     }
-     const model = await Register_kassaModel.create(kassa);
+    let models = [];
+    models.push(register_sori)
+  await Register_kassaModel.create(kassa);
      res.send({
         error: false,
         error_code: 200,
         message: 'Malumot qoshildi',
-        data: model
+        data: models
      })
+   }
+
+   hisobot = async(req, res, next) => {
+    let query = {}, body = req.body, queryx = {};
+    query.date_time = {
+        [Op.gte]: body.datetime1,
+        [Op.lte]: body.datetime2,
+    }
+    if(body.sori_id != null){
+        queryx.id = {[Op.eq]: body.sori_id},
+        query.doc_id = {[Op.eq]: body.sori_id}
+    }
+    const model = await register_soriModel.findAll({
+            attributes:[
+                [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'Kirim' THEN register_sori.price ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'chiqim' THEN register_sori.price ELSE 0 END)"), 'total_chiqim'],
+            ]
+    })
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
