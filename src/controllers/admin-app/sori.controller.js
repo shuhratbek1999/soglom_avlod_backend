@@ -4,6 +4,7 @@ const HttpException = require('../../utils/HttpException.utils');
 const soriModel = require('../../models/sori.model')
 const { validationResult } = require('express-validator');
 const Register_kassaModel = require('../../models/register_kassa.model');
+const register_soriModel = require('../../models/register_sori.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -63,6 +64,14 @@ class soriController {
        sori.status = true;
        sori.save();
       }
+    let register_sori = {
+        "date_time": date,
+        "type": 0,
+        "doc_type": "Kirim",
+        "price": body.price,
+        "doc_id": body.id
+    }
+    await register_soriModel.create(register_sori);
     let kassa = {
          "date_time": date,
          "type": 0,
