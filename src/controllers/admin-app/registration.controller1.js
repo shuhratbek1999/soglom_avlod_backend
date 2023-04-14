@@ -82,8 +82,8 @@ class RegistrationController {
            await db.query(`DELETE from register_direct where doc_id = ${item.dataValues.id}`);
            await db.query(`INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct where doc_id = ${item.dataValues.id}`);
            await db.query(`DELETE from register_med_direct where doc_id = ${item.dataValues.id}`);
-           await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa where doctor_id = ${item.dataValues.id}`);
-           await db.query(`DELETE from register_kassa where doctor_id = ${item.dataValues.id}`);
+           await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa`);
+           await db.query(`DELETE from register_kassa`);
            await db.query(`INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection where doc_id = ${item.dataValues.id}`);
            await db.query(`DELETE from register_inspection where doc_id = ${item.dataValues.id}`);
            await db.query(`INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor where doc_id = ${item.dataValues.id}`);
@@ -115,8 +115,8 @@ async function arxiv(doc_id){
               await db.query(`DELETE from register_doctor where doc_id = ${req.params.id}`);
               await db.query(`INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection where doc_id = ${req.params.id}`);
               await db.query(`DELETE from register_inspection where doc_id = ${req.params.id}`);
-              await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa where doctor_id = ${req.params.id}`);
-              await db.query(`DELETE from register_kassa where doctor_id = ${req.params.id}`);
+              await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa`);
+              await db.query(`DELETE from register_kassa`);
               await db.query(`INSERT INTO register_direct_arxiv SELECT * FROM register_direct where doc_id = ${req.params.id}`);
               await db.query(`DELETE from register_direct where doc_id = ${req.params.id}`);
               await db.query(`INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct where doc_id = ${req.params.id}`);
