@@ -5,7 +5,7 @@ const soriModel = require('../../models/sori.model')
 const { validationResult } = require('express-validator');
 const Register_kassaModel = require('../../models/register_kassa.model');
 const register_soriModel = require('../../models/register_sori.model');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -67,29 +67,40 @@ class soriController {
         "date_time": date,
         "type": 0,
         "doc_type": "Kirim",
-        "price": sori.dataValues.price,
-        "doc_id": sori.dataValues.id,
-        "status": sori.dataValues.status
+        "price": sori.price,
+        "doc_id": sori.id,
+        "status": sori.status
     }
    let register = await register_soriModel.create(register_sori);
     let kassa = {
          "date_time": date,
          "type": 0,
-         "price": sori.dataValues.price,
+         "price": sori.price,
          "pay_type": "Naqd",
          "doc_type": "Kirim",
-         "doctor_id": sori.dataValues.id,
+         "doctor_id": sori.id,
          "place": "Sori",
          "filial_id": 0
     }
-    let models = [];
-    models.push(register_sori)
+    let sorilar = await register_soriModel.findOne({
+        attributes:[
+            "id","date_time", "price",
+            [Sequelize.literal('sori.status'), 'status'],
+            [Sequelize.literal('sori.name'), 'status_name']
+        ],
+        where:{
+            doc_id: sori.id
+        },
+        include:[
+            {model: soriModel, as: 'sori', attributes:[]}
+        ]
+    })
   await Register_kassaModel.create(kassa);
      res.send({
         error: false,
         error_code: 200,
         message: 'Malumot qoshildi',
-        data: models
+        data: sorilar
      })
    }
 
