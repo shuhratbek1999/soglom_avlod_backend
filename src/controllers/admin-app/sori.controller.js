@@ -10,12 +10,7 @@ const Register_kassaModel = require('../../models/register_kassa.model');
 class soriController {
     getAll = async (req, res, next) => {
         const model = await soriModel.findAll(); 
-        res.send({
-            error: false,
-            error_code: 200,
-            message: 'Malumotlar chiqdii',
-            data: model
-         })
+        res.send(model)
     }
 
     getOne = async (req, res, next) => {
@@ -27,12 +22,7 @@ class soriController {
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
-        res.send({
-            error: false,
-            error_code: 200,
-            message: 'Malumot chiqdi',
-            data: model
-         })
+        res.send(model)
         // client.setex("doctorOne", 3600, JSON.stringify(model))
     }
 
