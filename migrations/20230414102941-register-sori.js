@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.creatTable("register_sori", {
+  return db.createTable("register_sori", {
     id:{
       type: 'int',
       autoIncrement: true,
