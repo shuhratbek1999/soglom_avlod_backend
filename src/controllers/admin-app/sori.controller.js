@@ -54,10 +54,10 @@ class soriController {
    }
    kassa = async(req, res, next) => {
     let body = req.body, date = Math.floor(new Date().getTime() / 1000), sori;
-    if(body.status == 0){
+    if(body.sori_id){
         sori = await soriModel.findOne({
              where:{
-                 id: body.id
+                 id: body.sori_id
              }
           })
        sori.status = true;
@@ -67,15 +67,15 @@ class soriController {
         "date_time": date,
         "type": 0,
         "doc_type": "Kirim",
-        "price": body.price,
-        "doc_id": body.id,
+        "price": sori.dataValues.price,
+        "doc_id": sori.dataValues.id,
         "status": sori.dataValues.status
     }
    let register = await register_soriModel.create(register_sori);
     let kassa = {
          "date_time": date,
          "type": 0,
-         "price": body.price,
+         "price": sori.dataValues.price,
          "pay_type": "Naqd",
          "doc_type": "Kirim",
          "doctor_id": sori.dataValues.id,
