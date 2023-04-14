@@ -86,7 +86,7 @@ class soriController {
         attributes:[
             "id","date_time", "price",
             [Sequelize.literal('sori.status'), 'status'],
-            [Sequelize.literal('sori.name'), 'status_name']
+            [Sequelize.literal('sori.name'), 'sori_name']
         ],
         where:{
             doc_id: sori.id
