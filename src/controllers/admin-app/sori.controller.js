@@ -127,6 +127,9 @@ class soriController {
             include:[
                 {model: soriModel, as: 'sori', attributes: []}
             ],
+            group: [
+                ['doc_id', 'ASC']
+            ]
         
     })
     res.send(model)
