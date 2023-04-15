@@ -490,10 +490,6 @@ setArchive=async (req, res, next) => {
                 data: model
             });  
         }catch(e){
-            if(e instanceof ValidationError){
-                res.status(404).send(e.errors[0].message);
-                return;
-            }
             throw new HttpException(500, 'Something went wrong');
         }
 
