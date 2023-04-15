@@ -116,6 +116,7 @@ class soriController {
         query.doc_id = {[Op.eq]: body.sori_id}
     }
     const model = await register_soriModel.findAll({
+        where: query,
             attributes:[
                 'id', 'date_time',
                 [sequelize.literal('sori.name'), 'sori_name'],
@@ -125,7 +126,8 @@ class soriController {
             ],
             include:[
                 {model: soriModel, as: 'sori', attributes: []}
-            ]
+            ],
+        
     })
     res.send(model)
    }
@@ -151,8 +153,9 @@ class soriController {
                 {model: soriModel, as: 'sori', attributes: []}
             ],
             group:[
-                ['doc_id', 'DESC']
-            ]
+                ['id', 'ASC']
+            ],
+            where: query
     })
     res.send(model)
    }
