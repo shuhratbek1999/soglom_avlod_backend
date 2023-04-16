@@ -490,7 +490,7 @@ setArchive=async (req, res, next) => {
                 data: model
             });  
         }catch(e){
-            throw new HttpException(500, 'Something went wrong');
+            throw new HttpException(500, `Something went wrong ${e}`);
         }
 
     };
