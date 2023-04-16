@@ -603,7 +603,7 @@ setArchive=async (req, res, next) => {
                 "umumiy_sum": element.umumiy_sum,
                 "backlog": element.backlog,
                 "comment": element.comment,
-                "filial_id": element.filial_id,
+                "filial_id": element.filial_id == null ? 0 : element.filial_id
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -636,7 +636,7 @@ setArchive=async (req, res, next) => {
                     "date_time": date_time,
                     "doctor_id": model.id,
                     "pay_type": element.pay_type,
-                    "filial_id": element.filial_id,
+                    "filial_id": element.filial_id == null ? 0 : element.filial_id,
                     "price": element.summa,    
                     "type": type,
                     "doc_type": 'Kirim',
@@ -684,7 +684,7 @@ setArchive=async (req, res, next) => {
                        "doc_type": 'kirim',
                        "place": "Registration",
                        "comment": tolov.comment,
-                       "filial_id": item.filial_id,
+                       "filial_id": item.filial_id == null ? 0 : item.filial_id,
                      }
                    await  Register_inspectionModel.create(tekshiruv)
                  }
@@ -701,7 +701,7 @@ setArchive=async (req, res, next) => {
                 'status':model.status,
                 "date_time": date,
                 "skidka": item.skidka,
-                "filial_id": item.filial_id
+                "filial_id": item.filial_id == null ? 0 : item.filial_id
             }
             const models = await Registration_inspectionModel.create(dds);
                 function isHave(item) { 
@@ -750,7 +750,7 @@ setArchive=async (req, res, next) => {
                 "date_do": element.date_do,
                 "date_to": element.date_to,
                 "day":element.day,
-                "filial_id":element.filial_id,
+                "filial_id":element.filial_id == null ? 0 : element.filial_id,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -771,7 +771,7 @@ setArchive=async (req, res, next) => {
                         "date_to": element.date_to,
                         "date_do": element.date_do,
                         "date_time": element.date_time,
-                        "filial_id": element.filial_id
+                        "filial_id": element.filial_id == null ? 0 : element.filial_id
                     })
                 }
             }
@@ -798,7 +798,7 @@ setArchive=async (req, res, next) => {
                 "price": Math.floor((user.percent * element.price)/100),
                 "doc_id": model.id, 
                 "doctor_id": element.doctor_id,
-                "filial_id": element.filial_id,
+                "filial_id": element.filial_id == null ? 0 : element.filial_id,
                 "doc_type": 'kirim',
                  "place": "Registration",
                  "comment": "comment"
@@ -811,7 +811,7 @@ setArchive=async (req, res, next) => {
                 "status": model.status,
                 "text":data.text,
                 "category_id":data.category_id,
-                "filial_id":data.filial_id,
+                "filial_id":data.filial_id == null ? 0 : data.filial_id,
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
