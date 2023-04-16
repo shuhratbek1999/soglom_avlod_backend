@@ -81,7 +81,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/filial`, filialRouter);
         app.use(`/api/v1/admin-app/sori`, soriRouter);
 
-        app.use(`/api/v1/admin-app/`, express.static('upload'));
+        app.use(`/api/v1/admin-app`, express.static('upload'));
 
         // 404 error
         app.all('*', (req, res, next) => {

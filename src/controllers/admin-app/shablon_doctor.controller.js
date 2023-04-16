@@ -10,7 +10,7 @@ const { validationResult } = require('express-validator');
  ******************************************************************************/
 class shablon_doctorController {
     getAll = async (req, res, next) => {
-        const model = await shablon_doctorModel.findAll(req.body);
+        const model = await shablon_doctorModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -73,6 +73,7 @@ class shablon_doctorController {
     });
     model.name = req.body.name;
     model.doctor_id = req.body.doctor_id;
+    model.text = req.body.text;
     model.save();
     res.status(200).send({
         error: false,

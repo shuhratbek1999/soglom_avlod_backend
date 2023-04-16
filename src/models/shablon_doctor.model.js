@@ -22,6 +22,9 @@ doctor_id : {
 name: {
     type: DataTypes.STRING(200),
     allowNull: false
+},
+text:{
+  type: DataTypes.TEXT
 }
 
 }, {
