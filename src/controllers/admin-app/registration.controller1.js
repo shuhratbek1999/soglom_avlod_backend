@@ -48,6 +48,7 @@ const register_doctor_arxivModel = require('../../models/register_doctor_arxiv.m
 const register_inspection_arxivModel = require('../../models/register_inspection_arxiv.model');
 const register_kassa_arxivModel = require('../../models/register_kassa_arxiv.model');
 const register_mkb_arxivModel = require('../../models/register_mkb_arxiv.model');
+const RegionModel = require('../../models/region.model');
 
 class RegistrationController {
     q=[];
@@ -231,7 +232,10 @@ setArchive=async (req, res, next) => {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
                 {
-                    model: PatientModel, as: 'patient'
+                    model: PatientModel, as: 'patient',
+                    include:[
+                        {model: RegionModel, as: 'region'}
+                    ]
                 },
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
@@ -303,7 +307,11 @@ setArchive=async (req, res, next) => {
                     ]
                 },
                 { model: Registration_filesModel,as: 'registration_files'},
-                { model: PatientModel,as: 'patient'},
+                { model: PatientModel,as: 'patient', 
+                 include:[
+                    {model: RegionModel, as: 'region'}
+                 ]
+            },
                 {model: Registration_payModel, as: 'registration_pay'}
             ]
         });
