@@ -237,7 +237,8 @@ class RegistrationController {
                         { model: InspectionModel, as: 'inspection',
 
                         include:[
-                            {model:UserModel,as:'User',attributes:['user_name']}
+                            {model:UserModel,as:'User',attributes:['user_name']},
+                            {model: inspectionCategory, as: 'inspector_category'}
                         ]
                     }
                     ]
