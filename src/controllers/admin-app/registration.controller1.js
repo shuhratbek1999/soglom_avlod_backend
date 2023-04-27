@@ -201,7 +201,6 @@ class RegistrationController {
             message: 'Malumotlar chiqdi',
             data: model
         });
-        await this.cron();
     }  
 
     getOne = async (req, res, next) => {
