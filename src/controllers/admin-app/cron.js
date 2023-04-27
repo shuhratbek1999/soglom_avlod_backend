@@ -9,7 +9,7 @@ module.exports = function(){
         var MyDatas  =  await ModelModel.findAll({
             where:{
                 type_service: 'Ambulator',
-                status: 'complate'
+                backlog: 0
             }
         });
         if(MyDatas.length > 0){
@@ -59,7 +59,7 @@ module.exports = function(){
                 await db.query(`INSERT INTO register_palata_arxiv SELECT * FROM register_palata where registration_id = ${item.dataValues.id}`);
                 await db.query(`DELETE from register_palata where registration_id = ${item.dataValues.id}`);
                 
-                await db.query(`DELETE from queue`);
+                await db.query(`DELETE from queue where patient_id = ${item.dataValues.patient}`);
             })
         }
     
