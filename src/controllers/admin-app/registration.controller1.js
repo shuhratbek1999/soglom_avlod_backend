@@ -1839,7 +1839,31 @@ class RegistrationController {
         data: model
       })
     }
-    
+    birkunliKassa = async(req, res, next) => {
+        let date = new Date(), query = {};
+      let vaqt1 =  moment(date).startOf('day').unix();
+      let vaqt2  = moment(date).endOf('day').unix();
+       query.date_time = {
+        [Op.gte]: vaqt1,
+        [Op.lte]: vaqt2
+       }
+        console.log(vaqt1, vaqt2);
+        const model = await Register_kassaModel.findAll({
+            attributes : [ 
+                'id', 'doctor_id', "type", "date_time", "doc_type",
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + vaqt1 + " and register_kassa.doc_type = 'Kirim' THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + vaqt1 + " and register_kassa.doc_type = 'chiqim' THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'Kirim' and pay_type = 'Plastik' THEN register_kassa.price ELSE 0 END)"), 'plasKirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'chiqim' and pay_type = 'Plastik' THEN register_kassa.price ELSE 0 END)"), 'plasChiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'Kirim' and (pay_type = 'Naqd' || pay_type = 'Naqt') THEN register_kassa.price ELSE 0 END)"), 'naqdKirim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'chiqim' and (pay_type = 'Naqd' || pay_type = 'Naqt') THEN register_kassa.price ELSE 0 END)"), 'naqdChiqim'],
+            ],
+            group: [
+                ['doctor_id']
+            ]
+        })
+        res.send(model)
+    }
 }
 
 

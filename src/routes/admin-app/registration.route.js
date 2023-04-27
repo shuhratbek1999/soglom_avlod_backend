@@ -37,4 +37,5 @@ router.delete('/deleted', auth(), awaitHandlerFactory(registrationControl.delete
 router.post('/statsionar', auth(),  awaitHandlerFactory(registrationControl.statsionarHisobot));
 router.get('/arxivga_olish/:id', auth(),  awaitHandlerFactory(registrationControl.ArxivgaOlish));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(registrationControl.delete));
+router.get('/birkunlikassa', auth(), awaitHandlerFactory(registrationControl.birkunliKassa))
 module.exports = router;
