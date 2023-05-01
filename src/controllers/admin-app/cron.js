@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const ModelModel = require("../../models/registration.model");
 const db = require('../../db/db-sequelize');
 module.exports = function(){
-    cron.schedule('*/2 * * * *', () => {
+    cron.schedule('0 0 * * *', () => {
         this.setArchive();
     })
     setArchive=async (req, res, next) => {
@@ -59,7 +59,7 @@ module.exports = function(){
                 await db.query(`INSERT INTO register_palata_arxiv SELECT * FROM register_palata where registration_id = ${item.dataValues.id}`);
                 await db.query(`DELETE from register_palata where registration_id = ${item.dataValues.id}`);
                 
-                await db.query(`DELETE from queue where patient_id = ${item.dataValues.patient}`);
+                await db.query(`DELETE from queue where patient_id = ${item.dataValues.patient_id}`);
             })
         }
     
