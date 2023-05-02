@@ -4,7 +4,7 @@ const arxiv = require('../../models/registration_arxiv.model')
 const HttpException = require('../../utils/HttpException.utils');
 const Register_kassaModel = require('../../models/register_kassa.model')
 const inspectionCategory = require('../../models/inspector_category.model')
-const { sequelize, sum } = require('../../models/user.model');
+const { sequelize } = require('../../models/user.model');
 const { validationResult } = require('express-validator');
 const registration_palataModel = require('../../models/registration_palata.model');
 const Registration_inspectionModel = require('../../models/registration_inspection.model');
@@ -23,7 +23,7 @@ const RoomModel = require('../../models/room.model');
 const DoctorModel = require('../../models/doctor.model');
 const DoctorCategory = require('../../models/doctor_category.model')
 const InspectionModel = require('../../models/inspection.model')
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const directModel = require('../../models/direct.model')
 const registerDirectModel = require('../../models/register_direct.model')
 const registerMedDirectModel = require('../../models/register_med_direct.model')
@@ -698,27 +698,17 @@ class RegistrationController {
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
             var date_time = Math.floor(new Date().getTime() / 1000);
-            let tolov = await Registration_payModel.findOne({
-                where:{
-                    registration_id: model.id
-                }
+            register_palataModel.create({
+                "palata_id": element.palata_id,
+                "patient_id": model.id,
+                "registration_id": model.id,
+                "price": element.price,
+                "day": element.day,
+                "date_to": element.date_to,
+                "date_do": element.date_do,
+                "date_time": date_time,
+                "filial_id": element.filial_id == null ? 0 : element.filial_id
             })
-            // console.log(tolov.dataValues, "palata");
-            if(tolov != null){
-                if(tolov.dataValues.backlog == 0){
-                    register_palataModel.create({
-                        "palata_id": element.palata_id,
-                        "patient_id": model.id,
-                        "registration_id": model.id,
-                        "price": element.price,
-                        "day": element.day,
-                        "date_to": element.date_to,
-                        "date_do": element.date_do,
-                        "date_time": element.date_time,
-                        "filial_id": element.filial_id == null ? 0 : element.filial_id
-                    })
-                }
-            }
 
         }
     }

@@ -3,9 +3,12 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const palataModel = require('../../models/palata.model')
 const { validationResult } = require('express-validator');
-const InspectionModel = require('../../models/inspector_category.model');
 const register_palataModel = require('../../models/register_palata.model')
 const {Op} = require('sequelize')
+const moment = require("moment");
+const RegistrationModel = require('../../models/registration.model');
+const PatientModel = require('../../models/patient.model');
+const { sequelize } = require('../../models/patient.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -25,30 +28,45 @@ class palataController {
     palata = async(req, res, next) => {
         let query = {}, queryx = {};
         let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
         query.date_time = {
             [Op.gte]: body.datetime1,
             [Op.lte]: body.datetime2,
-        } 
-        if(body.palata_id !== null){
-            query.id = {[Op.eq] : body.palata_id }  
-            queryx.palata_id = {[Op.eq]: body.palata_id}
-        };
+        }
          let model = await palataModel.findAll({
+            attributes: ['id','name','price','status','filial_id','user_id',
+        // [sequelize.literal('register_palata.date_time'), 'date_time']
+        ],
             include:[
-                {model: register_palataModel, as: 'register_palata', attributes: ['id','price','date_time','date_to','date_do']}
+                {model: register_palataModel, as: 'register_palata', attributes: ['id','price','date_time','date_to','date_do','day'],
+                where: query,
+            include:[
+                {model: RegistrationModel, as: 'registration', attributes: ['id', 'backlog', 'patient_id',
+                'summa'
+            ]
+            },
+            {
+                model: PatientModel, as: 'patient', attributes: ['fullname']
+            }
+            ]
+            },
             ]
          })
+         console.log(model);
          let bugun = Math.floor(new Date().getDate()/1000);
          for(let i = 0; i < model.length; i++){
              if(model[i].dataValues.register_palata.length > 0){
                 for(let key of model[i].dataValues.register_palata){
-                    if(key.dataValues.date_do < bugun){
+                    if(key.dataValues.date_to >= bugun && key.dataValues.registration.backlog == 0){
                         model[i].dataValues.text = "pul tolagan vaqti tugagan lekin yotipdi"
                     }
-                    else{
+                    else if(key.dataValues.date_do <= bugun && key.dataValues.registration.backlog == 0){
                         model[i].dataValues.text = "pul tolagan, vaqti tugamagan yotipdi"
+                    }
+                    else if(key.dataValues.date_do >= bugun && key.dataValues.registration.backlog != 0){
+                        model[i].dataValues.text = "pul tolamagan va vaqti otib ketgan"
+                    }
+                    else if(key.dataValues.date_do <= bugun && key.dataValues.registration.backlog != 0){
+                        model[i].dataValues.text = "pul tolamagan va vaqti otib ketmagan"
                     }
                  }
              }
