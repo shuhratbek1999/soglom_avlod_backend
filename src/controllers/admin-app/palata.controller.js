@@ -41,7 +41,7 @@ class palataController {
                 where: query,
             include:[
                 {model: RegistrationModel, as: 'registration', attributes: ['id', 'backlog', 'patient_id',
-                'summa'
+                'pay_summa'
             ]
             },
             {
@@ -51,7 +51,6 @@ class palataController {
             },
             ]
          })
-         console.log(model);
          let bugun = Math.floor(new Date().getDate()/1000);
          for(let i = 0; i < model.length; i++){
              if(model[i].dataValues.register_palata.length > 0){
@@ -62,10 +61,10 @@ class palataController {
                     else if(key.dataValues.date_do <= bugun && key.dataValues.registration.backlog == 0){
                         model[i].dataValues.text = "pul tolagan, vaqti tugamagan yotipdi"
                     }
-                    else if(key.dataValues.date_do >= bugun && key.dataValues.registration.backlog != 0){
+                    else if(key.dataValues.date_do <= bugun && key.dataValues.registration.backlog != 0){
                         model[i].dataValues.text = "pul tolamagan va vaqti otib ketgan"
                     }
-                    else if(key.dataValues.date_do <= bugun && key.dataValues.registration.backlog != 0){
+                    else if(key.dataValues.date_do >= bugun && key.dataValues.registration.backlog != 0){
                         model[i].dataValues.text = "pul tolamagan va vaqti otib ketmagan"
                     }
                  }
