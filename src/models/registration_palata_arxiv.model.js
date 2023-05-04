@@ -36,6 +36,12 @@ registration_palata_arxivModel.init({
 date_to:{
   type: DataTypes.INTEGER
 },
+user_id:{
+  type: DataTypes.INTEGER
+},
+filial_id:{
+  type: DataTypes.INTEGER
+},
 total_price:{
   type: DataTypes.DECIMAL
 },

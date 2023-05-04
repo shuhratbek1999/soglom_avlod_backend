@@ -42,6 +42,12 @@ total_price:{
 date_do:{
   type: DataTypes.INTEGER
 },
+user_id:{
+  type: DataTypes.INTEGER
+},
+filial_id:{
+  type: DataTypes.INTEGER
+},
 status: DataTypes.VIRTUAL,
 
 }, {

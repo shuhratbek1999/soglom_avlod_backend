@@ -695,19 +695,21 @@ class RegistrationController {
                 "date_to": element.date_to,
                 "day":element.day,
                 "filial_id":element.filial_id == null ? 0 : element.filial_id,
+                "user_id":element.user_id == null ? 0 : element.user_id,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
             var date_time = Math.floor(new Date().getTime() / 1000);
             register_palataModel.create({
                 "palata_id": element.palata_id,
-                "patient_id": model.id,
+                "patient_id": model.patient_id,
                 "registration_id": model.id,
                 "price": element.price,
                 "day": element.day,
                 "date_to": element.date_to,
                 "date_do": element.date_do,
                 "date_time": date_time,
-                "filial_id": element.filial_id == null ? 0 : element.filial_id
+                "filial_id": element.filial_id == null ? 0 : element.filial_id,
+                "user_id": element.user_id == null ? 0 : element.user_id
             })
 
         }
