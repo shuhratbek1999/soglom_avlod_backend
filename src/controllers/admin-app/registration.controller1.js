@@ -1150,7 +1150,10 @@ class RegistrationController {
     search = async (req, res, next) => {
         let ModelList = await PatientModel.findAll({
             where:{ 
-                fullname:{  [Op.like]: '%'+req.body.name+'%'}
+                [Op.or]:[
+                    {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
+                    {birthday: {[Op.eq]: String(req.body.name)}}
+                ]
             },
             order: [
                 ['name', 'ASC'],
@@ -1190,7 +1193,10 @@ class RegistrationController {
                 },
                 {model: PatientModel, as: 'patient', 
                 where:{ 
-                    fullname:{  [Op.like]: '%'+req.body.name+'%'}
+                    [Op.or]:[
+                        {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
+                        {birthday: {[Op.eq]: String(req.body.name)}}
+                    ]
                 }
             },
             {
@@ -1831,14 +1837,13 @@ class RegistrationController {
       })
     }
     birkunliKassa = async(req, res, next) => {
-        let date = new Date(), query = {};
+        let date = new Date(), query = {}; 
       let vaqt1 =  moment(date).startOf('day').unix();
       let vaqt2  = moment(date).endOf('day').unix();
        query.date_time = {
         [Op.gte]: vaqt1,
         [Op.lte]: vaqt2
        }
-        console.log(vaqt1, vaqt2);
         const model = await Register_kassaModel.findAll({
             attributes : [ 
                 'id', 'doctor_id', "type", "date_time", "doc_type",

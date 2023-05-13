@@ -51,6 +51,7 @@ class palataController {
             },
             ]
          })
+         console.log(model);
          let bugun = Math.floor(new Date().getDate()/1000);
          for(let i = 0; i < model.length; i++){
              if(model[i].dataValues.register_palata.length > 0){
@@ -72,7 +73,7 @@ class palataController {
              else{
                 model[i].dataValues.text = "palata bo'sh"
              }
-         }
+         } 
         res.send(model);
     }
     getOne = async (req, res, next) => {
