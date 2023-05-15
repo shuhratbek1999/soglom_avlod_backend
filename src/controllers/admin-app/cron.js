@@ -36,29 +36,7 @@ module.exports = function(){
                 await db.query(`DELETE from registration_pay where registration_id = ${item.dataValues.id}`);
     
                 await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from registration_palata where registration_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_direct_arxiv SELECT * FROM register_direct where doc_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_direct where doc_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct where doc_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_med_direct where doc_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa where doctor_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_kassa where doctor_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection where doc_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_inspection where doc_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor where doc_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_doctor where doc_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb where registration_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_mkb where registration_id = ${item.dataValues.id}`);
-    
-                await db.query(`INSERT INTO register_palata_arxiv SELECT * FROM register_palata where registration_id = ${item.dataValues.id}`);
-                await db.query(`DELETE from register_palata where registration_id = ${item.dataValues.id}`);
-                
+                await db.query(`DELETE from registration_palata where registration_id = ${item.dataValues.id}`);          
                 await db.query(`DELETE from queue where patient_id = ${item.dataValues.patient_id}`);
             })
         }

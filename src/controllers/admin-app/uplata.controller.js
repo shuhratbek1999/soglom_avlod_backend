@@ -2,7 +2,6 @@
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const UplataModel = require('../../models/uplata.model')
-const RegionModel = require('../../models/region.model')
 const { validationResult } = require('express-validator');
 const UserModel = require('../../models/user.model');
 const Register_kassaModel = require('../../models/register_kassa.model');
@@ -14,7 +13,7 @@ const Register_inspectionModel = require('../../models/register_inspection.model
  ******************************************************************************/
 class UplateController {
     getAll = async (req, res, next) => {
-        const model = await UplataModel.findAll(req.body);
+        const model = await UplataModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -69,7 +68,7 @@ class UplateController {
           "type": req.body.type,
           "price": req.body.price,
           "pay_type": pay_type,
-          "doc_type": "chiqim",
+          "doc_type": "Chiqim",
           "doctor_id": model.id,
           "place": "uplata"
        })
@@ -125,7 +124,7 @@ class UplateController {
     await Register_kassaModel.destroy({
         where:{
            doctor_id: req.params.id,
-           doc_type: 'chiqim',
+           doc_type: 'Chiqim',
            place: 'uplata'
         }
     })
@@ -147,7 +146,7 @@ class UplateController {
           "type": req.body.type,
           "price": req.body.price,
           "pay_type": pay_type,
-          "doc_type": "chiqim",
+          "doc_type": "Chiqim",
           "doctor_id": model.id,
           "place": "uplata"
        })

@@ -1,5 +1,4 @@
 const ModelModel = require('../../models/registration.model');
-// salom
 const arxiv = require('../../models/registration_arxiv.model')
 const HttpException = require('../../utils/HttpException.utils');
 const Register_kassaModel = require('../../models/register_kassa.model')
@@ -72,27 +71,13 @@ class RegistrationController {
             await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
             await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
             await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_direct_arxiv SELECT * FROM register_direct where doc_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_med_direct_arxiv SELECT * FROM register_med_direct where doc_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_kassa_arxiv SELECT * FROM register_kassa where doctor_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_inspection_arxiv SELECT * FROM register_inspection where doc_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_doctor_arxiv SELECT * FROM register_doctor where doc_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_mkb_arxiv SELECT * FROM register_mkb where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO register_palata_arxiv SELECT * FROM register_palata where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from register_med_direct where doc_id = ${req.params.id}`);
             await db.query(`DELETE from registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
             await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
             await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
             await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from register_kassa where doctor_id = ${req.params.id}`);
             await db.query(`DELETE from registration_files where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from register_doctor where doc_id = ${req.params.id}`);
             await db.query(`DELETE from registration_inspection where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from register_direct where doc_id = ${req.params.id}`);
-            await db.query(`DELETE from register_palata where registration_id = ${req.params.id}`);
             await db.query(`DELETE from registration_pay where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from register_inspection where doc_id = ${req.params.id}`);
-            await db.query(`DELETE from register_mkb where registration_id = ${req.params.id}`);
             await db.query(`DELETE from registration_palata where registration_id = ${req.params.id}`);
         }
         res.send({
@@ -449,18 +434,20 @@ class RegistrationController {
            },
            raw: true
        })
-        var directs = {
-           "date_time": Math.floor(new Date().getTime() / 1000),
-           "type": 0,
-           "price": direct != null ? (model.summa * direct.bonus)/100 : 0,
-           "doc_id": model.id,
-           "doc_type": "kirim",
-           "comment": "",
-           "place": "Registration",
-           "direct_id": model.direct_id
+        if(model.direct_id){
+            var directs = {
+                "date_time": Math.floor(new Date().getTime() / 1000),
+                "type": 0,
+                "price": direct != null ? (model.summa * direct.bonus)/100 : 0,
+                "doc_id": model.id,
+                "doc_type": "kirim",
+                "comment": "",
+                "place": "Registration",
+                "direct_id": model.direct_id
+             }
+           const direc =  await registerDirectModel.create(directs);
+           await this.#medDirect(direc, model, direct);
         }
-      const direc =  await registerDirectModel.create(directs);
-      await this.#medDirect(direc, model, direct);
 
      }
      #medDirect = async(direc, model, direct, insert = true) =>{
@@ -555,18 +542,18 @@ class RegistrationController {
             let type = 0, doc_type = '';
             if(element.pay_type == 'Plastik'){
                 type = 0,
-                doc_type = 'kirim'
+                doc_type = 'Kirim'
             }
             else if(element.pay_type == 'Naqt'){
                 type = 0,
-                doc_type = 'kirim'
+                doc_type = 'Kirim'
             }
             else if(!element.summa){
                  type = 1,
-                 doc_type = 'kirim'
+                 doc_type = 'Kirim'
             }
             else{
-                doc_type = 'kirim'
+                doc_type = 'Kirim'
             }
             let tolov = await Registration_payModel.findOne({
                 where:{
@@ -980,173 +967,6 @@ class RegistrationController {
        
             res.send(result);
     }
-    
-    kassaSverka = async (req, res, next) => {
-        this.checkValidation(req);
-        let result;
-        let body = req.body; 
-        let query = {}, query_begin = {}, query_end = {}, queryx = {};
-        query.date_time =  {
-            [Op.gte]: body.datetime1,
-            [Op.lte]: body.datetime2,
-        };
-        query_begin.date_time =  {
-            [Op.lt]: body.datetime1,
-        };
-        query_end.date_time =  {
-            [Op.lte]: body.datetime2,
-        };
-        if(req.body.datetime1 < req.body.datetime2){
-            result = await Register_kassaModel.findAll({
-                where: {
-                    date_time: {[Op.gt]: body.datetime1, [Op.lt]: body.datetime2},
-                  },
-                  include:[
-                    {model: RegistrationModel, as: 'registration', attributes: ['id'],
-                include:[
-                    {model: Registration_doctorModel, as: 'registration_doctor', attributes: ['doctor_id'],
-                include: [
-                    {model: DoctorModel, as: 'doctor', attributes: ['name']}
-                ]
-                }
-                ]
-                }
-                ],
-                group: ['id']
-            })
-            result.forEach(val => {
-                if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
-                    if(val.dataValues.doc_type == 'Kirim'){
-                        val.dataValues.Plaskirim = val.dataValues.price
-                    }
-                    else{
-                    val.dataValues.PlasChiqim = val.dataValues.price
-                    }
-                }
-                else{
-                    if(val.dataValues.doc_type != 'chiqim'){
-                        val.dataValues.Nahdkirim = val.dataValues.price
-                    }
-                    else{
-                    val.dataValues.NahdChiqim = val.dataValues.price
-                    }
-                }
-            })
-        res.send(result);
-        }
-        else{
-            result = await Register_kassaModel.findAll({
-                where: {
-                    date_time: {[Op.lt]: body.datetime1},
-                  },
-                  include:[
-                    {model: RegistrationModel, as: 'registration', attributes: [],
-                include:[
-                    {model: Registration_doctorModel, as: 'registration_doctor', attributes: [],
-                include: [
-                    {model: DoctorModel, as: 'doctor', attributes: ['name']}
-                ]
-                }
-                ]
-                }
-                ],
-                group: ['id']
-            })
-            result.forEach(val => {
-                if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
-                    if(val.dataValues.doc_type == 'Kirim'){
-                        val.dataValues.Plaskirim = val.dataValues.price
-                    }
-                    else{
-                    val.dataValues.PlasChiqim = val.dataValues.price
-                    }
-                }
-                else{
-                    if(val.dataValues.doc_type != 'chiqim'){
-                        val.dataValues.Nahdkirim = val.dataValues.price
-                    }
-                    else{
-                    val.dataValues.NahdChiqim = val.dataValues.price
-                    }
-                }
-            })
-        res.send(result);
-        }
-    }
-    
-    kassa = async (req, res, next) => {
-        this.checkValidation(req);
-        let result;
-        let body = req.body; 
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        let query = {}, query_begin = {}, query_end = {};
-        query.date_time =  {
-            [Op.gte]: body.datetime1,
-            [Op.lte]: body.datetime2,
-        };
-        query_begin.date_time =  {
-            [Op.lt]: body.datetime1,
-        };
-        query_end.date_time =  {
-            [Op.lte]: body.datetime2,
-        }
-        result = await Register_kassaModel.findAll({
-            attributes : [ 
-                'id', 'doctor_id', "type", "date_time", "doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + datetime1 + " THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'total'],
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.doc_type = 'Kirim' THEN register_kassa.price ELSE 0 END)"), 'total_kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + datetime1 + " and register_kassa.date_time <= " + datetime2 + " AND register_kassa.doc_type = 'chiqim' THEN register_kassa.price ELSE 0 END)"), 'total_chiqim'],
-            ],
-            include: [
-                { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
-            ],
-            order: [
-                ['date_time', 'ASC']
-            ],
-            raw: true
-        }) 
-        let resultx = [];
-        for(let i = 0; i < result.length; i++){
-            let kassa_register = await Register_kassaModel.findOne({
-                attributes : [ 'id', 'doctor_id', "type", "date_time", "doc_type",
-                    [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
-                ],
-                where : query_begin,
-                raw: true,
-                include: [
-                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
-                ],
-            });
-            let kassa_registerx = await Register_kassaModel.findOne({
-                attributes : [ 'id', 'doctor_id', "type", "date_time", "doc_type",
-                    [sequelize.literal('sum(`price` * power(-1, `type` + 1))'), 'total'],
-                ],
-                where : query_end,
-                include: [
-                    { model: DoctorModel, as: 'doctor', attributes: ['name', 'id'] },
-                ],
-                raw: true
-            }); 
-            resultx.push(
-                {
-                    'pay_type' : result[i].pay_type,
-                    'begin_total' : (kassa_register != null ? kassa_register.total : 0),
-                    'total' : result[i].total,
-                    'total_kirim' : result[i].total_kirim,
-                    'total_chiqim' : result[i].total_chiqim,
-                    'end_total' : (kassa_registerx != null ? kassa_registerx.total : 0),
-                    'doctor': result[i]['doctor.name'],
-                    "doctor_id": result[i]['doctor.id'],
-                    'type': result[i].type,
-                    'date_time': result[i].date_time,
-                    'id': result[i].id,
-                    "doc_type": result[i].doc_type
-                }
-            );
-        }
-        res.send(resultx);
-    };
     search = async (req, res, next) => {
         let ModelList = await PatientModel.findAll({
             where:{ 
@@ -1333,58 +1153,6 @@ class RegistrationController {
             });
         }
     }
-    inspection = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        if(body.inspection_category !== null){
-            query.id = {[Op.eq] : body.inspection_category }  
-            queryx.inspection_category = {[Op.eq]: body.inspection_category}
-            
-        };
-          
-        let result = await Register_inspectionModel.findAll({
-            attributes: [
-                 'id', "type", "date_time", "inspection_category", "doc_id","comment",
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
-                [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.inspection_category = inspection.id then register_inspection.inspection_category else 0 end)"), 'count']
-            ],
-            include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: query},
-            ],
-            where: queryx,
-            raw: true,
-            group: ['inspection_category'],
-            order: [
-                ['id', 'ASC']
-            ],
-        })
-        res.send(result);
-    };
-    InspectionSverka = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        if(body.inspection_category !== null){
-            query.id = {[Op.eq] : body.inspection_category }
-            queryx.inspection_category = {[Op.eq]: body.inspection_category}
-        };
-        const model = await Register_inspectionModel.findAll({
-            attributes: [ 'doc_type', 'id', 'date_time', "doc_id","comment","inspection_id","place",
-               [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
-               [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'chiqim'],
-               [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total'],
-        ],
-           group: ['id']
-        })
-        res.send(model)
-       }
     kassaAll = async (req, res, next) =>{
         const model = await Register_kassaModel.findAll({
             include:[
@@ -1398,143 +1166,6 @@ class RegistrationController {
             data: model
         })
     }
-    
-   
-    directHisobot = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        if(body.direct_id !== null){
-            query.id = {[Op.eq] : body.direct_id }  
-            queryx.direct_id = {[Op.eq]: body.direct_id}
-        };
-        let model = await registerDirectModel.findAll({
-            attributes: [
-                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("COUNT(Case WHEN register_direct.date_time >=" + datetime1 + " and register_direct.date_time <= " + datetime2 + ` and register_direct.direct_id = ${body.direct_id} then register_direct.direct_id else 0 end)`), 'count']
-           ],
-           where: queryx
-        })
-        model.forEach(val=> {
-            if(val.dataValues.id == null){
-                model = [];
-                res.send(model)
-            }
-            else{
-                res.send(model)
-            }
-        })
-    };
-    
-    directSverka = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        if(body.direct_id !== null){
-            query.id = {[Op.eq] : body.direct_id }  
-            queryx.direct_id = {[Op.eq]: body.direct_id}
-        };
-          
-        let model = await registerDirectModel.findAll({
-            attributes: [
-                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("SUM(CASE WHEN register_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
-           ], 
-           where: queryx,
-           group: ['id']
-           
-        })
-        model.forEach(val=> {
-            if(val.dataValues.end_total == 0){
-                model = [];
-                res.send(model)
-            }
-            else{
-                res.send(model)
-            }
-        })
-        // res.send(result)
-        // result.forEach(val=> {
-        //     if(val.dataValues.end_total == 0){
-        //         result = [];
-        //         res.send(result)
-        //     }
-        //     else{
-        //         res.send(result)
-        //     }
-        // })
-    };
-    
-    medHisobot = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        if(body.direct_id !== null){
-            query.id = {[Op.eq] : body.direct_id }  
-            queryx.direct_id = {[Op.eq]: body.direct_id}
-        };
-        let model = await registerMedDirectModel.findAll({
-            attributes: [
-                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("COUNT(Case WHEN register_med_direct.date_time >=" + datetime1 + " and register_med_direct.date_time <= " + datetime2 + ` and register_med_direct.direct_id = ${body.direct_id} then register_med_direct.direct_id else 0 end)`), 'count']
-           ],
-           where: queryx
-        })
-        model.forEach(val=> {
-            if(val.dataValues.total_kirim == 0 && val.dataValues.total_chiqim == 0){
-                model = [];
-                res.send(model)
-            }
-            else{
-                res.send(model)
-            }
-        })
-    };
-    
-    medSverka = async (req, res, next) => {
-        this.checkValidation(req);
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        if(body.direct_id !== null){
-            query.id = {[Op.eq] : body.direct_id }  
-            queryx.direct_id = {[Op.eq]: body.direct_id}
-        };
-          
-        let model = await registerMedDirectModel.findAll({
-            attributes: [
-                'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
-               [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
-           ], 
-           where: queryx,
-           group: ['id']
-           
-        })
-        model.forEach(val=> {
-            if(val.dataValues.total_kirim == 0 && val.dataValues.total_chiqim == 0){
-                model = [];
-                res.send(model)
-            }
-            else{
-                res.send(model)
-            }
-        })
-    };
     delete = async (req, res, next) => {
         const user = await ModelModel.findOne({
             where:{
@@ -1848,7 +1479,7 @@ class RegistrationController {
             attributes : [ 
                 'id', 'doctor_id', "type", "date_time", "doc_type",
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + vaqt1 + " and register_kassa.doc_type = 'Kirim' THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'kirim'],
-                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + vaqt1 + " and register_kassa.doc_type = 'chiqim' THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_kassa.date_time < " + vaqt1 + " and register_kassa.doc_type = 'Chiqim' THEN register_kassa.price * power(-1, 'type') ELSE 0 END)"), 'chiqim'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'Kirim' and pay_type = 'Plastik' THEN register_kassa.price ELSE 0 END)"), 'plasKirim'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'chiqim' and pay_type = 'Plastik' THEN register_kassa.price ELSE 0 END)"), 'plasChiqim'],
                 [sequelize.literal("SUM(CASE WHEN register_kassa.date_time >= " + vaqt1 + " and register_kassa.date_time <= " + vaqt2 + " AND register_kassa.doc_type = 'Kirim' and (pay_type = 'Naqd' || pay_type = 'Naqt') THEN register_kassa.price ELSE 0 END)"), 'naqdKirim'],

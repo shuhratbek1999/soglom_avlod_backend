@@ -128,7 +128,6 @@ class UserController {
         const salt = await bcrypt.genSalt();
         let data = req.body;
             const pasXash = await bcrypt.hash(data.password.toString(), salt);
-            delete data['password'];
             data['password_hash'] = pasXash;
             const model = await UserModel.scope('withoutPassword').findOne({
                 where:{
@@ -144,6 +143,7 @@ class UserController {
         model.salary = req.body.salary;
         model.percent = req.body.percent;
         model.filial_id = req.body.filial_id;
+        model.password = data.password_hash;
         model.save();
         res.status(200).send({
             error: false,

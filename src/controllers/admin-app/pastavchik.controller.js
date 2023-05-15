@@ -19,7 +19,6 @@ class pastavchikController {
     }
 
     getOne = async (req, res, next) => {
-        this.checkValidation(req);
         const model = await pastavchikModel.findOne({
             where:{
                 id: req.params.id

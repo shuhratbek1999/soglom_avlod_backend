@@ -72,12 +72,12 @@ class soriController {
         "doc_id": sori.id,
         "status": sori.status
     }
-   let register = await register_soriModel.create(register_sori);
+   await register_soriModel.create(register_sori);
     let kassa = {
          "date_time": date,
          "type": 0,
          "price": sori.price,
-         "pay_type": "Naqd",
+         "pay_type": "Naqt",
          "doc_type": "Kirim",
          "doctor_id": sori.id,
          "place": "Sori",

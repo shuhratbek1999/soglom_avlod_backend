@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-class register_med_direct_arxivModel extends Model {
+class register_med_directModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
@@ -8,7 +8,7 @@ class register_med_direct_arxivModel extends Model {
     }
 } 
 
-register_med_direct_arxivModel.init({
+register_med_directModel.init({
   id: {
     autoIncrement: true,
     type: DataTypes.INTEGER,
@@ -45,8 +45,8 @@ place:{
 
 }, {
   sequelize,
-  modelName: 'register_med_direct_arxiv',
-  tableName: 'register_med_direct_arxiv',
+  modelName: 'register_med_direct',
+  tableName: 'register_med_direct',
   timestamps: false,
   indexes: [
     {
@@ -60,4 +60,4 @@ place:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-module.exports = register_med_direct_arxivModel;
+module.exports = register_med_directModel;

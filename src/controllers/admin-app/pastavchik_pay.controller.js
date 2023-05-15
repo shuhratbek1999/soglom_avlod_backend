@@ -7,7 +7,6 @@ const register_supplierModel = require('../../models/register_supplier.model')
 const register_kassaModel = require('../../models/register_kassa.model')
 const { Op } = require('sequelize');
 const { sequelize } = require('../../models/register_supplier.model');
-const PrixodModel = require('../../models/prixod.model');
 const pastavchikModel = require('../../models/pastavchik.model');
 /******************************************************************************
  *                              Employer Controller
@@ -79,8 +78,8 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doctor_id": model.id,
         "price": model.price,
-        "doc_type": "chiqim",
-        "pay_type": model.type == 0 ? "Naqd" : "Plastik",
+        "doc_type": "Chiqim",
+        "pay_type": model.type == 0 ? "Naqt" : "Plastik",
         "type": model.type,
         "place": "supplier"
       }
@@ -132,8 +131,8 @@ class pastavchik_payController {
         "date_time": Math.floor(new Date().getTime() / 1000),
         "doctor_id": model.id,
         "price": model.price,
-        "doc_type": "chiqim",
-        "pay_type": model.type == 0 ? "Naqd" : "Plastik",
+        "doc_type": "Chiqim",
+        "pay_type": model.type == 0 ? "Naqt" : "Plastik",
         "type": model.type,
         "place": "supplier"
       }
@@ -230,15 +229,6 @@ class pastavchik_payController {
         where: queryx,
         group: ['id']
     })
-    // for(let key in model){
-    //     if(model[key].dataValues.total_kirim == 0 && model[key].dataValues.total_chiqim == 0){
-    //        model = [];
-    //        res.send(model)
-    //     }
-    //     else{
-    //         res.send(model)
-    //     }
-    // }
     res.send(model)
  } 
 
