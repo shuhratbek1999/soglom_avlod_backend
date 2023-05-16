@@ -2,6 +2,7 @@
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const UplataModel = require('../../models/uplata.model')
+const RegionModel = require('../../models/region.model')
 const { validationResult } = require('express-validator');
 const UserModel = require('../../models/user.model');
 const Register_kassaModel = require('../../models/register_kassa.model');
@@ -13,7 +14,7 @@ const Register_inspectionModel = require('../../models/register_inspection.model
  ******************************************************************************/
 class UplateController {
     getAll = async (req, res, next) => {
-        const model = await UplataModel.findAll();
+        const model = await UplataModel.findAll(req.body);
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -80,7 +81,7 @@ class UplateController {
                     "price": req.body.price,
                     "doc_id": model.id, 
                     "doctor_id": val.doctor_id,
-                    "doc_type": 'chiqim',
+                    "doc_type": 'Chiqim',
                     "place": "Oplata"
              })
             } else if(val.inspection_category_id != 0){
@@ -93,7 +94,7 @@ class UplateController {
                     "inspection_id": val.inspection_category_id,
                     "inspection_category": val.inspection_category_id,
                     "skidka": 0,
-                    "doc_type": 'chiqim',
+                    "doc_type": 'Chiqim',
                     "place": "Oplata"
                   })
             }
@@ -155,7 +156,7 @@ class UplateController {
                 await register_doctorModel.destroy({
                     where:{
                         doc_id: req.params.id,
-                        doc_type: 'chiqim'
+                        doc_type: 'Chiqim'
                     }
                 })
                 register_doctorModel.create({
@@ -164,14 +165,14 @@ class UplateController {
                     "price": req.body.price,
                     "doc_id": model.id, 
                     "doctor_id": val.doctor_id,
-                    "doc_type": 'chiqim',
+                    "doc_type": 'Chiqim',
                     "place": "Oplata"
              })
             } else if(val.inspection_category_id != 0){
                 await Register_inspectionModel.destroy({
                     where:{
                         doc_id: req.params.id,
-                        doc_type: 'chiqim'
+                        doc_type: 'Chiqim'
                     }
                 })
                 Register_inspectionModel.create({
@@ -183,7 +184,7 @@ class UplateController {
                     "inspection_id": val.inspection_category_id,
                     "inspection_category": val.inspection_category_id,
                     "skidka": 0,
-                    "doc_type": 'chiqim',
+                    "doc_type": 'Chiqim',
                     "place": "Oplata"
                   })
             }
