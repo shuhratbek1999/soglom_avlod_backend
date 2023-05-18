@@ -968,22 +968,24 @@ class RegistrationController {
             res.send(result);
     }
     search = async (req, res, next) => {
+        let query = {};
+        if(req.body.name){
+            query.fullname = {[Op.like]: '%'+req.body.name+'%'}
+        }
+        else{
+            query.birthday = {[Op.eq]: req.body.birthday}
+        }
         let ModelList = await PatientModel.findAll({
-            where:{ 
-                [Op.or]:[
-                    {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
-                    {birthday: {[Op.eq]: String(req.body.name)}}
-                ]
-            },
+            where: query,
             order: [
                 ['name', 'ASC'],
                 ['id', 'ASC']
             ],
-            limit:100        });
+            limit:1000        });
         res.send({
             "error": false,
             "error_code": 200,
-            "message": "Product list filial:02 Феендо махсулотлари",
+            "message": "bemor topildi",
             data: ModelList
         });
     };
