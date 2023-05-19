@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const ModelModel = require("../../models/registration.model");
 const db = require('../../db/db-sequelize');
 module.exports = function(){
-    cron.schedule('0 0 * * *', () => {
+    cron.schedule('*/2 * * * *', () => {
         this.setArchive();
     })
     setArchive=async (req, res, next) => {

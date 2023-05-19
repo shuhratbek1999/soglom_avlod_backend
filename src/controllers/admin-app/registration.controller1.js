@@ -975,7 +975,25 @@ class RegistrationController {
         else{
             query.birthday = {[Op.eq]: req.body.birthday}
         }
-        if(req.body.name.length > 0 || req.body.birthday != 0){
+        if(req.body.name){
+            if(req.body.name.length > 0 ){
+                let ModelList = await PatientModel.findAll({
+                    where: query,
+                    order: [
+                        ['name', 'ASC'],
+                        ['id', 'ASC']
+                    ],
+                    limit:1000    
+                });
+                res.send({
+                    "error": false,
+                    "error_code": 200,
+                    "message": "bemor topildi",
+                    data: ModelList
+                });
+            }
+        }
+        else if(req.body.birthday){
             let ModelList = await PatientModel.findAll({
                 where: query,
                 order: [
