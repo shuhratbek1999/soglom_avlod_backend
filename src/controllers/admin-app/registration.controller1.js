@@ -975,7 +975,7 @@ class RegistrationController {
         else{
             query.birthday = {[Op.eq]: req.body.birthday}
         }
-        if(req.body.name.length > 0 || req.body.birthday == 0){
+        if(req.body.name.length > 0 || req.body.birthday != 0){
             let ModelList = await PatientModel.findAll({
                 where: query,
                 order: [
