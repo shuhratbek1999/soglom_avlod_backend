@@ -434,7 +434,7 @@ class RegistrationController {
            },
            raw: true
        })
-        if(model.direct_id){
+        if(direct){
             var directs = {
                 "date_time": Math.floor(new Date().getTime() / 1000),
                 "type": 0,
