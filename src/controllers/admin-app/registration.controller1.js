@@ -48,6 +48,7 @@ const register_inspection_arxivModel = require('../../models/register_inspection
 const register_kassa_arxivModel = require('../../models/register_kassa_arxiv.model');
 const register_mkb_arxivModel = require('../../models/register_mkb_arxiv.model');
 const RegionModel = require('../../models/region.model');
+const districtModel = require('../../models/district.model');
 
 class RegistrationController {
     q=[];
@@ -108,7 +109,11 @@ class RegistrationController {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
                 {
-                    model: PatientModel, as: 'patient'
+                    model: PatientModel, as: 'patient',
+                    include:[
+                        {model: RegionModel, as: 'region'},
+                        {model: districtModel, as: 'district'}
+                    ],
                 },
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
@@ -155,8 +160,9 @@ class RegistrationController {
                 {
                     model: PatientModel, as: 'patient',
                     include:[
-                        {model: RegionModel, as: 'region'}
-                    ]
+                        {model: RegionModel, as: 'region'},
+                        {model: districtModel, as: 'district'}
+                    ],
                 },
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
@@ -229,9 +235,10 @@ class RegistrationController {
                 },
                 { model: Registration_filesModel,as: 'registration_files'},
                 { model: PatientModel,as: 'patient', 
-                 include:[
-                    {model: RegionModel, as: 'region'}
-                 ]
+                include:[
+                    {model: RegionModel, as: 'region'},
+                    {model: districtModel, as: 'district'}
+                ],
             },
                 {model: Registration_payModel, as: 'registration_pay'}
             ]
@@ -284,7 +291,12 @@ class RegistrationController {
                     ]
                 },
                 { model: Registration_files_arxivModel,as: 'registration_files'},
-                { model: PatientModel,as: 'patient'},
+                { model: PatientModel,as: 'patient',
+                include:[
+                    {model: RegionModel, as: 'region'},
+                    {model: districtModel, as: 'district'}
+                ]
+                 },
                 {model: Registration_pay_arxivModel, as: 'registration_pay'}
             ],
         });
@@ -339,7 +351,12 @@ class RegistrationController {
         const Prixod = await ModelModel.findAll({
             where:{ patient_id: req.params.patient },
             include: [
-                { model: PatientModel,as: 'patient'},
+                { model: PatientModel,as: 'patient',
+                include:[
+                    {model: RegionModel, as: 'region'},
+                    {model: districtModel, as: 'district'}
+                ],
+                 },
                 { model: Registration_doctorModel,as: 'doctor', 
                     include : [
                         { model: Registration_recipeModel, as: 'recipe'}
@@ -978,6 +995,10 @@ class RegistrationController {
         if(req.body.name){
             if(req.body.name.length > 0 ){
                 let ModelList = await PatientModel.findAll({
+                    include:[
+                        {model: RegionModel, as: 'region'},
+                        {model: districtModel, as: 'district'}
+                    ],
                     where: query,
                     order: [
                         ['name', 'ASC'],
@@ -995,6 +1016,10 @@ class RegistrationController {
         }
         else if(req.body.birthday){
             let ModelList = await PatientModel.findAll({
+                include:[
+                    {model: RegionModel, as: 'region'},
+                    {model: districtModel, as: 'district'}
+                ],
                 where: query,
                 order: [
                     ['name', 'ASC'],
@@ -1011,6 +1036,10 @@ class RegistrationController {
         }
         else{
             let ModelList = await PatientModel.findAll({
+                include:[
+                    {model: RegionModel, as: 'region'},
+                    {model: districtModel, as: 'district'}
+                ],
                 order: [
                     ['name', 'ASC'],
                     ['id', 'ASC']
@@ -1055,7 +1084,11 @@ class RegistrationController {
                         {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
                         {birthday: {[Op.eq]: String(req.body.name)}}
                     ]
-                }
+                },
+                include:[
+                    {model: RegionModel, as: 'region'},
+                    {model: districtModel, as: 'district'}
+                ],
             },
             {
                 model: UserModel, as: 'user', attributes: ['user_name']
@@ -1104,7 +1137,12 @@ class RegistrationController {
                             }
                         ]
                     },
-                    {model: PatientModel, as:'patient'}
+                    {model: PatientModel, as:'patient',
+                    include:[
+                        {model: RegionModel, as: 'region'},
+                        {model: districtModel, as: 'district'}
+                    ],
+                   }
                 ]
             })
             res.send({
