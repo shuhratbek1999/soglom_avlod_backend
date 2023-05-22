@@ -29,6 +29,10 @@ class PatientController {
     getOne = async (req, res, next) => {
         this.checkValidation(req);
         const model = await PatientModel.findOne({
+            include:[
+                {model: RegionModel, as: 'region', attributes: ['id', 'name']},
+                {model: districtModel, as: 'district', attributes: ['id', 'name']}
+            ],
             where:{
                 id: req.params.id
             }
