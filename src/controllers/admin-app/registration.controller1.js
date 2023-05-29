@@ -491,23 +491,6 @@ class RegistrationController {
         }
         await registerMedDirectModel.create(med);
      }
-
-    palataDel = async(req, res, next) => {
-    const model = await register_palataModel.destroy({
-        where: {
-            id: req.params.id
-        }
-    })
-    if(!model){
-        throw HttpException(404, "bunday id da malumot yoq")
-    }
-    res.send({
-        error: false,
-        error_code: 200,
-        message: "malumot bor",
-        data: "malumot o'chdi"
-    })
-}
     delete = async (req, res, next) => {
         const id = req.params.id;
         
@@ -572,14 +555,7 @@ class RegistrationController {
             else{
                 doc_type = 'Kirim'
             }
-            let tolov = await Registration_payModel.findOne({
-                where:{
-                    registration_id: model.id
-                }
-            })
-            // console.log(tolov.dataValues, "kassa");
-           if(tolov != null){
-            if(tolov.dataValues.backlog == 0){
+            if(model.backlog == 0){
                 Register_kassaModel.create({
                     "date_time": date_time,
                     "doctor_id": model.id,
@@ -591,7 +567,6 @@ class RegistrationController {
                     "place": "registration"
                 })
                }
-           }
         }
     }
 
@@ -603,7 +578,6 @@ class RegistrationController {
         var dds;
         registration_inspection.forEach(async item => {
             var {registration_inspection_child,registration_inspection, ...data} = item;
-            console.log(item);
             let user = await UserModel.findOne({
                 where:{
                     id: item.user_id
@@ -611,14 +585,7 @@ class RegistrationController {
                 raw: true
             })
             data.registration_id=model.id;
-            setTimeout(async() => {
-                let  tolov = await Registration_payModel.findOne({
-                    where:{
-                        registration_id: model.id
-                    }
-                })
-             if(tolov != null){
-                 if(tolov.dataValues.backlog == 0){
+                 if(model.backlog == 0){
                     let date_time =Math.floor(new Date().getTime() / 1000);
                    let  tekshiruv = {
                        "date_time": date_time,
@@ -631,13 +598,11 @@ class RegistrationController {
                        "skidka": item.skidka,
                        "doc_type": 'kirim',
                        "place": "Registration",
-                       "comment": tolov.comment,
+                       "comment": "",
                        "filial_id": item.filial_id == null ? 0 : item.filial_id,
                      }
                    await  Register_inspectionModel.create(tekshiruv)
                  }
-             }
-            }, 1000);
             var date = Math.floor(new Date().getTime() / 1000);
             dds={
                 "inspection_id":item.inspection_id,  
@@ -646,7 +611,7 @@ class RegistrationController {
                 "type":item.type,
                 "price": item.price,
                 "category_id":item.category_id,
-                'status':model.status,
+                'status':item.status,
                 "date_time": date,
                 "skidka": item.skidka,
                 "filial_id": item.filial_id == null ? 0 : item.filial_id
@@ -755,19 +720,9 @@ class RegistrationController {
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
-            setTimeout(async() => {
-                let tolov = await Registration_payModel.findOne({
-                    where:{
-                        registration_id: model.id
-                    }
-                })
-                if(tolov != null){
-                    if(tolov.dataValues.backlog == 0){
+                    if(model.backlog == 0){
                       await  RegisterDoctorModel.create(doctor)
                     }
-                }
-                
-            }, 1000);
             function isHave(item) { 
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
@@ -778,7 +733,7 @@ class RegistrationController {
                     "patient_id":model.patient_id,
                     "number":0,
                     "date_time":Math.floor(new Date().getTime() / 1000),
-                    "status":models.status
+                    "status":data.status
                 });
             }else if(data.status!=have.status){
                 if(data.status!='complate'){
@@ -1229,19 +1184,6 @@ class RegistrationController {
             });
         }
     }
-    kassaAll = async (req, res, next) =>{
-        const model = await Register_kassaModel.findAll({
-            include:[
-                {model: DoctorModel, as: 'doctor'}
-            ]
-        })
-        res.send({
-            error_code: 200,
-            error: false,
-            message: "malumotlar chiqdi",
-            data: model
-        })
-    }
     delete = async (req, res, next) => {
         const user = await ModelModel.findOne({
             where:{
@@ -1505,22 +1447,6 @@ class RegistrationController {
          })
         
     }
-    
-    registerAll = async (req, res, next) => {
-        const model = await Register_kassaModel.findAll({
-            include:[
-                {model: DoctorModel, as: 'doctor', attributes: ['name']}
-            ]
-        });
-    
-        res.send({
-            error_code: 201,
-            error: false,
-            message: "malumotlar chiqdi",
-            data: model
-        })
-    }
-
     statsionarHisobot = async(req, res, next) => {
         let query = {};
         query.created_at = {
