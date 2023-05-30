@@ -28,8 +28,7 @@ price:{
     type: DataTypes.DECIMAL
 },
 citizen_price:{
-  type: DataTypes.DECIMAL,
-  allowNull: false
+  type: DataTypes.DECIMAL
 },
 type:{
     type: DataTypes.BOOLEAN
