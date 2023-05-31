@@ -643,7 +643,17 @@ class RegistrationController {
     #inspectionchildadd = async(models, registration_inspection_child) => {
         var dds;
         for(var element of registration_inspection_child){
-            dds={"parent_id":models.id,"text":element.text,"norm":element.norm,"name":element.name,"registration_id":models.registration_id,"status":element.status,"price":element.price,"checked":element.checked,"file":element.file}
+            dds={
+                "parent_id":models.id,
+                "text":element.text,
+                "norm":element.norm,
+                "name":element.name,
+                "registration_id":models.registration_id,
+                "status":element.status,
+                "price":element.price,
+                "birlik":element.birlik,
+                "checked":element.checked,
+                "file":element.file}
 
             await Registration_inspection_childModel.create(dds); 
         }

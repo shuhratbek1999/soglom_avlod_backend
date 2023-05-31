@@ -44,6 +44,9 @@ Registration_inspection_child_arxxivModel.init({
   },
   file:{
       type: DataTypes.STRING(100),
+  },
+  birlik:{
+    type: DataTypes.STRING
   }
 }, {
   sequelize,

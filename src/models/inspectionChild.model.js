@@ -39,6 +39,9 @@ file: {
 },
 status: {
   type: DataTypes.VIRTUAL
+},
+birlik:{
+  type: DataTypes.STRING
 }
 
 }, {
