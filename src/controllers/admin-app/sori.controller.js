@@ -130,6 +130,18 @@ class soriController {
         data: sorilar
      })
    }
+    
+   yechish = async(req, res, next) => {
+    let body = req.body;
+    let model = await soriModel.findOne({
+        where:{
+            id: body.sori_id
+        }
+    })
+    model.status = false;
+    model.save();
+    res.send("so'ri band emas")
+   } 
 
    hisobot = async(req, res, next) => {
     let query = {}, body = req.body, queryx = {};

@@ -15,13 +15,13 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.addColumn("inspectionChild", "rang", {
+  return db.addColumn("registration_inspection_child_arxiv", "rang", {
     type: 'string'
   });
 };
 
 exports.down = function(db) {
-  return db.removeColumn("inspectionChild", "rang");
+  return db.removeColumn("registration_inspection_child_arxiv", "rang");
 };
 
 exports._meta = {
