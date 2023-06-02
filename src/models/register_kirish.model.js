@@ -1,56 +1,48 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-class inspectionChildModel extends Model {
+class register_kirish extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
         return values;
     }
-}
+} 
 
-inspectionChildModel.init({
+register_kirish.init({
   id: { 
     type: DataTypes.INTEGER, 
     primaryKey: true, 
     autoIncrement: true, 
     allowNull: false
 },
-norm : {
-    type: DataTypes.STRING(200),
-},
-parent_id : {
+date_time : {
     type: DataTypes.INTEGER,
+    allowNull: false
 },
-price:{
-    type:DataTypes.DECIMAL()
+type: {
+    type: DataTypes.STRING()
 },
-price:{
-  type:DataTypes.DECIMAL()
+price: {
+  type: DataTypes.DECIMAL(),
+  allowNull: false
 },
-citizen_price:{
-  type:DataTypes.DECIMAL()
+mashina_soni:{
+  type: DataTypes.DECIMAL
 },
-name: {
-    type: DataTypes.STRING(200),
+odam_soni:{
+  type: DataTypes.DECIMAL(),
+  allowNull: false
 },
-file: {
-    type: DataTypes.STRING,
-    // defaultValue:""
-},
-status: {
-  type: DataTypes.VIRTUAL
-},
-birlik:{
-  type: DataTypes.STRING
-},
-rang:{
+doc_type:{
   type: DataTypes.STRING
 }
 
+
+
 }, {
   sequelize,
-  modelName: 'inspectionChild',
-  tableName: 'inspectionChild',
+  modelName: 'register_kirish',
+  tableName: 'register_kirish',
   timestamps: false,
   indexes: [
     {
@@ -63,11 +55,5 @@ rang:{
     },
   ],
   //findOne da yoki findAll da chaqirish kerak
-  scopes: {
-    withoutPassword: {
-      attributes: { exclude: ['password_hash'] },
-    }
-  }
 });
-
-module.exports = inspectionChildModel;
+module.exports = register_kirish;

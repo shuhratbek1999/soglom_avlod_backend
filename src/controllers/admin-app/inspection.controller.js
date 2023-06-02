@@ -13,7 +13,7 @@ class InspectionController {
         const model = await inspectionModel.findAll({
             include:[
                 {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
-                    {model: inspectionChildModel, as: 'inspectionChild', attributes:['norm', 'parent_id','price', 'name', 'file', 'citizen_price', 'birlik']},
+                    {model: inspectionChildModel, as: 'inspectionChild', attributes:['norm', 'parent_id','price', 'name', 'file', 'citizen_price', 'birlik','rang']},
                     {model: inspector_categoryModel, as: 'inspector_category'}
             ]
         });
@@ -54,6 +54,7 @@ class InspectionController {
             "citizen_price": value.citizen_price,
             "name": value.name,
             "birlik": value.birlik,
+            "rang": value.rang,
             "file": value.file
         })
        })
@@ -98,6 +99,7 @@ class InspectionController {
             "price": key.price,
             "name": key.name, 
             "birlik": key.birlik, 
+            "rang": key.rang, 
             "file": key.file,
             "citizen_price": key.citizen_price
            })   

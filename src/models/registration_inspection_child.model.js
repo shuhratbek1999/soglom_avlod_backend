@@ -47,6 +47,9 @@ Registration_inspection_childModel.init({
   },
   birlik:{
     type: DataTypes.STRING
+  },
+  rang:{
+    type: DataTypes.STRING
   }
 }, {
   sequelize,

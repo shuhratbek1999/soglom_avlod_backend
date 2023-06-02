@@ -652,6 +652,7 @@ class RegistrationController {
                 "status":element.status,
                 "price":element.price,
                 "birlik":element.birlik,
+                "rang":element.rang,
                 "checked":element.checked,
                 "file":element.file}
 

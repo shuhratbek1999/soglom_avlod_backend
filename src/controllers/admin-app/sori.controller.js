@@ -7,6 +7,7 @@ const Register_kassaModel = require('../../models/register_kassa.model');
 const register_soriModel = require('../../models/register_sori.model');
 const { Op, Sequelize } = require('sequelize');
 const sequelize = require('sequelize');
+const register_kirish = require('../../models/register_kirish.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -53,6 +54,31 @@ class soriController {
         data: model
     });
    }
+    
+   kirish = async(req, res, next) => {
+    let body = req.body, date = Math.floor(new Date().getTime() / 1000);
+     let model = await register_kirish.create({
+        "date_time": date,
+        "type": body.type,
+        "price": body.price,
+        "mashina_soni": body.mashina_soni,
+        "odam_soni": body.odam_soni,
+        "doc_type": "Kirim"
+     })
+     let kassa = {
+        "date_time": date,
+        "type": 0,
+        "price": body.price,
+        "pay_type": "Naqt",
+        "doc_type": "Kirim",
+        "doctor_id": model.id,
+        "place": "Kirish",
+        "filial_id": 0
+   }
+   await Register_kassaModel.create(kassa);
+   res.send(model)
+   }
+
    kassa = async(req, res, next) => {
     let body = req.body, date = Math.floor(new Date().getTime() / 1000), sori;
     if(body.sori_id){
