@@ -35,6 +35,7 @@ const pastavchikPay = require('../routes/admin-app/pastavchik_pay.route')
 const reagentDepartment = require('../routes/admin-app/reagent_department.route')
 const department = require('../routes/admin-app/department.route')
 const filialRouter = require('../routes/admin-app/filial.route')
+const KirishRouter = require('../routes/admin-app/kirish_summa.route')
 const soriRouter = require('../routes/admin-app/sori.route')
 const Hisobot = require('../routes/admin-app/hisobot')
 const HttpException = require('../utils/HttpException.utils');
@@ -80,6 +81,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/reagent_department`, reagentDepartment);
         app.use(`/api/v1/admin-app/department`, department);
         app.use(`/api/v1/admin-app/filial`, filialRouter);
+        app.use(`/api/v1/admin-app/kirish_summa`, KirishRouter);
         app.use(`/api/v1/admin-app/sori`, soriRouter);
         app.use(`/api/v1/admin-app/hisobot`, Hisobot);
 

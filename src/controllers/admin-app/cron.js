@@ -1,15 +1,25 @@
 const cron = require("node-cron");
 const ModelModel = require("../../models/registration.model");
 const db = require('../../db/db-sequelize');
+const moment = require('moment');
+const { Op } = require("sequelize");
 module.exports = function(){
     cron.schedule('0 0 * * *', () => {
         this.setArchive();
-    })
+    },
+     {
+        scheduled: true,
+        timezone: "Asia/Tashkent"
+      }
+    )
     setArchive=async (req, res, next) => {
+        let date = Math.floor(new Date().getTime()/1000)
+        let vaqt1 =  moment(date).startOf('day').unix();
         var MyDatas  =  await ModelModel.findAll({
             where:{
                 type_service: 'Ambulator',
-                backlog: 0
+                backlog: 0,
+                created_at: {[Op.lt]: vaqt1}
             }
         });
         if(MyDatas.length > 0){
@@ -37,7 +47,7 @@ module.exports = function(){
     
                 await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${item.dataValues.id}`);
                 await db.query(`DELETE from registration_palata where registration_id = ${item.dataValues.id}`);          
-                await db.query(`DELETE from queue where patient_id = ${item.dataValues.patient_id}`);
+                await db.query(`TRUNCATE TABLE 'queue'`);
             })
         }
     

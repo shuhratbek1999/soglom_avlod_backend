@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-class register_kirish extends Model {
+class kirish_summaModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
@@ -8,45 +8,26 @@ class register_kirish extends Model {
     }
 } 
 
-register_kirish.init({
+kirish_summaModel.init({
   id: { 
     type: DataTypes.INTEGER, 
     primaryKey: true, 
     autoIncrement: true, 
     allowNull: false
 },
-date_time : {
-    type: DataTypes.INTEGER,
+odam_price: {
+    type: DataTypes.DECIMAL(),
     allowNull: false
 },
-type: {
-    type: DataTypes.STRING()
-},
-price: {
+moshina_price: {
   type: DataTypes.DECIMAL(),
   allowNull: false
 },
-mashina_price: {
-  type: DataTypes.DECIMAL(),
-  allowNull: false
-},
-mashina_soni:{
-  type: DataTypes.DECIMAL
-},
-odam_soni:{
-  type: DataTypes.DECIMAL(),
-  allowNull: false
-},
-doc_type:{
-  type: DataTypes.STRING
-}
-
-
 
 }, {
   sequelize,
-  modelName: 'register_kirish',
-  tableName: 'register_kirish',
+  modelName: 'kirish_summa',
+  tableName: 'kirish_summa',
   timestamps: false,
   indexes: [
     {
@@ -60,4 +41,4 @@ doc_type:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-module.exports = register_kirish;
+module.exports = kirish_summaModel;
