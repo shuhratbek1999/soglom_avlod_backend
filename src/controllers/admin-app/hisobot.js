@@ -543,7 +543,7 @@ Sverka = async(req, res, next) => {
         let model = await register_kirish.findAll({
             attributes:[
                 'id', "date_time","mashina_soni","odam_soni","doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time < " + datetime1 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'begin_odam_price'],
+                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time < " + datetime1 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'begin_price'],
                 [sequelize.literal("SUM(CASE WHEN register_kirish.date_time >= " + datetime1 + " and register_kirish.date_time <= " + datetime2 + ` AND register_kirish.doc_type = 'Kirim' and type = 'Naqt' THEN register_kirish.price ELSE 0 END)`), 'odam_price'],
                 [sequelize.literal("SUM(CASE WHEN register_kirish.date_time >= " + datetime1 + " and register_kirish.date_time <= " + datetime2 + ` AND register_kirish.doc_type = 'Kirim' and type = 'Naqt' THEN register_kirish.mashina_price ELSE 0 END)`), 'mashina_price'],
                 [sequelize.literal("SUM(CASE WHEN register_kirish.date_time <= " + datetime2 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'end_summa']
