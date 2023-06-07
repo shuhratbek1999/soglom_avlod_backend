@@ -26,7 +26,6 @@ class kirish_summaController {
             where:{id: 1}
         })
         sum += (summa.dataValues.odam_price * body.odam_soni + summa.dataValues.moshina_price * body.mashina_soni);
-        console.log(summa.dataValues, sum);
          let model = await register_kirish.create({
             "date_time": date,
             "type": "Naqt",
