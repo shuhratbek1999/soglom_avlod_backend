@@ -539,7 +539,7 @@ class RegistrationController {
                 "umumiy_sum": element.umumiy_sum,
                 "backlog": element.backlog,
                 "comment": element.comment,
-                "filial_id": element.filial_id == null ? 0 : element.filial_id
+                "filial_id": element.filial.id == null ? 0 : element.filial.id
             }
             await Registration_payModel.create(pay);
             var date_time = Math.floor(new Date().getTime() / 1000);
@@ -565,7 +565,7 @@ class RegistrationController {
                     "date_time": date_time,
                     "doctor_id": model.id,
                     "pay_type": element.pay_type,
-                    "filial_id": element.filial_id == null ? 0 : element.filial_id,
+                    "filial_id": element.filial.id == null ? 0 : element.filial.id,
                     "price": element.summa,    
                     "type": type,
                     "doc_type": 'Kirim',
