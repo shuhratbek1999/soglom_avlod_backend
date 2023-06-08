@@ -49,6 +49,7 @@ const register_kassa_arxivModel = require('../../models/register_kassa_arxiv.mod
 const register_mkb_arxivModel = require('../../models/register_mkb_arxiv.model');
 const RegionModel = require('../../models/region.model');
 const districtModel = require('../../models/district.model');
+const filialModel = require('../../models/filial.model');
 
 class RegistrationController {
     q=[];
@@ -240,7 +241,11 @@ class RegistrationController {
                     {model: districtModel, as: 'district'}
                 ],
             },
-                {model: Registration_payModel, as: 'registration_pay'}
+                {model: Registration_payModel, as: 'registration_pay',
+                  include:[
+                    {model: filialModel, as: 'filial'}
+                  ]
+                }
             ]
         });
         if (Prixod === null) {
