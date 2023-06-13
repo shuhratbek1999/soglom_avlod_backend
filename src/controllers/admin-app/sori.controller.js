@@ -156,7 +156,7 @@ class soriController {
     const model = await register_soriModel.findAll({
         where: query,
             attributes:[
-                'id', 'date_time',
+                'id', 'date_time', 'price','doc_id','doc_type',
                 [sequelize.literal('sori.name'), 'sori_name'],
                 [sequelize.literal("SUM(CASE WHEN register_sori.date_time <=" + body.datetime1 + " THEN register_sori.price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'Kirim' THEN register_sori.price ELSE 0 END)"), 'total_kirim'],
@@ -184,7 +184,7 @@ class soriController {
     }
     const model = await register_soriModel.findAll({
             attributes:[
-                'id', 'date_time',
+                'id', 'date_time', 'price','doc_id','doc_type',
                 [sequelize.literal('sori.name'), 'sori_name'],
                 [sequelize.literal("SUM(CASE WHEN register_sori.date_time <=" + body.datetime1 + " THEN register_sori.price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN register_sori.date_time >= " + body.datetime1 + " and register_sori.date_time <= " + body.datetime2 + " AND register_sori.doc_type = 'Kirim' THEN register_sori.price ELSE 0 END)"), 'total_kirim'],
