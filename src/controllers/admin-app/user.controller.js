@@ -17,7 +17,7 @@ const filialModel = require('../../models/filial.model');
 class UserController {
     userLogin = async (req, res, next) => {
         this.checkValidation(req);
-        const {  password, login } = req.body;
+        const {  password, login,filial_id } = req.body;
         const model = await UserModel.findOne({
             include:[
                 {model: DoctorModel, as: 'doctor',
@@ -33,7 +33,8 @@ class UserController {
         }
             ],
             where:{
-                user_name: login
+                user_name: login,
+                filial_id: filial_id
             }
         });
         if(!model){

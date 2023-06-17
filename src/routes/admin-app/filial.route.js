@@ -6,8 +6,8 @@ const auth = require('../../middleware/auth.middleware');
 const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middleware');
 
 
-router.get('/all', auth(),  awaitHandlerFactory(filialController.getAll));
-router.get('/one/:id', auth(), awaitHandlerFactory(filialController.getOne));
+router.get('/all',  awaitHandlerFactory(filialController.getAll));
+router.get('/one/:id', awaitHandlerFactory(filialController.getOne));
 router.post('/create',auth(), awaitHandlerFactory(filialController.create));
 router.patch('/update/:id', auth(), awaitHandlerFactory(filialController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(filialController.delete));
