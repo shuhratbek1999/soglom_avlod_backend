@@ -12,6 +12,7 @@ router.get('/all', awaitHandlerFactory(userController.getAll));
 router.get('/byName', awaitHandlerFactory(userController.byName));
 router.get('/one/:id',   auth(), awaitHandlerFactory(userController.getOne));
 router.post('/create', validateLogin, awaitHandlerFactory(userController.create));
+router.post('/filial_user', awaitHandlerFactory(userController.FilialUserlari));
 router.patch('/update/:id', validateLogin, auth(), awaitHandlerFactory(userController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(userController.delete));
 module.exports = router;

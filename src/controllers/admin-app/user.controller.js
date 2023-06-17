@@ -38,7 +38,7 @@ class UserController {
             }
         });
         if(!model){
-            throw new HttpException(404, 'Name tanlanmagan')
+            throw new HttpException(404, 'Filialda bunday hodim mavjud emas')
         }
         const isMatch = await bcrypt.compare(password, model.password)
         delete model['password'];
@@ -60,7 +60,21 @@ class UserController {
     };
     byName = async (req, res, next) => {
         const model = await UserModel.findAll({
-                    attributes: ['id','user_name']
+                    attributes: ['id','user_name'],
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 20,
+            message: 'Malumot keldi', 
+            data: model
+        });
+    }
+    FilialUserlari = async (req, res, next) => {
+        const model = await UserModel.findAll({
+                    attributes: ['id','user_name'],
+                    where:{
+                        filial_id: req.body.filial_id
+                    }
         })
         res.status(200).send({
             error: false,
