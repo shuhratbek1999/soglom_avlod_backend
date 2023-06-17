@@ -4,16 +4,16 @@ const db = require('../../db/db-sequelize');
 const moment = require('moment');
 const { Op } = require("sequelize");
 module.exports = function(){
-    cron.schedule('0 0 * * *', () => {
+    cron.schedule('*/20 * * * *', () => {
         this.setArchive();
     },
-     {
+    {
         scheduled: true,
         timezone: "Asia/Tashkent"
-      }
+    }
     )
     setArchive=async (req, res, next) => {
-        let date = Math.floor(new Date().getTime()/1000)
+        let date = Math.floor(new Date().getTime())
         let vaqt1 =  moment(date).startOf('day').unix();
         var MyDatas  =  await ModelModel.findAll({
             where:{
@@ -24,7 +24,8 @@ module.exports = function(){
         });
         if(MyDatas.length > 0){
             MyDatas.forEach(async item => {
-                await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${item.dataValues.id}`);
+                if(item.created_at < vaqt1){
+                    await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${item.dataValues.id}`);
                 await db.query(`DELETE from registration_inspection_child where registration_id = ${item.dataValues.id}`);
     
                 await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${item.dataValues.id}`);        
@@ -48,6 +49,10 @@ module.exports = function(){
                 await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${item.dataValues.id}`);
                 await db.query(`DELETE from registration_palata where registration_id = ${item.dataValues.id}`);          
                 await db.query(`TRUNCATE TABLE 'queue'`);
+                }
+                else{
+                    console.log("oldin kelgan bemorlar mavjud emas");
+                }
             })
         }
     
