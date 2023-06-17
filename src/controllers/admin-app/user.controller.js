@@ -33,8 +33,7 @@ class UserController {
         }
             ],
             where:{
-                user_name: login,
-                filial_id: filial_id
+                user_name: login
             }
         });
         if(!model){
