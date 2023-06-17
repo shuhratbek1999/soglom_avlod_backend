@@ -21,9 +21,6 @@ inspectionModel.init({
 name: {
     type: DataTypes.STRING(200),
 },
-parent_id : {
-    type: DataTypes.INTEGER,
-},
 price:{
     type: DataTypes.DECIMAL
 },
@@ -41,7 +38,10 @@ category_id:{
 },
 percent_bonus:{
     type: DataTypes.INTEGER
-}
+},
+filial_id:{
+  type: DataTypes.INTEGER
+},
 
 }, {
   sequelize,

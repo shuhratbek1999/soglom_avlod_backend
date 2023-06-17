@@ -41,6 +41,9 @@ Register_kassaModel.init({
  filial_id:{
   type: DataTypes.INTEGER
 },
+user_id:{
+  type: DataTypes.INTEGER
+},
  place:{
   type:DataTypes.STRING()
  }

@@ -243,7 +243,8 @@ class RegistrationController {
             },
                 {model: Registration_payModel, as: 'registration_pay',
                   include:[
-                    {model: filialModel, as: 'filial'}
+                    {model: filialModel, as: 'filial'},
+                    {model: UserModel, as: 'user', attributes: ['user_name']}
                   ]
                 }
             ]
@@ -302,7 +303,12 @@ class RegistrationController {
                     {model: districtModel, as: 'district'}
                 ]
                  },
-                {model: Registration_pay_arxivModel, as: 'registration_pay'}
+                {model: Registration_pay_arxivModel, as: 'registration_pay',
+                include:[
+                    {model: filialModel, as: 'filial'},
+                    {model: UserModel, as: 'user', attributes: ['user_name']}
+                  ]
+                }
             ],
         });
         if (Prixod === null) {

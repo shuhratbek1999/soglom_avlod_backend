@@ -24,6 +24,9 @@ DoctorModel.init({
   category_id:{
     type: DataTypes.INTEGER
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  },
 
 }, {
   sequelize,

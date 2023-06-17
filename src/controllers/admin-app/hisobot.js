@@ -17,7 +17,9 @@ const {Op} = require("sequelize");
 const sequelize = require("sequelize");
 const RegistrationModel = require("../../models/registration.model");
 const PatientModel = require("../../models/patient.model");
-const register_kirish = require("../../models/register_kirish.model");
+const directModel = require("../../models/direct.model");
+const med_directModel = require("../../models/med_direct.model");
+const UserModel = require("../../models/user.model");
 
 
 class HisobotController {
@@ -30,16 +32,26 @@ class HisobotController {
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
-          
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
         let model = await register_directModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+                [sequelize.literal('direct.name'), 'direct_name'],
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ], 
+           include: [
+              {model: directModel, as: 'direct', attributes: []}
+           ],
            where: queryx,
-           group: ['id']
+           group: ['id'],
+           order: [
+            ['id', 'DESC']
+           ]
            
         })
         model.forEach(val=> {
@@ -63,9 +75,13 @@ class HisobotController {
         let model = await register_med_directModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+               [sequelize.literal('med_direct.name'), 'med_name'],
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
                [sequelize.literal("COUNT(Case WHEN register_med_direct.date_time >=" + datetime1 + " and register_med_direct.date_time <= " + datetime2 + ` and register_med_direct.direct_id != null then register_med_direct.direct_id else 0 end)`), 'count']
+           ],
+           include: [
+            {model: med_directModel, as: 'med_direct', attributes: []}
            ],
            where: queryx,
            group: ['direct_id']
@@ -82,16 +98,26 @@ class HisobotController {
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
         };
-          
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
         let model = await register_med_directModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+                [sequelize.literal('med_direct.name'), 'med_name'],
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'kirim' THEN register_med_direct.price ELSE 0 END)"), 'total_kirim'],
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time >= " + datetime1 + " and register_med_direct.date_time <= " + datetime2 + " AND register_med_direct.doc_type = 'chiqim' THEN register_med_direct.price ELSE 0 END)"), 'total_chiqim'],
                [sequelize.literal("SUM(CASE WHEN register_med_direct.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
            ], 
+           include: [
+            {model: med_directModel, as: 'med_direct', attributes: []}
+           ],
            where: queryx,
-           group: ['id']
+           group: ['id'],
+           order: [
+            ['id', 'DESC']
+           ]
            
         })
         res.send(model)
@@ -112,10 +138,14 @@ class HisobotController {
         let model = await register_directModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
+                [sequelize.literal('direct.name'), 'direct_name'],
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'kirim' THEN register_direct.price ELSE 0 END)"), 'total_kirim'],
                [sequelize.literal("SUM(CASE WHEN register_direct.date_time >= " + datetime1 + " and register_direct.date_time <= " + datetime2 + " AND register_direct.doc_type = 'chiqim' THEN register_direct.price ELSE 0 END)"), 'total_chiqim'],
                [sequelize.literal("COUNT(Case WHEN register_direct.date_time >=" + datetime1 + " and register_direct.date_time <= " + datetime2 + ` and register_direct.direct_id = ${body.direct_id} then register_direct.direct_id else 0 end)`), 'count']
            ],
+           include: [
+            {model: directModel, as: 'direct', attributes: []}
+         ],
            where: queryx,
            group: ['direct_id']
         })
@@ -137,24 +167,24 @@ class HisobotController {
             [Op.lte]: datetime2
         }
         if(body.inspection_category !== null){
-            queryx.id = {[Op.eq] : body.inspection_category }  
-            query.inspection_category = {[Op.eq]: body.inspection_category}
+            query.user_id = {[Op.eq]: body.inspection_category}
             
         };
           
         let result = await Register_inspectionModel.findAll({
             attributes: [
-                 'id', "type", "date_time", "inspection_category", "doc_id","comment",
+                 'id', "type", "date_time", "inspection_category", "doc_id","comment", "user_id",
+                 [sequelize.fn("COUNT", sequelize.col("user_id")), "count"],
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'total_kirim'],
                 [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'total_chiqim'],
-                [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.inspection_id = inspection.id then register_inspection.inspection_id else 0 end)"), 'count']
+                // [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.user_id > 0 then register_inspection.user_id else 0 end)"), 'count']
             ],
             include: [
-                { model: inspectionCategory, as: 'inspection', attributes: ['name', 'id'], where: queryx},
+                { model: UserModel, as: 'User', attributes: ['user_name', 'id']},
             ],
             where: query,
             raw: true,
-            group: ['inspection_category'],
+            group: ['user_id'],
             order: [
                 ['id', 'ASC']
             ],
@@ -167,18 +197,24 @@ class HisobotController {
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
         if(body.inspection_category !== null){
-            query.id = {[Op.eq] : body.inspection_category }
-            queryx.inspection_category = {[Op.eq]: body.inspection_category}
+            queryx.user_id = {[Op.eq]: body.inspection_category}
         };
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
         const model = await Register_inspectionModel.findAll({
-            attributes: [ 'doc_type', 'id', 'date_time', "doc_id","comment","inspection_id","place",
+            attributes: [ 'doc_type', 'id', 'date_time', "doc_id","comment","inspection_id","place","user_id",
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'kirim' THEN register_inspection.price ELSE 0 END)"), 'kirim'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'chiqim'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total'],
         ],
+           group: ['id'],
            where: queryx,
-           group: ['id']
+           order: [
+            ['id', 'DESC']
+           ]
         })
         res.send(model)
        }
@@ -194,10 +230,19 @@ class HisobotController {
         };
         let datetime1 = body.datetime1,
         datetime2 = body.datetime2
+        query.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
+        if(body.user_id !== null && body.filial_id !== null){
+            query.user_id = {[Op.eq]: body.user_id},
+            query.filial_id = {[Op.eq]: body.filial_id}
+        }
         result = await Register_kassaModel.findAll({
             attributes: [ 'doc_type','pay_type', 'id', 'date_time', "doctor_id","place", `price`,
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` < " + datetime1 + " THEN `register_kassa`.`price` * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Kirim' and `register_kassa`.`pay_type` = 'Naqt' THEN `register_kassa`.`price` ELSE 0 END)"), 'kirim_naqt'],
+                [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Kirim' and `register_kassa`.`pay_type` = 'Clik' THEN `register_kassa`.`price` ELSE 0 END)"), 'klik'],
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Kirim' and `register_kassa`.`pay_type` = 'Plastik' THEN `register_kassa`.`price` ELSE 0 END)"), 'kirim_plastik'],
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Chiqim' and `register_kassa`.`pay_type` = 'Plastik' THEN `register_kassa`.`price` ELSE 0 END)"), 'chiqim_plastik'],
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Chiqim' and `register_kassa`.`pay_type` = 'Naqt' THEN `register_kassa`.`price` ELSE 0 END)"), 'chiqim_naqt'],
@@ -210,82 +255,13 @@ class HisobotController {
               ]
           }
           ],
+          where: query,
+          order:[
+            ['id', 'DESC']
+          ],
           group: ['id']
       })
       res.send(result);
-        // if(req.body.datetime1 < req.body.datetime2){
-        //     result = await Register_kassaModel.findAll({
-        //           include:[
-        //             {model: RegistrationModel, as: 'registration', attributes: ['id'],
-        //         include:[
-        //             {model: Registration_doctorModel, as: 'registration_doctor', attributes: ['doctor_id'],
-        //         include: [
-        //             {model: DoctorModel, as: 'doctor', attributes: ['name']}
-        //         ]
-        //         }
-        //         ]
-        //         }
-        //         ],
-        //         group: ['id']
-        //     })
-        //     result.forEach(val => {
-        //         if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
-        //             if(val.dataValues.doc_type == 'Kirim'){
-        //                 val.dataValues.Plaskirim = val.dataValues.price
-        //             }
-        //             else{
-        //             val.dataValues.PlasChiqim = val.dataValues.price
-        //             }
-        //         }
-        //         else{
-        //             if(val.dataValues.doc_type != 'chiqim'){
-        //                 val.dataValues.Nahdkirim = val.dataValues.price
-        //             }
-        //             else{
-        //             val.dataValues.NahdChiqim = val.dataValues.price
-        //             }
-        //         }
-        //     })
-        // res.send(result);
-        // }
-        // else{
-        //     result = await Register_kassaModel.findAll({
-        //         where: {
-        //             date_time: {[Op.lt]: body.datetime1},
-        //           },
-        //           include:[
-        //             {model: RegistrationModel, as: 'registration', attributes: [],
-        //         include:[
-        //             {model: Registration_doctorModel, as: 'registration_doctor', attributes: [],
-        //         include: [
-        //             {model: DoctorModel, as: 'doctor', attributes: ['name']}
-        //         ]
-        //         }
-        //         ]
-        //         }
-        //         ],
-        //         group: ['id']
-        //     })
-        //     result.forEach(val => {
-        //         if(val.dataValues.pay_type == 'Plastik' || val.dataValues.pay_type == 'plastik'){
-        //             if(val.dataValues.doc_type == 'Kirim'){
-        //                 val.dataValues.Plaskirim = val.dataValues.price
-        //             }
-        //             else{
-        //             val.dataValues.PlasChiqim = val.dataValues.price
-        //             }
-        //         }
-        //         else{
-        //             if(val.dataValues.doc_type != 'chiqim'){
-        //                 val.dataValues.Nahdkirim = val.dataValues.price
-        //             }
-        //             else{
-        //             val.dataValues.NahdChiqim = val.dataValues.price
-        //             }
-        //         }
-        //     })
-        // res.send(result);
-        // }
     }
     palata = async (req, res, next) => {
         let query = {}, query_begin = {}, query_end = {}, body = req.body;
@@ -372,6 +348,10 @@ class HisobotController {
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
         if(body.inspection_category !== null){
             query.id = {[Op.eq] : body.inspection_category }  
             queryx.inspection_category = {[Op.eq]: body.inspection_category}
@@ -384,13 +364,7 @@ class HisobotController {
                 { model: inspectionCategory, as: 'inspection', attributes: ['name'], where: query},
                 { model: RegistrationModel, as: 'registration', attributes: ['patient_id']}
             ],
-            where: {
-                inspection_category: {[Op.eq]: body.inspection_category},
-                date_time: {
-                    [Op.gte]: datetime1,
-                    [Op.lte]: datetime2
-                }
-            }
+            where: queryx
         })
         res.send(model)
     }
@@ -404,6 +378,10 @@ class HisobotController {
         queryx.id = {[Op.eq] : body.doctor_id }  
         query.doctor_id = {[Op.eq]: body.doctor_id}
     };
+    query.date_time = {
+        [Op.gte]: datetime1,
+        [Op.lte]: datetime2
+    }
     const model = await register_doctorModel.findAll({
         attributes: [ 'doc_type', 'id', 'date_time', "doc_id", "comment","doctor_id", "place",
             [sequelize.literal("SUM(CASE WHEN register_doctor.date_time < " + datetime1 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
@@ -412,7 +390,10 @@ class HisobotController {
            [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total']
        ],  
        where: query,
-       group: ['id']
+       group: ['id'],
+       order: [
+        ['id', 'DESC']
+       ]
     })
     res.send(model)
    }
@@ -426,6 +407,10 @@ class HisobotController {
             queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
             
         };
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
     let model = await register_supplierModel.findAll({
         attributes : [ 
             'id', 'pastavchik_id', "type", "date_time", "doc_type", "summa", "doc_id", "place",
@@ -435,7 +420,10 @@ class HisobotController {
             [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime2 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'end_total'],
         ],
         where: queryx,
-        group: ['id']
+        group: ['id'],
+        order: [
+            ['id', 'DESC']
+           ]
     })
     res.send(model)
  } 
@@ -474,6 +462,10 @@ class HisobotController {
         query.id = {[Op.eq] : body.reagent_id }  
         queryx.reagent_id = {[Op.eq]: body.reagent_id}
     };
+    queryx.date_time = {
+        [Op.gte]: datetime1,
+        [Op.lte]: datetime2
+    }
     let model  = await register_reagentModel.findAll({
         attributes: [
             'id', "price", "date_time", "doc_id","count", "summa", "reagent_id", "doc_type",
@@ -505,6 +497,10 @@ Sverka = async(req, res, next) => {
         query.id = {[Op.eq] : body.reagent_id }  
         queryx.reagent_id = {[Op.eq]: body.reagent_id}
     };
+    queryx.date_time = {
+        [Op.gte]: datetime1,
+        [Op.lte]: datetime2
+    }
     let model  = await register_reagentModel.findAll({
         attributes: [
             'id', "price", "date_time", "doc_id","count", "summa", "reagent_id", "doc_type",
@@ -523,57 +519,13 @@ Sverka = async(req, res, next) => {
     {model: reagentModel, as: 'reagent'}
      ],
        where: queryx,
-       group: ['id']
+       group: ['id'],
+       order: [
+        ['id', 'DESC']
+       ]
     })
     res.send(model)
 }
-    kirishHisobot = async(req, res, next) => {
-        let query = {}, queryx = {};
-    let body = req.body;
-    let datetime1 = body.datetime1;
-    let datetime2 = body.datetime2;
-    query.date_time = {
-        [Op.gte]: datetime1,
-        [Op.lte]: datetime2
-    }
-    // if(body.reagent_id !== null){
-    //     query.id = {[Op.eq] : body.reagent_id }  
-    //     queryx.reagent_id = {[Op.eq]: body.reagent_id}
-    // };
-        let model = await register_kirish.findAll({
-            attributes:[
-                'id', "date_time","mashina_soni","odam_soni","doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time < " + datetime1 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'begin_price'],
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time >= " + datetime1 + " and register_kirish.date_time <= " + datetime2 + ` AND register_kirish.doc_type = 'Kirim' and type = 'Naqt' THEN register_kirish.price ELSE 0 END)`), 'odam_price'],
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time >= " + datetime1 + " and register_kirish.date_time <= " + datetime2 + ` AND register_kirish.doc_type = 'Kirim' and type = 'Naqt' THEN register_kirish.mashina_price ELSE 0 END)`), 'mashina_price'],
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time <= " + datetime2 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'end_summa']
-            ],
-            where: query,
-            group: ['id']
-        })
-        res.send(model)
-    }
-
-    kirish = async(req, res, next) => {
-        let query = {}, queryx = {};
-        let body = req.body;
-        let datetime1 = body.datetime1;
-        let datetime2 = body.datetime2;
-        query.date_time = {
-            [Op.gte]: datetime1,
-            [Op.lte]: datetime2
-        }
-        let model = await register_kirish.findAll({
-            attributes:[
-                'id', "date_time","mashina_soni","odam_soni","doc_type",
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time < " + datetime1 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'begin_odam_price'],
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time >= " + datetime1 + " and register_kirish.date_time <= " + datetime2 + ` AND register_kirish.doc_type = 'Kirim' and type = 'Naqt' THEN register_kirish.price + register_kirish.mashina_price ELSE 0 END)`), 'umumiy_summa'],
-                [sequelize.literal("SUM(CASE WHEN register_kirish.date_time <= " + datetime2 + " THEN register_kirish.price * power(-1, '0') + register_kirish.mashina_price * power(-1, '0') ELSE 0 END)"), 'end_summa']
-            ],
-            group: ['id']
-        })
-        res.send(model)
-    }
 }
 
 
