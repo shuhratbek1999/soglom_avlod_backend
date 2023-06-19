@@ -83,6 +83,22 @@ class UserController {
             data: model
         });
     }
+
+    filialUserKasser = async(req,res,next) => {
+        let body = req.body;
+        const model = await UserModel.findAll({
+            where:{
+                filial_id: body.filial_id,
+                role: 'Kasser'
+            }
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 20,
+            message: 'Malumot keldi', 
+            data: model
+        });
+    }
     getAll = async (req, res, next) =>{
         const model = await UserModel.scope('withoutPassword').findAll({
             include:[
