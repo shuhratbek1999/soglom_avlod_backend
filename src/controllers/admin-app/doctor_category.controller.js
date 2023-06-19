@@ -4,6 +4,7 @@ const HttpException = require('../../utils/HttpException.utils');
 const Doctor_categoryModel = require('../../models/doctor_category.model')
 const { validationResult } = require('express-validator');
 const filialModel = require('../../models/filial.model');
+const doctor_categoryModel = require('../../models/doctor_category.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -43,6 +44,20 @@ class DoctorController {
             data: model
         });
     }
+
+    filialDoctorBolim = async(req,res,next) => {
+        let body = req.body;
+        const model = await doctor_categoryModel.findAll({
+            where:{filial_id: body.filial_id}
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Filial boyicha bolimlar',
+            data: model
+        });
+    }
+
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await Doctor_categoryModel.create(req.body);

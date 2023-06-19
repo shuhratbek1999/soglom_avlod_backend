@@ -4,7 +4,8 @@ const HttpException = require('../../utils/HttpException.utils');
 const DoctorModel = require('../../models/doctor.model')
 const { validationResult } = require('express-validator');
 const InspectionModel = require('../../models/inspector_category.model');
-const DoctorCategory = require('../../models/doctor_category.model')
+const DoctorCategory = require('../../models/doctor_category.model');
+const filialModel = require('../../models/filial.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -13,7 +14,8 @@ class DoctorController {
         const model = await DoctorModel.findAll({ 
             // include: InspectionModel
             include:[
-                {model: DoctorCategory, as: 'doctor_category'}
+                {model: DoctorCategory, as: 'doctor_category'},
+                {model: filialModel, as: 'filial'}
             ]
         }); 
         res.send(model)
@@ -25,7 +27,11 @@ class DoctorController {
         const model = await DoctorModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: DoctorCategory, as: 'doctor_category'},
+                {model: filialModel, as: 'filial'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
@@ -65,7 +71,8 @@ class DoctorController {
         }
     });
     model.name = req.body.name;
-    model.category_id = req.body.category_id
+    model.category_id = req.body.category_id;
+    model.filial_id = req.body.filial_id;
     model.save();
     res.status(200).send({
         error: false,
