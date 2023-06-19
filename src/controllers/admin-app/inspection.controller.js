@@ -78,14 +78,12 @@ class InspectionController {
         if(model === null){ 
             res.status(404).send("model mavjud emas")
         }
-        if(model === null){
-            res.status(404).send("not found")
-        }
         model.name = inspection.name;
         model.parent_id = inspection.parent_id;
         model.price = inspection.price;
         model.type = inspection.type;
         model.user_id = inspection.user_id;
+        model.filial_id = inspection.filial_id;
         model.category_id = inspection.category_id;
         model.percent_bonus = inspection.percent_bonus;
         model.citizen_price = inspection.citizen_price;
