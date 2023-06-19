@@ -5,6 +5,7 @@ const inspectionModel = require('../../models/inspection.model');
 const inspectionChildModel = require('../../models/inspectionChild.model');
 const UserModel = require('../../models/user.model');
 const inspector_categoryModel = require('../../models/inspector_category.model');
+const filialModel = require('../../models/filial.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -14,7 +15,8 @@ class InspectionController {
             include:[
                 {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
                     {model: inspectionChildModel, as: 'inspectionChild', attributes:['norm', 'parent_id','price', 'name', 'file', 'citizen_price', 'birlik','rang']},
-                    {model: inspector_categoryModel, as: 'inspector_category'}
+                    {model: inspector_categoryModel, as: 'inspector_category'},
+                    {model: filialModel, as: 'filial'}
             ]
         });
         res.status(200).send({
@@ -32,7 +34,8 @@ class InspectionController {
                 id: req.params.id
             },
             include:[
-                {model: inspectionChildModel, as: 'inspectionChild'}
+                {model: inspectionChildModel, as: 'inspectionChild'},
+                {model: filialModel, as: 'filial'}
             ]
         });
         if(!model){

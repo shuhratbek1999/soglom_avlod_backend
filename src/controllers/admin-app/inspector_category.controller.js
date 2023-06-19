@@ -3,13 +3,18 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const inspector_categoryModel = require('../../models/inspector_category.model')
 const { validationResult } = require('express-validator');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class InspectionController {
     getAll = async (req, res, next) => {
-        const model = await inspector_categoryModel.findAll();
+        const model = await inspector_categoryModel.findAll({
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,

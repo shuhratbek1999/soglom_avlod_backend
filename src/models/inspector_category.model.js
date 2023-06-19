@@ -1,7 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const DoctorModel = require('./doctor.model');
-class InspectionModel extends Model {
+const filialModel = require('./filial.model');
+class Inspection_categoryModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
@@ -9,7 +10,7 @@ class InspectionModel extends Model {
     }
 }
 
-InspectionModel.init({
+Inspection_categoryModel.init({
   id: {
     autoIncrement: true,
     type: DataTypes.INTEGER,
@@ -54,4 +55,5 @@ InspectionModel.init({
     }
   }
 });
-module.exports = InspectionModel;
+Inspection_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+module.exports = Inspection_categoryModel;
