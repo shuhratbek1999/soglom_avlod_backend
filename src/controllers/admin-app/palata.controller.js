@@ -9,6 +9,7 @@ const moment = require("moment");
 const RegistrationModel = require('../../models/registration.model');
 const PatientModel = require('../../models/patient.model');
 const { sequelize } = require('../../models/patient.model');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -16,7 +17,9 @@ const { sequelize } = require('../../models/patient.model');
 class palataController {
     getAll = async (req, res, next) => {
         const model = await palataModel.findAll({ 
-        
+            include: [
+                {model: filialModel, as: 'filial'}
+            ]
         }); 
         res.status(200).send({
             error: false,
@@ -113,6 +116,8 @@ class palataController {
         }
     });
     model.name = req.body.name;
+    model.filial_id = req.body.filial_id;
+    model.user_id = req.body.user_id;
     model.price = req.body.price,
     model.status = req.body.status
     model.save();

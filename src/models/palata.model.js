@@ -1,7 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const register_palataModel = require('./register_palata.model');
-const registration_palataModel = require('./registration_palata.model');
+const filialModel = require('./filial.model');
 class palataModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -57,5 +56,5 @@ palataModel.init({
     }
   }
 });
-palataModel.hasMany(register_palataModel, {as: 'register_palata', foreignKey: 'palata_id'});
+palataModel.hasMany(filialModel, {as: 'filial', foreignKey: 'filial_id'});
 module.exports = palataModel;
