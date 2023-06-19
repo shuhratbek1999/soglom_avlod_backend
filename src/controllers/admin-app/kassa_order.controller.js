@@ -61,7 +61,8 @@ class Kassa_orderController {
         "type": req.body.type,
         "pay_type": pay_type,
         "price": req.body.price,
-        "comment": req.body.comment
+        "comment": req.body.comment,
+        "user_id": req.currentUser.dataValues.id
        });
        Register_kassaModel.create({
         "date_time": date_time,
@@ -70,7 +71,9 @@ class Kassa_orderController {
         "price": req.body.price,    
         "type": type,
         "doc_type": 'Chiqim',
-        "place": "kassa Order"
+        "place": "kassa Order",
+        "user_id": req.currentUser.dataValues.id,
+        "filial_id": req.currentUser.dataValues.filial_id
     })
        res.status(200).send({
         error: false,
@@ -93,6 +96,8 @@ class Kassa_orderController {
     model.pay_type = req.body.pay_type;
     model.price = req.body.price;
     model.comment = req.body.comment;
+    model.user_id = req.currentUser.dataValues.id;
+    model.filial_id = req.currentUser.dataValues.filial_id;
     model.save();
     await Register_kassaModel.destroy({
         where:{
@@ -115,7 +120,9 @@ class Kassa_orderController {
         "price": req.body.price,    
         "type": type,
         "doc_type": 'Chiqim',
-        "place": "kassa Order"
+        "place": "kassa Order",
+        "user_id": req.currentUser.dataValues.id,
+        "filial_id": req.currentUser.dataValues.filial_id
     })
     res.status(200).send({
         error: false,
