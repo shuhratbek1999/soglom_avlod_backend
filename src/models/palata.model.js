@@ -56,5 +56,5 @@ palataModel.init({
     }
   }
 });
-palataModel.hasMany(filialModel, {as: 'filial', foreignKey: 'filial_id'});
+palataModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
 module.exports = palataModel;
