@@ -1,6 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-class UserModel extends Model {
+const filialModel = require('./filial.model');
+class doctor_categoryModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
         delete values.password_hash;
@@ -8,7 +9,7 @@ class UserModel extends Model {
     }
 }
 
-UserModel.init({
+doctor_categoryModel.init({
   id: {
     autoIncrement: true,
     type: DataTypes.INTEGER,
@@ -27,6 +28,9 @@ UserModel.init({
     type: DataTypes.DECIMAL(),
     allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  }
 
 }, {
   sequelize,
@@ -47,5 +51,5 @@ UserModel.init({
   //findOne da yoki findAll da chaqirish kerak
   
 });
-
-module.exports = UserModel;
+doctor_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+module.exports = doctor_categoryModel;

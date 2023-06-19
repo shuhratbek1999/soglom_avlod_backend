@@ -51,12 +51,6 @@ class UplateController {
         "date_time": req.body.date_time,
         "price": req.body.price,
        }); 
-       const ModelUser = await UserModel.findOne({
-        where:{
-            id: req.body.user_id
-        },
-        raw: true
-    })
        let pay_type = null;
        if(req.body.type == 0){
           pay_type = "Naqt"
@@ -68,32 +62,32 @@ class UplateController {
           "date_time": data,
           "type": req.body.type,
           "price": req.body.price,
-          "filial_id": ModelUser.filial_id,
-          "user_id": ModelUser.id,
+          "filial_id": req.currentUser.dataValues.filial_id,
+          "user_id": req.currentUser.dataValues.id,
           "pay_type": pay_type,
           "doc_type": "Chiqim",
           "doctor_id": model.id,
           "place": "uplata"
        })
-            if(ModelUser.doctor_id != 0){
+            if(req.currentUser.dataValues.doctor_id != 0){
                 register_doctorModel.create({
                     "date_time": data,
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id, 
-                    "doctor_id": ModelUser.doctor_id,
+                    "doctor_id": req.currentUser.dataValues.doctor_id,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
              })
-            } else if(ModelUser.inspection_category_id != 0){
+            } else if(req.currentUser.dataValues.inspection_category_id != 0){
                 Register_inspectionModel.create({
                     "date_time": data,
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id,
                     "user_id": req.body.user_id,
-                    "inspection_id": ModelUser.inspection_category_id,
-                    "inspection_category": ModelUser.inspection_category_id,
+                    "inspection_id": req.currentUser.dataValues.inspection_category_id,
+                    "inspection_category": req.currentUser.dataValues.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
@@ -129,12 +123,6 @@ class UplateController {
            place: 'uplata'
         }
     })
-    const ModelUser = await UserModel.findOne({
-        where:{
-            id: req.body.user_id
-        },
-        raw: true
-    })
        let pay_type = null;
        if(req.body.type == 0){
           pay_type = "Naqt"
@@ -146,14 +134,14 @@ class UplateController {
           "date_time": data,
           "type": req.body.type,
           "price": req.body.price,
-          "filial_id": ModelUser.filial_id,
-          "user_id": ModelUser.id,
+          "filial_id": req.currentUser.dataValues.filial_id,
+          "user_id": req.currentUser.dataValues.id,
           "pay_type": pay_type,
           "doc_type": "Chiqim",
           "doctor_id": model.id,
           "place": "uplata"
        })
-            if(ModelUser.doctor_id != 0){
+            if(req.currentUser.dataValues.doctor_id != 0){
                 await register_doctorModel.destroy({
                     where:{
                         doc_id: req.params.id,
@@ -165,11 +153,11 @@ class UplateController {
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id, 
-                    "doctor_id": ModelUser.doctor_id,
+                    "doctor_id": req.currentUser.dataValues.doctor_id,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
              })
-            } else if(ModelUser.inspection_category_id != 0){
+            } else if(req.currentUser.dataValues.inspection_category_id != 0){
                 await Register_inspectionModel.destroy({
                     where:{
                         doc_id: req.params.id,
@@ -182,8 +170,8 @@ class UplateController {
                     "price": req.body.price,
                     "doc_id": model.id,
                     "user_id": req.body.user_id,
-                    "inspection_id": ModelUser.inspection_category_id,
-                    "inspection_category": ModelUser.inspection_category_id,
+                    "inspection_id": req.currentUser.dataValues.inspection_category_id,
+                    "inspection_category": req.currentUser.dataValues.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
