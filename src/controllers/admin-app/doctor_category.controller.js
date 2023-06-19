@@ -28,7 +28,10 @@ class DoctorController {
         const model = await Doctor_categoryModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
