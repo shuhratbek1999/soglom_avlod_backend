@@ -31,6 +31,10 @@ kassaOrderModel.init({
    type: DataTypes.INTEGER,
    allowNull: false
  },
+ user_id:{
+  type: DataTypes.INTEGER,
+  allowNull: false
+},
  pay_type:{
   type: DataTypes.STRING
 },

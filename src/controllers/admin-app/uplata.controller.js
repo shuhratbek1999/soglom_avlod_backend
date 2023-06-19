@@ -14,7 +14,7 @@ const Register_inspectionModel = require('../../models/register_inspection.model
  ******************************************************************************/
 class UplateController {
     getAll = async (req, res, next) => {
-        const model = await UplataModel.findAll(req.body);
+        const model = await UplataModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -51,7 +51,7 @@ class UplateController {
         "date_time": req.body.date_time,
         "price": req.body.price,
        }); 
-       const ModelUser = await UserModel.findAll({
+       const ModelUser = await UserModel.findOne({
         where:{
             id: req.body.user_id
         },
@@ -68,37 +68,37 @@ class UplateController {
           "date_time": data,
           "type": req.body.type,
           "price": req.body.price,
+          "filial_id": ModelUser.filial_id,
+          "user_id": ModelUser.id,
           "pay_type": pay_type,
           "doc_type": "Chiqim",
           "doctor_id": model.id,
           "place": "uplata"
        })
-        ModelUser.forEach(val => {
-            if(val.doctor_id != 0){
+            if(ModelUser.doctor_id != 0){
                 register_doctorModel.create({
                     "date_time": data,
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id, 
-                    "doctor_id": val.doctor_id,
+                    "doctor_id": ModelUser.doctor_id,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
              })
-            } else if(val.inspection_category_id != 0){
+            } else if(ModelUser.inspection_category_id != 0){
                 Register_inspectionModel.create({
                     "date_time": data,
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id,
                     "user_id": req.body.user_id,
-                    "inspection_id": val.inspection_category_id,
-                    "inspection_category": val.inspection_category_id,
+                    "inspection_id": ModelUser.inspection_category_id,
+                    "inspection_category": ModelUser.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
                   })
             }
-        })
       
        res.status(200).send({
         error: false,
@@ -129,7 +129,7 @@ class UplateController {
            place: 'uplata'
         }
     })
-    const ModelUser = await UserModel.findAll({
+    const ModelUser = await UserModel.findOne({
         where:{
             id: req.body.user_id
         },
@@ -146,13 +146,14 @@ class UplateController {
           "date_time": data,
           "type": req.body.type,
           "price": req.body.price,
+          "filial_id": ModelUser.filial_id,
+          "user_id": ModelUser.id,
           "pay_type": pay_type,
           "doc_type": "Chiqim",
           "doctor_id": model.id,
           "place": "uplata"
        })
-        ModelUser.forEach(async val => {
-            if(val.doctor_id != 0){
+            if(ModelUser.doctor_id != 0){
                 await register_doctorModel.destroy({
                     where:{
                         doc_id: req.params.id,
@@ -164,11 +165,11 @@ class UplateController {
                     "type": req.body.type,
                     "price": req.body.price,
                     "doc_id": model.id, 
-                    "doctor_id": val.doctor_id,
+                    "doctor_id": ModelUser.doctor_id,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
              })
-            } else if(val.inspection_category_id != 0){
+            } else if(ModelUser.inspection_category_id != 0){
                 await Register_inspectionModel.destroy({
                     where:{
                         doc_id: req.params.id,
@@ -181,14 +182,13 @@ class UplateController {
                     "price": req.body.price,
                     "doc_id": model.id,
                     "user_id": req.body.user_id,
-                    "inspection_id": val.inspection_category_id,
-                    "inspection_category": val.inspection_category_id,
+                    "inspection_id": ModelUser.inspection_category_id,
+                    "inspection_category": ModelUser.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'Chiqim',
                     "place": "Oplata"
                   })
             }
-        })
     res.status(200).send({
         error: false,
         error_code: 200,

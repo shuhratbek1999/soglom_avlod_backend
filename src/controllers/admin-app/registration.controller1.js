@@ -565,12 +565,13 @@ class RegistrationController {
             }
             else{
                 doc_type = 'Kirim'
-            }
+            }  
             if(model.backlog == 0){
                 Register_kassaModel.create({
                     "date_time": date_time,
                     "doctor_id": model.id,
                     "pay_type": element.pay_type,
+                    "user_id": element.user_id,
                     "filial_id": element.filial.id == null ? 0 : element.filial.id,
                     "price": element.summa,    
                     "type": type,

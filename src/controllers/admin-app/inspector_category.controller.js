@@ -53,6 +53,7 @@ class InspectionController {
         }
     });
     model.name = req.body.name;
+    model.filial_id = req.body.filial_id;
     model.save();
     res.status(200).send({
         error: false,

@@ -20,6 +20,9 @@ InspectionModel.init({
     type: DataTypes.STRING(300),
     allowNull: false
   },
+  filial_id:{
+    type: DataTypes.INTEGER
+  }
 
 }, {
   sequelize,
