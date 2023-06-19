@@ -10,6 +10,7 @@ const  {inspection_id}  = require('../../middleware/validators/admin-app/inspect
 router.get('/all',auth(), awaitHandlerFactory(inspector_categoryController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(inspector_categoryController.getOne));
 router.post('/create', auth(), inspection_id, awaitHandlerFactory(inspector_categoryController.create));
+router.post('/filial_bolim', auth(), awaitHandlerFactory(inspector_categoryController.filialBolim));
 router.patch('/update/:id', auth(), inspection_id, awaitHandlerFactory(inspector_categoryController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(inspector_categoryController.delete));
 module.exports = router;

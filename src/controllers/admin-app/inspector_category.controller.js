@@ -50,6 +50,18 @@ class InspectionController {
         data: model
     });
    }
+   filialBolim = async(req,res, next) => {
+    let body = req.body;
+    const model = await inspector_categoryModel.findAll({
+        where:{filial_id: body.filial_id}
+    })
+    res.status(200).send({
+        error: false,
+        error_code: 200,
+        message: 'Filial boyicha bolimlar',
+        data: model
+    });
+   }
    update = async (req, res, next) => {
        this.checkValidation(req);
     const model = await inspector_categoryModel.findOne({
