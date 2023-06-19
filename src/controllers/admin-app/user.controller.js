@@ -71,7 +71,7 @@ class UserController {
     }
     FilialUserlari = async (req, res, next) => {
         const model = await UserModel.scope('withoutPassword').findAll({
-                    attributes: ['id','user_name'],
+                    attributes: ['id','user_name','role'],
                     where:{
                         filial_id: req.body.filial_id
                     }
