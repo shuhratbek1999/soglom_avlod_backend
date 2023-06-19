@@ -2,7 +2,8 @@ const { DataTypes, Model } = require('sequelize');
 const UserModel = require('../models/user.model')
 const sequelize = require('../db/db-sequelize');
 const inspectionChildModel = require('./inspectionChild.model');
-const inspector_categoryModel = require('./inspector_category.model')
+const inspector_categoryModel = require('./inspector_category.model');
+const filialModel = require('./filial.model');
 class inspectionModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -62,6 +63,7 @@ filial_id:{
   
 });
 inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
+inspectionModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 inspectionModel.hasMany(inspectionChildModel, {as: 'inspectionChild', foreignKey: 'parent_id'})
 inspectionModel.belongsTo(inspector_categoryModel, {as: 'inspector_category', foreignKey: 'category_id'})
 module.exports = inspectionModel;
