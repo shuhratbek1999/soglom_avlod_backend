@@ -48,7 +48,7 @@ module.exports = function(){
     
                 await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${item.dataValues.id}`);
                 await db.query(`DELETE from registration_palata where registration_id = ${item.dataValues.id}`);          
-                await db.query(`TRUNCATE TABLE 'queue'`);
+                await db.query(`TRUNCATE TABLE queue`);
                 }
                 else{
                     console.log("oldin kelgan bemorlar mavjud emas");
