@@ -9,6 +9,7 @@ const  {InspectionsVAlidator}  = require('../../middleware/validators/admin-app/
 router.get('/all', auth(),  awaitHandlerFactory(inspectionController.getAll));
 router.get('/one/:id', auth(),  awaitHandlerFactory(inspectionController.getOne));
 router.post('/create', auth(),InspectionsVAlidator, awaitHandlerFactory(inspectionController.create));
+router.post('/filial_ins', auth(), awaitHandlerFactory(inspectionController.filialInspection));
 router.patch('/update/:id', auth(), InspectionsVAlidator, awaitHandlerFactory(inspectionController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(inspectionController.delete));
 module.exports = router;

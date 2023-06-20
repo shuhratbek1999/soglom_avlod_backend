@@ -10,6 +10,25 @@ const filialModel = require('../../models/filial.model');
  *                              Employer Controller
  ******************************************************************************/
 class InspectionController {
+
+    filialInspection = async(req,res,next) => {
+        let body = req.body;
+        const model = await inspectionModel.findAll({
+            where:{filial_id: body.filial_id},
+            include:[
+                {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
+                    {model: inspectionChildModel, as: 'inspectionChild', attributes:['norm', 'parent_id','price', 'name', 'file', 'citizen_price', 'birlik','rang']},
+                    {model: inspector_categoryModel, as: 'inspector_category'},
+                    {model: filialModel, as: 'filial'}
+            ]
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 200, 
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
+    }
     getAll = async (req, res, next) => {
         const model = await inspectionModel.findAll({
             include:[

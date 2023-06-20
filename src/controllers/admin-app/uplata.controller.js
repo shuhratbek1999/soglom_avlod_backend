@@ -67,7 +67,7 @@ class UplateController {
           "pay_type": pay_type,
           "doc_type": "Chiqim",
           "doctor_id": model.id,
-          "place": "uplata"
+          "place": "уплата"
        })
             if(req.currentUser.dataValues.doctor_id != 0){
                 register_doctorModel.create({
@@ -77,7 +77,7 @@ class UplateController {
                     "doc_id": model.id, 
                     "doctor_id": req.currentUser.dataValues.doctor_id,
                     "doc_type": 'Chiqim',
-                    "place": "Oplata"
+                    "place": "Оплата"
              })
             } else if(req.currentUser.dataValues.inspection_category_id != 0){
                 Register_inspectionModel.create({
@@ -90,7 +90,7 @@ class UplateController {
                     "inspection_category": req.currentUser.dataValues.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'Chiqim',
-                    "place": "Oplata"
+                    "place": "Оплата"
                   })
             }
       
@@ -120,7 +120,7 @@ class UplateController {
         where:{
            doctor_id: req.params.id,
            doc_type: 'Chiqim',
-           place: 'uplata'
+           place: 'уплата'
         }
     })
        let pay_type = null;
@@ -139,7 +139,7 @@ class UplateController {
           "pay_type": pay_type,
           "doc_type": "Chiqim",
           "doctor_id": model.id,
-          "place": "uplata"
+          "place": "уплата"
        })
             if(req.currentUser.dataValues.doctor_id != 0){
                 await register_doctorModel.destroy({
@@ -155,7 +155,7 @@ class UplateController {
                     "doc_id": model.id, 
                     "doctor_id": req.currentUser.dataValues.doctor_id,
                     "doc_type": 'Chiqim',
-                    "place": "Oplata"
+                    "place": "Оплата"
              })
             } else if(req.currentUser.dataValues.inspection_category_id != 0){
                 await Register_inspectionModel.destroy({
@@ -174,7 +174,7 @@ class UplateController {
                     "inspection_category": req.currentUser.dataValues.inspection_category_id,
                     "skidka": 0,
                     "doc_type": 'Chiqim',
-                    "place": "Oplata"
+                    "place": "Оплата"
                   })
             }
     res.status(200).send({

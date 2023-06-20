@@ -470,7 +470,7 @@ class RegistrationController {
                 "doc_id": model.id,
                 "doc_type": "kirim",
                 "comment": "",
-                "place": "Registration",
+                "place": "Регистратион",
                 "direct_id": model.direct_id
              }
            const direc =  await registerDirectModel.create(directs);
@@ -497,7 +497,7 @@ class RegistrationController {
            "doc_id": direc.doc_id,
            "doc_type": "kirim",
            "comment": "",
-           "place": "Registration",
+           "place": "Регистратион",
            "direct_id": direct != null ? direct.med_id : 0
         }
         await registerMedDirectModel.create(med);
@@ -576,7 +576,7 @@ class RegistrationController {
                     "price": element.summa,    
                     "type": type,
                     "doc_type": 'Kirim',
-                    "place": "registration"
+                    "place": "регистратион"
                 })
                }
         }
@@ -609,7 +609,7 @@ class RegistrationController {
                        "inspection_category": item.category_id,
                        "skidka": item.skidka,
                        "doc_type": 'kirim',
-                       "place": "Registration",
+                       "place": "Регистратион",
                        "comment": "",
                        "filial_id": item.filial_id == null ? 0 : item.filial_id,
                      }
@@ -728,8 +728,8 @@ class RegistrationController {
                 "doctor_id": element.doctor_id,
                 "filial_id": element.filial_id == null ? 0 : element.filial_id,
                 "doc_type": 'kirim',
-                 "place": "Registration",
-                 "comment": "comment"
+                 "place": "Регистратион",
+                 "comment": ""
             }
             var {Registration_recipe, register_mkb,...data} = element;
             var news={
@@ -1275,7 +1275,7 @@ class RegistrationController {
               await Register_kassaModel.destroy({
                   where:{
                       doctor_id: req.params.id,
-                      place: 'registration'
+                      place: 'регистратион'
                   }
               })
               const model =  await ModelModel.destroy({ 

@@ -71,7 +71,7 @@ class Kassa_orderController {
         "price": req.body.price,    
         "type": type,
         "doc_type": 'Chiqim',
-        "place": "kassa Order",
+        "place": "касса Ордер",
         "user_id": req.currentUser.dataValues.id,
         "filial_id": req.currentUser.dataValues.filial_id
     })
@@ -120,7 +120,7 @@ class Kassa_orderController {
         "price": req.body.price,    
         "type": type,
         "doc_type": 'Chiqim',
-        "place": "kassa Order",
+        "place": "касса Ордер",
         "user_id": req.currentUser.dataValues.id,
         "filial_id": req.currentUser.dataValues.filial_id
     })
