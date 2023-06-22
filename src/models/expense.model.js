@@ -1,5 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const filialModel = require('./filial.model');
+const DoctorCategoryModel = require('./doctor_category.model');
+const DoctorModel = require('./doctor.model');
 class expenseModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -38,5 +41,7 @@ expenseModel.init({
   //findOne da yoki findAll da chaqirish kerak
   
 });
-
+filialModel.hasMany(DoctorCategoryModel, {as: 'doctor_category', foreignKey: 'filial_id'});
+DoctorCategoryModel.hasMany(DoctorModel, {as: 'doctor', foreignKey: 'category_id'})
+DoctorModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
 module.exports = expenseModel;

@@ -13,13 +13,13 @@ class InspectionController {
 
     filialInspection = async(req,res,next) => {
         let body = req.body;
-        const model = await inspectionModel.findAll({
-            where:{filial_id: body.filial_id},
+        const model = await filialModel.findAll({
             include:[
-                {model: UserModel, as: 'User', attributes: ['id', "user_name"]},
-                    {model: inspectionChildModel, as: 'inspectionChild', attributes:['norm', 'parent_id','price', 'name', 'file', 'citizen_price', 'birlik','rang']},
-                    {model: inspector_categoryModel, as: 'inspector_category'},
-                    {model: filialModel, as: 'filial'}
+                {model: inspectionModel, as: 'inspection',
+                  include:[
+                    {model: inspectionChildModel, as: 'inspectionChild'}
+                  ]
+                 }
             ]
         })
         res.status(200).send({

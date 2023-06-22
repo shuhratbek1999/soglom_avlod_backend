@@ -7,6 +7,7 @@ const awaitHandlerFactory = require('../../middleware/awaitHandlerFactory.middle
 const  {doctorValidate}  = require('../../middleware/validators/admin-app/doctorValidator.middleware');
 
 router.get('/all', auth(),  awaitHandlerFactory(doctorController.getAll));
+router.get('/filial_doctor', auth(),  awaitHandlerFactory(doctorController.filialDoctor));
 router.get('/byName', auth(), awaitHandlerFactory(doctorController.byName));
 router.get('/one/:id',  awaitHandlerFactory(doctorController.getOne));
 router.post('/create',auth(), doctorValidate, awaitHandlerFactory(doctorController.create));

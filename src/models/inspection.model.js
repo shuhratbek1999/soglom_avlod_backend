@@ -62,8 +62,8 @@ filial_id:{
   //findOne da yoki findAll da chaqirish kerak
   
 });
-inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
-inspectionModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+// inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
+// inspectionModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 inspectionModel.hasMany(inspectionChildModel, {as: 'inspectionChild', foreignKey: 'parent_id'})
 inspectionModel.belongsTo(inspector_categoryModel, {as: 'inspector_category', foreignKey: 'category_id'})
 module.exports = inspectionModel;

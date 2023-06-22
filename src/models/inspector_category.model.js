@@ -55,5 +55,5 @@ Inspection_categoryModel.init({
     }
   }
 });
-Inspection_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+// Inspection_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = Inspection_categoryModel;

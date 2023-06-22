@@ -1,5 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const inspectionModel = require('./inspection.model');
+const Inspection_categoryModel = require('./inspector_category.model');
 class filialModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -37,4 +39,7 @@ name: {
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+filialModel.hasMany(inspectionModel, {as: 'inspection', foreignKey: 'filial_id'});
+Inspection_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
+inspectionModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = filialModel;

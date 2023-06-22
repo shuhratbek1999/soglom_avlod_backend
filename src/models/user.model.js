@@ -5,6 +5,7 @@ const DoctorModel = require('../models/doctor.model')
 const InspectionModel  = require('../models/inspector_category.model');
 const Registration_doctorModel = require('./registration_doctor.model');
 const filialModel = require('./filial.model');
+const inspectionModel = require('./inspection.model');
 class UserModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -90,4 +91,5 @@ UserModel.belongsTo(DoctorModel, {as: 'doctor', foreignKey: 'doctor_id'})
 UserModel.belongsTo(InspectionModel, {as: 'inspecton', foreignKey: 'inspection_category_id'});
 UserModel.hasMany(Registration_doctorModel, {as: 'registration_doctor', foreignKey: 'doctor_id'})
 UserModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
+inspectionModel.belongsTo(UserModel, {as: 'User', foreignKey: 'user_id'})
 module.exports = UserModel;

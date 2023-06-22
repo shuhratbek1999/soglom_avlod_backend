@@ -51,5 +51,5 @@ doctor_categoryModel.init({
   //findOne da yoki findAll da chaqirish kerak
   
 });
-doctor_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+// doctor_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = doctor_categoryModel;

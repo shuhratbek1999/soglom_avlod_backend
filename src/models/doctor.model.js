@@ -53,5 +53,4 @@ DoctorModel.init({
   }
 });
 DoctorModel.belongsTo(DoctorCategory, {as: 'doctor_category', foreignKey: 'category_id'});
-DoctorModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
 module.exports = DoctorModel;

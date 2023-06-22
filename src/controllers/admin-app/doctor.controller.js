@@ -6,10 +6,23 @@ const { validationResult } = require('express-validator');
 const InspectionModel = require('../../models/inspector_category.model');
 const DoctorCategory = require('../../models/doctor_category.model');
 const filialModel = require('../../models/filial.model');
+const doctor_categoryModel = require('../../models/doctor_category.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class DoctorController {
+    filialDoctor = async(req,res,next) => {
+        const model = await filialModel.findAll({
+            include:[
+                {model: doctor_categoryModel, as: 'doctor_category',
+                  include:[
+                    {model: DoctorModel, as: 'doctor'}
+                  ]
+               }
+            ]
+        })
+        res.send(model)
+    }
     getAll = async (req, res, next) => {
         const model = await DoctorModel.findAll({ 
             // include: InspectionModel
