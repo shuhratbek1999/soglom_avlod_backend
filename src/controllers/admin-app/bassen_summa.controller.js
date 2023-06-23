@@ -1,17 +1,17 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const kirish_bassenModel = require('../../models/kirish_bassen.model');
-const kirish_bassen = require('../../models/register_bassen.model');
+const kirish_basseynModel = require('../../models/kirish_bassen.model');
+const kirish_basseyn = require('../../models/register_bassen.model');
 const Register_kassaModel = require('../../models/register_kassa.model');
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
-class kirish_bassenController {
+class kirish_basseynController {
     getAll = async (req, res, next) => {
-        const model = await kirish_bassenModel.findAll();
+        const model = await kirish_basseynModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -22,16 +22,16 @@ class kirish_bassenController {
     kirish = async(req, res, next) => {
         let body = req.body, date = Math.floor(new Date().getTime() / 1000);
         let summa, sum = 0;
-        summa = await kirish_bassenModel.findOne({
+        summa = await kirish_basseynModel.findOne({
             where:{id: 1}
         })
         sum += summa.dataValues.price * body.odam_soni;
-         let model = await kirish_bassen.create({
+         let model = await kirish_basseyn.create({
             "date_time": date,
-            "type": "Naqt",
+            "type": "Нақт",
             "price": body.odam_soni > 0 ? summa.dataValues.price * body.odam_soni : 0,
             "odam_soni": body.odam_soni,
-            "doc_type": "Kirim"
+            "doc_type": "Кирим"
          })
          let kassa = {
             "date_time": date,
@@ -40,14 +40,14 @@ class kirish_bassenController {
             "pay_type": "Naqt",
             "doc_type": "Kirim",
             "doctor_id": model.id,
-            "place": "Bassen",
+            "place": "Бассейн",
             "filial_id": 0
        }
        await Register_kassaModel.create(kassa);
        res.send(model)
        }
     getOne = async (req, res, next) => {
-        const model = await kirish_bassenModel.findOne({
+        const model = await kirish_basseynModel.findOne({
             where:{
                 id: req.params.id
             }
@@ -64,7 +64,7 @@ class kirish_bassenController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await kirish_bassenModel.create(req.body);
+       const model = await kirish_basseynModel.create(req.body);
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -74,7 +74,7 @@ class kirish_bassenController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
-    const model = await kirish_bassenModel.findOne({
+    const model = await kirish_basseynModel.findOne({
         where:{
             id: req.params.id
         }
@@ -89,7 +89,7 @@ class kirish_bassenController {
     });
 }
 delete = async (req, res, next) => {
-  const model = await kirish_bassenModel.destroy({
+  const model = await kirish_basseynModel.destroy({
         where:{
           id: req.params.id
         }
@@ -119,4 +119,4 @@ delete = async (req, res, next) => {
 /******************************************************************************
  *                               Export
  ******************************************************************************/
-module.exports = new kirish_bassenController;
+module.exports = new kirish_basseynController;

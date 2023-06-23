@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.createTable("register_bassen", {
+  return db.createTable("register_Бассейн", {
     id:{
       type: 'int',
       notNull: true,
@@ -43,7 +43,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return db.dropTable("register_bassen");
+  return db.dropTable("register_Бассейн");
 };
 
 exports._meta = {

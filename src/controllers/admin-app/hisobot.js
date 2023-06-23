@@ -7,6 +7,8 @@ const register_directModel = require("../../models/register_direct.model");
 const register_doctorModel = require("../../models/register_doctor.model");
 const Register_inspectionModel = require("../../models/register_inspection.model");
 const Register_kassaModel = require("../../models/register_kassa.model");
+const register_kirish = require("../../models/register_kirish.model");
+const register_bassen = require("../../models/register_bassen.model");
 const register_med_directModel = require("../../models/register_med_direct.model");
 const register_reagentModel = require("../../models/register_reagent.model");
 const register_supplierModel = require("../../models/register_supplier.model");
@@ -122,6 +124,7 @@ class HisobotController {
         })
         res.send(model)
     };
+    
     directHisobot = async (req, res, next) => {
         let query = {}, queryx = {};
         let body = req.body;
@@ -157,6 +160,7 @@ class HisobotController {
         })
         res.send(model)
     };
+
     inspection = async (req, res, next) => {
         let query = {}, queryx = {};
         let body = req.body;
@@ -191,6 +195,7 @@ class HisobotController {
         })
         res.send(result);
     };
+
     InspectionSverka = async (req, res, next) => {
         let query = {}, queryx = {};
         let body = req.body;
@@ -217,8 +222,9 @@ class HisobotController {
            ]
         })
         res.send(model)
-       }
-       kassaSverka = async (req, res, next) => {
+    }
+
+    kassaSverka = async (req, res, next) => {
         let result, results;
         let body = req.body; 
         let query = {}, query_begin = {}, query_end = {}, queryx = {};
@@ -263,6 +269,7 @@ class HisobotController {
       })
       res.send(result);
     }
+
     palata = async (req, res, next) => {
         let query = {}, query_begin = {}, query_end = {}, body = req.body;
         let data1 = body.date_to;
@@ -313,6 +320,7 @@ class HisobotController {
        
             res.send(result);
     }
+
     doctorHisobot = async (req, res, next) => {
         let query = {}, queryx = {};
         let body = req.body;
@@ -369,7 +377,7 @@ class HisobotController {
         res.send(model)
     }
    
-   DoctorSverka = async (req, res, next) => {
+    DoctorSverka = async (req, res, next) => {
     let query = {}, queryx = {};
     let body = req.body;
     let datetime1 = body.datetime1;
@@ -396,8 +404,9 @@ class HisobotController {
        ]
     })
     res.send(model)
-   }
-   pastavchikSverka = async(req, res, next) => {
+    }
+
+    pastavchikSverka = async(req, res, next) => {
     let body = req.body; 
     let query = {}, queryx = {};
         let datetime1 = body.datetime1;
@@ -426,106 +435,164 @@ class HisobotController {
            ]
     })
     res.send(model)
- } 
- pastavchikHisobot = async(req, res, next) => {
-    let body = req.body; 
-    let query = {}, queryx = {};
+    }
+
+    pastavchikHisobot = async(req, res, next) => {
+        let body = req.body; 
+        let query = {}, queryx = {};
+            let datetime1 = body.datetime1;
+            let datetime2 = body.datetime2;
+            if(body.pastavchik_id !== null){
+                query.id = {[Op.eq] : body.pastavchik_id }  
+                queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
+                
+            };
+        let model = await register_supplierModel.findAll({
+            attributes : [ 
+                'id', 'doc_id', "type", "date_time", "doc_type", "summa", "pastavchik_id", "place",
+                [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime1 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'total'],
+                [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'kirim' THEN register_supplier.summa ELSE 0 END)"), 'total_kirim'],
+                [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'chiqim' THEN register_supplier.summa ELSE 0 END)"), 'total_chiqim'],
+                [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime2 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'end_total'],
+            ],
+            include:[
+                {model: pastavchikModel, as: 'pastavchik'}
+            ],
+            where: queryx,
+            group: ['pastavchik_id']
+        })
+        res.send(model)
+    }
+
+    Hisobot = async(req, res, next) => {
+        let query = {}, queryx = {};
+        let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
-        if(body.pastavchik_id !== null){
-            query.id = {[Op.eq] : body.pastavchik_id }  
-            queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
-            
+        if(body.reagent_id !== null){
+            query.id = {[Op.eq] : body.reagent_id }  
+            queryx.reagent_id = {[Op.eq]: body.reagent_id}
         };
-    let model = await register_supplierModel.findAll({
-        attributes : [ 
-            'id', 'doc_id', "type", "date_time", "doc_type", "summa", "pastavchik_id", "place",
-            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime1 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'total'],
-            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'kirim' THEN register_supplier.summa ELSE 0 END)"), 'total_kirim'],
-            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time >= " + datetime1 + " and register_supplier.date_time <= " + datetime2 + " AND register_supplier.doc_type = 'chiqim' THEN register_supplier.summa ELSE 0 END)"), 'total_chiqim'],
-            [sequelize.literal("SUM(CASE WHEN register_supplier.date_time < " + datetime2 + " THEN register_supplier.summa * power(-1, 'type') ELSE 0 END)"), 'end_total'],
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
+        let model  = await register_reagentModel.findAll({
+            attributes: [
+                'id', "price", "date_time", "doc_id","count", "summa", "reagent_id", "doc_type",
+                [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+            [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'kirim' THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'chiqim' THEN register_reagent.summa ELSE 0 END)`), 'total_chiqim'],
+            [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
         ],
-        include:[
-            {model: pastavchikModel, as: 'pastavchik'}
-        ],
+            include:[
+                {model: reagentDepartmentModel, as: 'reagent_department',
+            include:[
+                {model: reagentModel, as: 'reagent'},
+                // {model: departmentModel, as:'department'}
+            ]
+            },
+            {model: reagentModel, as: 'reagent'}
+            ],
         where: queryx,
-        group: ['pastavchik_id']
-    })
-    res.send(model)
- } 
- Hisobot = async(req, res, next) => {
-    let query = {}, queryx = {};
-    let body = req.body;
-    let datetime1 = body.datetime1;
-    let datetime2 = body.datetime2;
-    if(body.reagent_id !== null){
-        query.id = {[Op.eq] : body.reagent_id }  
-        queryx.reagent_id = {[Op.eq]: body.reagent_id}
-    };
-    queryx.date_time = {
-        [Op.gte]: datetime1,
-        [Op.lte]: datetime2
+        group: ['reagent_id']
+        })
+        res.send(model)
     }
-    let model  = await register_reagentModel.findAll({
-        attributes: [
-            'id', "price", "date_time", "doc_id","count", "summa", "reagent_id", "doc_type",
-            [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
-           [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'kirim' THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
-           [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'chiqim' THEN register_reagent.summa ELSE 0 END)`), 'total_chiqim'],
-           [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
-       ],
+
+    Sverka = async(req, res, next) => {
+        let query = {}, queryx = {};
+        let body = req.body;
+        let datetime1 = body.datetime1;
+        let datetime2 = body.datetime2;
+        if(body.reagent_id !== null){
+            query.id = {[Op.eq] : body.reagent_id }  
+            queryx.reagent_id = {[Op.eq]: body.reagent_id}
+        };
+        queryx.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
+        let model  = await register_reagentModel.findAll({
+            attributes: [
+                'id', "price", "date_time", "doc_id","count", "summa", "reagent_id", "doc_type",
+                [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
+            [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'kirim' THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
+            [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'chiqim' THEN register_reagent.summa ELSE 0 END)`), 'total_chiqim'],
+            [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
+        ],
         include:[
             {model: reagentDepartmentModel, as: 'reagent_department',
         include:[
             {model: reagentModel, as: 'reagent'},
-            // {model: departmentModel, as:'department'}
+            {model: doctorCategory, as:'department'}
         ]
         },
         {model: reagentModel, as: 'reagent'}
-         ],
-       where: queryx,
-       group: ['reagent_id']
-    })
-    res.send(model)
-}
-Sverka = async(req, res, next) => {
-    let query = {}, queryx = {};
-    let body = req.body;
-    let datetime1 = body.datetime1;
-    let datetime2 = body.datetime2;
-    if(body.reagent_id !== null){
-        query.id = {[Op.eq] : body.reagent_id }  
-        queryx.reagent_id = {[Op.eq]: body.reagent_id}
-    };
-    queryx.date_time = {
-        [Op.gte]: datetime1,
-        [Op.lte]: datetime2
+        ],
+        where: queryx,
+        group: ['id'],
+        order: [
+            ['id', 'DESC']
+        ]
+        })
+        res.send(model)
     }
-    let model  = await register_reagentModel.findAll({
-        attributes: [
-            'id', "price", "date_time", "doc_id","count", "summa", "reagent_id", "doc_type",
-            [sequelize.literal("SUM(CASE WHEN date_time < " + datetime1 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
-           [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'kirim' THEN register_reagent.summa ELSE 0 END)`), 'total_kirim'],
-           [sequelize.literal("SUM(CASE WHEN register_reagent.date_time >= " + datetime1 + " and register_reagent.date_time <= " + datetime2 + ` AND register_reagent.doc_type = 'chiqim' THEN register_reagent.summa ELSE 0 END)`), 'total_chiqim'],
-           [sequelize.literal("SUM(CASE WHEN date_time <= " + datetime2 + " THEN summa * power(-1, 'type') ELSE 0 END)"), 'end_total']
-       ],
-       include:[
-        {model: reagentDepartmentModel, as: 'reagent_department',
-    include:[
-        {model: reagentModel, as: 'reagent'},
-        {model: doctorCategory, as:'department'}
-    ]
-    },
-    {model: reagentModel, as: 'reagent'}
-     ],
-       where: queryx,
-       group: ['id'],
-       order: [
-        ['id', 'DESC']
-       ]
-    })
-    res.send(model)
-}
+
+    kirishHisobot = async (req, res, next) => {
+        let result, results;
+        let body = req.body; 
+        let query = {}, query_begin = {}, query_end = {}, queryx = {};
+        query_begin.date_time =  {
+            [Op.lt]: body.datetime1,
+        };
+        query_end.date_time =  {
+            [Op.lte]: body.datetime2,
+        };
+        let datetime1 = body.datetime1,
+        datetime2 = body.datetime2
+        query.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
+        
+        result = await register_kirish.findAll({
+          where: query,
+          order:[
+            ['id', 'DESC']
+          ],
+          group: ['id']
+      })
+      res.send(result);
+    }
+    BassenSverka = async (req, res, next) => {
+        let result, results;
+        let body = req.body; 
+        let query = {}, query_begin = {}, query_end = {}, queryx = {};
+
+        query_begin.date_time =  {
+            [Op.lt]: body.datetime1,
+        };
+        query_end.date_time =  {
+            [Op.lte]: body.datetime2,
+        };
+
+        let datetime1 = body.datetime1,
+        datetime2 = body.datetime2
+        query.date_time = {
+            [Op.gte]: datetime1,
+            [Op.lte]: datetime2
+        }
+        
+        result = await register_bassen.findAll({
+          where: query,
+          order:[
+            ['id', 'DESC']
+          ],
+          group: ['id']
+      })
+      res.send(result);
+    }
 }
 
 

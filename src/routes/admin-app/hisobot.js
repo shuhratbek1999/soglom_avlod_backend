@@ -18,5 +18,6 @@ router.post('/reagent_hisobot', auth(), awaitHandlerFactory(hisobotController.Hi
 router.post('/reagent_sverka', auth(), awaitHandlerFactory(hisobotController.Sverka));
 router.post('/kassa_sverka', auth(), awaitHandlerFactory(hisobotController.kassaSverka));
 router.post('/kirish', auth(), awaitHandlerFactory(hisobotController.kirishHisobot));
-router.post('/kirish_sverka', auth(), awaitHandlerFactory(hisobotController.kirish));
+router.post('/bassen', auth(), awaitHandlerFactory(hisobotController.BassenSverka));
+// router.post('/kirish_sverka', auth(), awaitHandlerFactory(hisobotController.kirishHisobot));
 module.exports = router;
