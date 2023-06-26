@@ -14,11 +14,12 @@ class DoctorController {
     filialDoctor = async(req,res,next) => {
         const model = await filialModel.findAll({
             include:[
+            {model: DoctorModel, as: 'doctor', 
+              include:[
                 {model: doctor_categoryModel, as: 'doctor_category',
-                  include:[
-                    {model: DoctorModel, as: 'doctor'}
-                  ]
-               }
+                }
+              ]
+            }
             ]
         })
         res.send(model)
