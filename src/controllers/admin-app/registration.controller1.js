@@ -212,27 +212,30 @@ class RegistrationController {
                 { model: Registration_doctorModel,as: 'registration_doctor', 
                     include : [
                         { model: Registration_recipeModel, as: 'registration_recipe',
-                        include:[
-                            {model:PillModel,as:'pill'}]
-                    },
+                            include:[
+                                {model:PillModel,as:'pill'}
+                            ]
+                        },
                         { model: DoctorModel, as: 'doctor',
-                    include:[
-                        {model:DoctorCategory,as:'doctor_category',attributes:['name']},
-                    ]},
-                    {model: register_mkb, as: 'register_mkb'}
+                            include:[
+                                {model:DoctorCategory,as:'doctor_category',attributes:['name']},
+                            ]
+                        },
+                        {model: register_mkb, as: 'register_mkb'},
+                        {model: filialModel, as: 'filial'}
                     ]
                 },
                 { model: Registration_inspectionModel,as: 'registration_inspection', 
                     include : [
                         { model: Registration_inspection_childModel, as: 'registration_inspection_child'},
                         { model: InspectionModel, as: 'inspection',
-
-                        include:[
-                            {model:UserModel,as:'User',attributes:['user_name']},
-                            {model: inspectionCategory, as: 'inspector_category'}
+                            include:[
+                                {model:UserModel,as:'User',attributes:['user_name']},
+                                {model: inspectionCategory, as: 'inspector_category'}
+                            ]
+                        },
+                        {model: filialModel, as: 'filial'}
                         ]
-                    }
-                    ]
                 },
                 { model: Registration_filesModel,as: 'registration_files'},
                 { model: PatientModel,as: 'patient', 
