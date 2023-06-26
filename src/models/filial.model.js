@@ -42,4 +42,5 @@ name: {
 filialModel.hasMany(inspectionModel, {as: 'inspection', foreignKey: 'filial_id'});
 Inspection_categoryModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
 inspectionModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+filialModel.hasMany(Inspection_categoryModel, {as: 'inspection_category', foreignKey: 'filial_id'})
 module.exports = filialModel;

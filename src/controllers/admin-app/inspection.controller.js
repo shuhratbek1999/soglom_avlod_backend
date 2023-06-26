@@ -6,6 +6,7 @@ const inspectionChildModel = require('../../models/inspectionChild.model');
 const UserModel = require('../../models/user.model');
 const inspector_categoryModel = require('../../models/inspector_category.model');
 const filialModel = require('../../models/filial.model');
+const Inspection_categoryModel = require('../../models/inspector_category.model');
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -15,11 +16,15 @@ class InspectionController {
         let body = req.body;
         const model = await filialModel.findAll({
             include:[
-                {model: inspectionModel, as: 'inspection',
-                  include:[
-                    {model: inspectionChildModel, as: 'inspectionChild'}
-                  ]
-                 }
+                {model: Inspection_categoryModel, as: 'inspection_category',
+                   include:[
+                    {model: inspectionModel, as: 'inspection',
+                        include:[
+                        {model: inspectionChildModel, as: 'inspectionChild'}
+                        ]
+                   }
+                   ]    
+                }
             ]
         })
         res.status(200).send({

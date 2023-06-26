@@ -1,6 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const expenseModel = require('../models/expense.model')
+const expenseModel = require('../models/expense.model');
+const Inspection_categoryModel = require('./inspector_category.model');
+const inspectionModel = require('./inspection.model');
 class kassaOrderModel extends Model {
     // toJSON () {//Api da ishladi
     // var values = Object.assign({}, this.get());
@@ -59,5 +61,6 @@ comment:{
   ],
  
 });
-kassaOrderModel.belongsTo(expenseModel, {as: 'expense', foreignKey: 'expense_id'})
+kassaOrderModel.belongsTo(expenseModel, {as: 'expense', foreignKey: 'expense_id'});
+Inspection_categoryModel.hasMany(inspectionModel, {as: 'inspection', foreignKey: 'category_id'})
 module.exports = kassaOrderModel;
