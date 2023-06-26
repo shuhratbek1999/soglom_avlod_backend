@@ -80,7 +80,7 @@ Registration_inspectionModel.init({
     } 
   }
 });
-Registration_inspectionModel.hasMany(filialModel, {as: 'filial', foreignKey: 'filial_id'});
+Registration_inspectionModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'});
 Registration_inspectionModel.belongsTo(inspection, {as: 'inspection', foreignKey: 'inspection_id'})
 Registration_inspectionModel.hasMany(Registration_inspection_childModel, {as: 'registration_inspection_child', foreignKey: 'parent_id'})
 // Registration_inspectionModel.hasMany(RegistrationModel, {as: 'registration', foreignKey: 'registration_id'})
