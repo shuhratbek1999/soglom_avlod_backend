@@ -206,10 +206,13 @@ class HisobotController {
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
-        if(body.inspection_category !== null){
-            query.inspection_category = {[Op.eq]: body.inspection_category},
-            query.filial_id = {[Op.eq]: body.filial_id}
-        };
+        if(body.filial_id != null && body.inspection_category == null){
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
+        else if(body.filial_id != null && body.inspection_category != null){
+            queryx.inspection_category = {[Op.eq]: body.inspection_category},
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
         queryx.date_time = {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
