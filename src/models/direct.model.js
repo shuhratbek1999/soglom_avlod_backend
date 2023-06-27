@@ -23,8 +23,10 @@ name: {
     allowNull: false
 },
 med_id: {
-  type: DataTypes.INTEGER,
-  allowNull: false
+  type: DataTypes.INTEGER
+},
+filial_id:{
+  type: DataTypes.INTEGER
 }
 
 }, {

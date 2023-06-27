@@ -9,7 +9,7 @@ const { validationResult } = require('express-validator');
  ******************************************************************************/
 class directController {
     getAll = async (req, res, next) => {
-        const model = await directModel.findAll(req.body);
+        const model = await directModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -37,7 +37,11 @@ class directController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
-       const model = await directModel.create(req.body);
+       const model = await directModel.create({
+        'name': req.body.name,
+        'bonus': req.body.bonus,
+        'filial_id': req.body.filial_id
+       });
        res.status(200).send({
         error: false,
         error_code: 200,
@@ -54,7 +58,7 @@ class directController {
     });
     model.name = req.body.name;
     model.bonus = req.body.bonus;
-    model.med_id = req.body.med_id;
+    model.filial_id = req.body.filial_id;
     model.save();
     res.status(200).send({
         error: false,
