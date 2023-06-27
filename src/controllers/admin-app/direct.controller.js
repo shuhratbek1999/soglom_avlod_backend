@@ -15,7 +15,7 @@ class directController {
                 filial_id: req.body.filial_id
             },
             include:[
-                {model: filialModel, as: 'filial_id'}
+                {model: filialModel, as: 'filial'}
             ]
         })
         res.status(200).send({
