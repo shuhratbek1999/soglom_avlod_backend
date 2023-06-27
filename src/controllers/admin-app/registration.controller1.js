@@ -40,7 +40,6 @@ const RegistrationModel = require('../../models/registration.model');
 const uplataModel = require('../../models/uplata.model')
 const moment = require('moment');
 const register_mkb = require('../../models/register_mkb.model');
-const med_directModel = require('../../models/med_direct.model');
 const db = require('../../db/db-sequelize');
 const Registration_arxivModel = require('../../models/registration_arxiv.model');
 const register_doctor_arxivModel = require('../../models/register_doctor_arxiv.model');
@@ -396,7 +395,7 @@ class RegistrationController {
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
-        await this.#directAdd(model,filial_id);
+        await this.#directAdd(model);
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
@@ -443,7 +442,7 @@ class RegistrationController {
             await this.#palataadd(model, registration_palata, filial_id,false);
             await this.#payAdd(model, registration_pay,false);
             await this.#queue(false);
-            await this.#directAdd(model,filial_id, false);
+            await this.#directAdd(model, false);
             
             res.status(200).send({
                 error: false,
@@ -457,11 +456,10 @@ class RegistrationController {
 
     };
 
-    #directAdd = async(model, filial_id, insert = true) => {
+    #directAdd = async(model, insert = true) => {
         if(!insert){
           await this.#deleteDirect(model.id)
         }
-        console.log(filial_id,"filialllll");
         const direct = await directModel.findOne({
            where:{
                id: model.direct_id
@@ -478,37 +476,36 @@ class RegistrationController {
                 "comment": "",
                 "place": "Регистратион",
                 "direct_id": model.direct_id,
-                "filial_id": filial_id
+                "filial_id": direct.filial_id
              }
-           const direc =  await registerDirectModel.create(directs);
-           await this.#medDirect(direc, model, direct);
+           await registerDirectModel.create(directs);
         }
 
      }
-     #medDirect = async(direc, model, direct, insert = true) =>{
-        if(!insert){
-            await this.#medDelete(model.id)
-        }
-        let meds;
-        if(direct != null){
-             meds = await med_directModel.findOne({
-                where:{
-                    id: direct.med_id
-                }
-            })
-        }
-        var med = {
-           "date_time": Math.floor(new Date().getTime() / 1000),
-           "type": 0,
-           "price": meds != undefined ? (model.summa * meds.bonus)/100 : 0,
-           "doc_id": direc.doc_id,
-           "doc_type": "kirim",
-           "comment": "",
-           "place": "Регистратион",
-           "direct_id": direct != null ? direct.med_id : 0
-        }
-        await registerMedDirectModel.create(med);
-     }
+    //  #medDirect = async(direc, model, direct, insert = true) =>{
+    //     if(!insert){
+    //         await this.#medDelete(model.id)
+    //     }
+    //     let meds;
+    //     if(direct != null){
+    //          meds = await med_directModel.findOne({
+    //             where:{
+    //                 id: direct.med_id
+    //             }
+    //         })
+    //     }
+    //     var med = {
+    //        "date_time": Math.floor(new Date().getTime() / 1000),
+    //        "type": 0,
+    //        "price": meds != undefined ? (model.summa * meds.bonus)/100 : 0,
+    //        "doc_id": direc.doc_id,
+    //        "doc_type": "kirim",
+    //        "comment": "",
+    //        "place": "Регистратион",
+    //        "direct_id": direct != null ? direct.med_id : 0
+    //     }
+    //     await registerMedDirectModel.create(med);
+    //  }
     delete = async (req, res, next) => {
         const id = req.params.id;
         
