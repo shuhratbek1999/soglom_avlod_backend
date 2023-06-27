@@ -56,12 +56,14 @@ class pastavchik_payController {
     }
    create = async (req, res, next) => {
        this.checkValidation(req);
+       let filial_id = req.currentUser.filial_id;
        const model = await pastavchik_payModel.create({
           "type": req.body.type,
           "price": req.body.price,
           "backlog": req.body.backlog,
           "jami_summa": req.body.jami_summa,
           "pastavchik_id": req.body.pastavchik_id,
+          "filial_id": filial_id,
           "date_time": Math.floor(new Date().getTime() / 1000)
        });
        var register = {
@@ -71,7 +73,8 @@ class pastavchik_payController {
         "doc_type": "kirim",
         "type": model.type,
         "place": "Pastavchik",
-        "pastavchik_id": model.pastavchik_id
+        "pastavchik_id": model.pastavchik_id,
+        "filial_id": filial_id
       }
       await register_supplierModel.create(register);
       var kassa = {
@@ -81,7 +84,8 @@ class pastavchik_payController {
         "doc_type": "Chiqim",
         "pay_type": model.type == 0 ? "Naqt" : "Plastik",
         "type": model.type,
-        "place": "supplier"
+        "place": "supplier",
+        "filial_id": filial_id
       }
          await register_kassaModel.create(kassa)
        res.status(200).send({
@@ -93,6 +97,7 @@ class pastavchik_payController {
    }
    update = async (req, res, next) => {
        this.checkValidation(req);
+       let filial_id = req.currentUser.filial_id;
     const model = await pastavchik_payModel.findOne({
         where:{
             id: req.params.id
@@ -103,6 +108,7 @@ class pastavchik_payController {
     model.backlog = req.body.backlog;
     model.jami_summa = req.body.jami_summa;
     model.pastavchik_id = req.body.pastavchik_id;
+    model.filial_id = filial_id;
     model.date_time = Math.floor(new Date().getTime() / 1000);
     model.save();
     await register_supplierModel.destroy({
@@ -118,7 +124,8 @@ class pastavchik_payController {
         "doc_type": "kirim",
         "type": model.type,
         "place": "Pastavchik",
-        "pastavchik_id": model.pastavchik_id
+        "pastavchik_id": model.pastavchik_id,
+        "filial_id": filial_id,
       }
       await register_supplierModel.create(register);
       await register_kassaModel.destroy({
@@ -134,7 +141,8 @@ class pastavchik_payController {
         "doc_type": "Chiqim",
         "pay_type": model.type == 0 ? "Naqt" : "Plastik",
         "type": model.type,
-        "place": "supplier"
+        "place": "supplier",
+        "filial_id": filial_id
       }
          await register_kassaModel.create(kassa)
     res.status(200).send({
@@ -153,8 +161,11 @@ class pastavchik_payController {
         if(body.pastavchik_id !== null){
             query.id = {[Op.eq] : body.pastavchik_id }  
             queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
-            
-        };
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
+        else{
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
     let model = await register_supplierModel.findAll({
         attributes : [ 
             'id', 'doc_id', "type", "date_time", "doc_type", "summa", "pastavchik_id", "place",
@@ -216,8 +227,11 @@ class pastavchik_payController {
         if(body.pastavchik_id !== null){
             query.id = {[Op.eq] : body.pastavchik_id }  
             queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
-            
-        };
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
+        else{
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
     let model = await register_supplierModel.findAll({
         attributes : [ 
             'id', 'pastavchik_id', "type", "date_time", "doc_type", "summa", "doc_id", "place",

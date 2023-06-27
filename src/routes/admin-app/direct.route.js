@@ -10,6 +10,7 @@ const  {directModels}  = require('../../middleware/validators/admin-app/directVa
 router.get('/all', auth(),  awaitHandlerFactory(directController.getAll));
 router.get('/one/:id', auth(), awaitHandlerFactory(directController.getOne));
 router.post('/create',auth(), directModels, awaitHandlerFactory(directController.create));
+router.post('/filial_direct',auth(), awaitHandlerFactory(directController.filialDirect));
 router.patch('/update/:id', auth(), directModels, awaitHandlerFactory(directController.update));
 router.delete('/delete/:id', auth(), awaitHandlerFactory(directController.delete));
 module.exports = router;

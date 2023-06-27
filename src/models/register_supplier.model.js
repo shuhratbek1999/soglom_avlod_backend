@@ -40,6 +40,9 @@ place:{
 pastavchik_id:{
   type: DataTypes.INTEGER,
   allowNull: false
+},
+filial_id:{
+  type: DataTypes.INTEGER
 }
 
 }, {

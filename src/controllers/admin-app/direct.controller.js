@@ -9,6 +9,22 @@ const filialModel = require('../../models/filial.model');
  *                              Employer Controller
  ******************************************************************************/
 class directController {
+    filialDirect = async(req, res, next) => {
+        const model = await directModel.findAll({
+            where:{
+                filial_id: req.body.filial_id
+            },
+            include:[
+                {model: filialModel, as: 'filial_id'}
+            ]
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
+    }
     getAll = async (req, res, next) => {
         const model = await directModel.findAll({
             include:[

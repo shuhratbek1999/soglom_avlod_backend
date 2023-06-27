@@ -3,6 +3,7 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const pastavchikModel = require('../../models/pastavchik.model')
 const { validationResult } = require('express-validator');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -12,7 +13,10 @@ class pastavchikController {
         const model =  await pastavchikModel.findAll({
             where:{
                 filial_id: req.body.filial_id
-            }
+            },
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
         })
         res.status(200).send({
             error: false,
@@ -22,7 +26,11 @@ class pastavchikController {
         });
     }
     getAll = async (req, res, next) => {
-        const model = await pastavchikModel.findAll();
+        const model = await pastavchikModel.findAll({
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -35,7 +43,10 @@ class pastavchikController {
         const model = await pastavchikModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
