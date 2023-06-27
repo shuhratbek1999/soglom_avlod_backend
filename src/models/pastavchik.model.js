@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const filialModel = require('./filial.model');
 class pastavchikModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -19,6 +20,10 @@ name: {
     type: DataTypes.STRING(600),
     allowNull: false
 },
+filial_id:{
+  type: DataTypes.INTEGER,
+  allowNull: false
+}
 
 }, {
   sequelize,
@@ -37,4 +42,5 @@ name: {
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+pastavchikModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = pastavchikModel;

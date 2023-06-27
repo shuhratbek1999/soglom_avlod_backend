@@ -8,6 +8,19 @@ const { validationResult } = require('express-validator');
  *                              Employer Controller
  ******************************************************************************/
 class pastavchikController {
+    filialPastavchik = async(req, res, next) => {
+        const model =  await pastavchikModel.findAll({
+            where:{
+                filial_id: req.body.filial_id
+            }
+        })
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
+    }
     getAll = async (req, res, next) => {
         const model = await pastavchikModel.findAll();
         res.status(200).send({
@@ -52,6 +65,7 @@ class pastavchikController {
         }
     });
     model.name = req.body.name;
+    model.filial_id = req.body.filial_id;
     model.save();
     res.status(200).send({
         error: false,

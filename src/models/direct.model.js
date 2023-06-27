@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const filialModel = require('./filial.model');
 class directModel extends Model {
     toJSON () {//Api da ishladi
     var values = Object.assign({}, this.get());
@@ -46,4 +47,5 @@ filial_id:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
+directModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
 module.exports = directModel;

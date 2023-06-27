@@ -3,13 +3,18 @@ const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
 const directModel = require('../../models/direct.model')
 const { validationResult } = require('express-validator');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class directController {
     getAll = async (req, res, next) => {
-        const model = await directModel.findAll();
+        const model = await directModel.findAll({
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
+        });
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -23,7 +28,10 @@ class directController {
         const model = await directModel.findOne({
             where:{
                 id: req.params.id
-            }
+            },
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
         });
         if(!model){
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
