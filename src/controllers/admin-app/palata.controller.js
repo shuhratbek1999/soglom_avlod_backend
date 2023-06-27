@@ -52,7 +52,8 @@ class palataController {
             }
             ]
             },
-            ]
+            ],
+            group: ['']
          })
          console.log(model);
          let bugun = Math.floor(new Date().getDate()/1000);

@@ -22,6 +22,7 @@ const PatientModel = require("../../models/patient.model");
 const directModel = require("../../models/direct.model");
 const med_directModel = require("../../models/med_direct.model");
 const UserModel = require("../../models/user.model");
+const Inspection_categoryModel = require("../../models/inspector_category.model");
 
 
 class HisobotController {
@@ -164,6 +165,7 @@ class HisobotController {
     inspection = async (req, res, next) => {
         let query = {}, queryx = {};
         let body = req.body;
+        console.log(body);
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
         query.date_time = {
@@ -171,7 +173,8 @@ class HisobotController {
             [Op.lte]: datetime2
         }
         if(body.inspection_category !== null){
-            query.user_id = {[Op.eq]: body.inspection_category}
+            query.inspection_category = {[Op.eq]: body.inspection_category},
+            query.filial_id = {[Op.eq]: body.filial_id}
             
         };
           
@@ -184,11 +187,11 @@ class HisobotController {
                 // [sequelize.literal("COUNT(Case WHEN register_inspection.date_time >=" + datetime1 + " and register_inspection.date_time <= " + datetime2 + " and register_inspection.user_id > 0 then register_inspection.user_id else 0 end)"), 'count']
             ],
             include: [
-                { model: UserModel, as: 'User', attributes: ['user_name', 'id']},
+                { model: Inspection_categoryModel, as: 'inspection', attributes: ['name', 'id']},
             ],
             where: query,
             raw: true,
-            group: ['user_id'],
+            group: ['inspection_category'],
             order: [
                 ['id', 'ASC']
             ],
@@ -202,7 +205,8 @@ class HisobotController {
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
         if(body.inspection_category !== null){
-            queryx.user_id = {[Op.eq]: body.inspection_category}
+            query.inspection_category = {[Op.eq]: body.inspection_category},
+            query.filial_id = {[Op.eq]: body.filial_id}
         };
         queryx.date_time = {
             [Op.gte]: datetime1,

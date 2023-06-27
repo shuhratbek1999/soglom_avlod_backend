@@ -9,7 +9,7 @@ const { validationResult } = require('express-validator');
  ******************************************************************************/
 class pastavchikController {
     getAll = async (req, res, next) => {
-        const model = await pastavchikModel.findAll(req.body);
+        const model = await pastavchikModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,

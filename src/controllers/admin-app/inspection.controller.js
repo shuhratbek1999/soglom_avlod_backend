@@ -20,7 +20,8 @@ class InspectionController {
                    include:[
                     {model: inspectionModel, as: 'inspection',
                         include:[
-                        {model: inspectionChildModel, as: 'inspectionChild'}
+                        {model: inspectionChildModel, as: 'inspectionChild'},
+                        {model: filialModel, as: 'filial'},
                         ]
                    }
                    ]    

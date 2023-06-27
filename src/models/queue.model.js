@@ -3,9 +3,6 @@ const sequelize = require('../db/db-sequelize');
 const PatientModel = require('./patient.model');
 const RoomModel = require('../models/room.model');
 const DoctorModel = require('./doctor.model');
-const register_doctorModel = require('./register_doctor.model');
-const Registration_doctorModel = require('./registration_doctor.model');
-const Registration_inspectionModel = require('./registration_inspection.model');
 const RegistrationModel = require('./registration.model');
 class QueueModel extends Model {
     toJSON () {//Api da ishladi

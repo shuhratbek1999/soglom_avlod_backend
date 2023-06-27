@@ -15,7 +15,7 @@ const doctorCategory = require('../../models/doctor_category.model');
  ******************************************************************************/
 class reagentController {
     getAll = async (req, res, next) => {
-        const model = await reagentModel.findAll(req.body);
+        const model = await reagentModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,

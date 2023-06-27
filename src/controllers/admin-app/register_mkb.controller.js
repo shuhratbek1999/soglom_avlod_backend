@@ -7,7 +7,7 @@ const { validationResult } = require("express-validator");
  ******************************************************************************/
 class register_mkbController {
   getAll = async (req, res, next) => {
-    const model = await register_mkbModel.findAll(req.body);
+    const model = await register_mkbModel.findAll();
     res.status(200).send({
       error: false,
       error_code: 200,

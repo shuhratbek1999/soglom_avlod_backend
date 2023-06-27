@@ -735,6 +735,7 @@ class RegistrationController {
                  "comment": ""
             }
             var {Registration_recipe, register_mkb,...data} = element;
+            console.log(element, "doctorrrrrrrr");
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -1491,7 +1492,7 @@ class RegistrationController {
       res.send({
         error_code: 201,
         error: false,
-        message: "malumotlar chiqdi",
+        message: "malumotlar chiqdi", 
         data: model
       })
     }

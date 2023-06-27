@@ -56,7 +56,7 @@ Registration_inspectionModel.init({
     allowNull: false
   },
   skidka:{
-    type: 'decimal'
+    type: DataTypes.DECIMAL
   }
 }, {
   sequelize,

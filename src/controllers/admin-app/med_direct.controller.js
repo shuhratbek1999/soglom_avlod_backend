@@ -9,7 +9,7 @@ const { validationResult } = require('express-validator');
  ******************************************************************************/
 class med_directController {
     getAll = async (req, res, next) => {
-        const model = await med_directModel.findAll(req.body);
+        const model = await med_directModel.findAll();
         res.status(200).send({
             error: false,
             error_code: 200,
