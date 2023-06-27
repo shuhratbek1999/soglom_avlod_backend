@@ -249,8 +249,10 @@ class HisobotController {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
         }
-        if(body.user_id !== null && body.filial_id !== null){
+        if(body.user_id !== null){
             query.user_id = {[Op.eq]: body.user_id},
+            query.filial_id = {[Op.eq]: body.filial_id}
+        }else{
             query.filial_id = {[Op.eq]: body.filial_id}
         }
         result = await Register_kassaModel.findAll({

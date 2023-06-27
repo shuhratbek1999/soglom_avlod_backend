@@ -80,7 +80,8 @@ class soriController {
 //    }
 
    kassa = async(req, res, next) => {
-    let body = req.body, date = Math.floor(new Date().getTime() / 1000), sori;
+    let body = req.body, date = Math.floor(new Date().getTime() / 1000), sori,
+    filial_id = req.currentUser.filial_id;
     if(body.sori_id){
         sori = await soriModel.findOne({
              where:{
@@ -107,7 +108,7 @@ class soriController {
          "doc_type": "Kirim",
          "doctor_id": sori.id,
          "place": "Sori",
-         "filial_id": 0
+         "filial_id": filial_id
     }
     let sorilar = await register_soriModel.findOne({
         attributes:[

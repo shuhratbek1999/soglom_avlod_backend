@@ -20,7 +20,8 @@ class kirish_basseynController {
         });
     }
     kirish = async(req, res, next) => {
-        let body = req.body, date = Math.floor(new Date().getTime() / 1000);
+        let body = req.body, date = Math.floor(new Date().getTime() / 1000),
+        filial_id = req.currentUser.filial_id;
         let summa, sum = 0;
         summa = await kirish_basseynModel.findOne({
             where:{id: 1}
@@ -41,7 +42,7 @@ class kirish_basseynController {
             "doc_type": "Kirim",
             "doctor_id": model.id,
             "place": "Бассейн",
-            "filial_id": 0
+            "filial_id": filial_id
        }
        await Register_kassaModel.create(kassa);
        res.send(model)

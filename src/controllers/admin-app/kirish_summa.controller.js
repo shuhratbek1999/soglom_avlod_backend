@@ -21,10 +21,11 @@ class kirish_summaController {
     }
     kirish = async(req, res, next) => {
         let body = req.body, date = Math.floor(new Date().getTime() / 1000);
-        let summa, sum = 0;
+        let summa, sum = 0, filial_id = req.currentUser.filial_id;
         summa = await kirish_summaModel.findOne({
             where:{id: 1}
         })
+        console.log(req.currentUser);
         sum += (summa.dataValues.odam_price * body.odam_soni + summa.dataValues.moshina_price * body.mashina_soni);
          let model = await register_kirish.create({
             "date_time": date,
@@ -43,7 +44,7 @@ class kirish_summaController {
             "doc_type": "Kirim",
             "doctor_id": model.id,
             "place": "Kirish",
-            "filial_id": 0
+            "filial_id": filial_id
        }
        await Register_kassaModel.create(kassa);
        res.send(model)
