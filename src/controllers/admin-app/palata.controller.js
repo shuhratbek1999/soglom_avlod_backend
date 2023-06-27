@@ -35,6 +35,9 @@ class palataController {
             [Op.gte]: body.datetime1,
             [Op.lte]: body.datetime2,
         }
+        if(body.filial_id != null){
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
          let model = await palataModel.findAll({
             attributes: ['id','name','price','status','filial_id','user_id',
         // [sequelize.literal('register_palata.date_time'), 'date_time']
@@ -53,7 +56,8 @@ class palataController {
             ]
             },
             ],
-            group: ['']
+            where: queryx,
+            group: ['id']
          })
          console.log(model);
          let bugun = Math.floor(new Date().getDate()/1000);

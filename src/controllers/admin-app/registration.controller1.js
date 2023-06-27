@@ -392,17 +392,18 @@ class RegistrationController {
 
     create = async (req, res, next) => {
         this.checkValidation(req);
+        let filial_id = req.currentUser.filial_id;
         var {registration_inspection,registration_doctor,registration_files,registration_palata, registration_pay, ...data} = req.body;
         data.created_at=Math.floor(new Date().getTime() / 1000);
         const model = await ModelModel.create(data);
-        await this.#directAdd(model);
+        await this.#directAdd(model,filial_id);
         if (!model) {
             throw new HttpException(500, 'Something went wrong');
         }
         await this.#inspectionadd(model, registration_inspection);
         await this.#doctoradd(model,  registration_doctor);
         await this.#filesadd(model, registration_files);
-        await this.#palataadd(model, registration_palata);
+        await this.#palataadd(model, registration_palata, filial_id);
         await this.#payAdd(model, registration_pay);
         await this.#queue();
         res.status(200).send({
@@ -415,6 +416,7 @@ class RegistrationController {
     };
     update = async (req, res, next) => {
         this.checkValidation(req);
+        let filial_id = req.currentUser.filial_id;
         var {registration_inspection,registration_doctor,registration_files,registration_palata,registration_pay, ...data} = req.body;
         var id = parseInt(req.params.id);
         var model = await ModelModel.findOne({where : {id: id}})
@@ -438,10 +440,10 @@ class RegistrationController {
             await this.#inspectionadd(model, registration_inspection,false);
             await this.#doctoradd(model, registration_doctor,false);
             await this.#filesadd(model, registration_files,false);
-            await this.#palataadd(model, registration_palata,false);
+            await this.#palataadd(model, registration_palata, filial_id,false);
             await this.#payAdd(model, registration_pay,false);
             await this.#queue(false);
-            await this.#directAdd(model, false);
+            await this.#directAdd(model,filial_id, false);
             
             res.status(200).send({
                 error: false,
@@ -455,10 +457,11 @@ class RegistrationController {
 
     };
 
-    #directAdd = async(model, insert = true) => {
+    #directAdd = async(model, filial_id, insert = true) => {
         if(!insert){
           await this.#deleteDirect(model.id)
         }
+        console.log(filial_id,"filialllll");
         const direct = await directModel.findOne({
            where:{
                id: model.direct_id
@@ -474,7 +477,8 @@ class RegistrationController {
                 "doc_type": "kirim",
                 "comment": "",
                 "place": "Регистратион",
-                "direct_id": model.direct_id
+                "direct_id": model.direct_id,
+                "filial_id": filial_id
              }
            const direc =  await registerDirectModel.create(directs);
            await this.#medDirect(direc, model, direct);
@@ -674,7 +678,7 @@ class RegistrationController {
             await Registration_inspection_childModel.create(dds); 
         }
     }
-    #palataadd = async(model, registration_palata,  insert = true) =>{
+    #palataadd = async(model, registration_palata, filial_id,  insert = true) =>{
         var palata;
         var date_time = Math.floor(new Date().getTime() / 1000);
         if(!insert){
@@ -689,7 +693,7 @@ class RegistrationController {
                 "date_do": element.date_do,
                 "date_to": element.date_to,
                 "day":element.day,
-                "filial_id":element.filial_id == null ? 0 : element.filial_id,
+                "filial_id":filial_id == null ? 0 : filial_id,
                 "user_id":element.user_id == null ? 0 : element.user_id,
                 "total_price":element.total_price};
             await registration_palataModel.create(palata); 
@@ -703,7 +707,7 @@ class RegistrationController {
                 "date_to": element.date_to,
                 "date_do": element.date_do,
                 "date_time": date_time,
-                "filial_id": element.filial_id == null ? 0 : element.filial_id,
+                "filial_id": filial_id == null ? 0 : filial_id,
                 "user_id": element.user_id == null ? 0 : element.user_id
             })
 

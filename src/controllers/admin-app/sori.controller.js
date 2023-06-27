@@ -181,7 +181,11 @@ class soriController {
     }
     if(body.sori_id != null){
         queryx.id = {[Op.eq]: body.sori_id},
-        query.doc_id = {[Op.eq]: body.sori_id}
+        query.doc_id = {[Op.eq]: body.sori_id},
+        query.filial_id = {[Op.eq]: body.filial_id}
+    }
+    else{
+        query.filial_id = {[Op.eq]: body.filial_id}
     }
     const model = await register_soriModel.findAll({
             attributes:[
