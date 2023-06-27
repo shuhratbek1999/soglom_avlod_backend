@@ -1,13 +1,16 @@
 
 const HttpException = require('../../utils/HttpException.utils');
 // const status = require('../../utils/status.utils')
-const pastavchikModel = require('../../models/pastavchik.model')
+const pastavchikModel = require('../../models/pastavchik.model');
+const filialModel = require('../../models/filial.model');
+
 const { validationResult } = require('express-validator');
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class pastavchikController {
+
     filialPastavchik = async(req, res, next) => {
         const model =  await pastavchikModel.findAll({
             where:{
@@ -21,8 +24,14 @@ class pastavchikController {
             data: model
         });
     }
+
     getAll = async (req, res, next) => {
-        const model = await pastavchikModel.findAll();
+        const model = await pastavchikModel.findAll({
+            include:[
+                {model: filialModel, as: 'filial'}
+            ]
+        });
+        
         res.status(200).send({
             error: false,
             error_code: 200,
