@@ -34,7 +34,10 @@ class HisobotController {
         if(body.direct_id !== null){
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
-        };
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }else{
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
         queryx.date_time = {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
@@ -138,7 +141,10 @@ class HisobotController {
         if(body.direct_id !== null){
             query.id = {[Op.eq] : body.direct_id }  
             queryx.direct_id = {[Op.eq]: body.direct_id}
-        };
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }else{
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
         let model = await register_directModel.findAll({
             attributes: [
                 'id', "type", "date_time", "direct_id", "doc_id","comment", "place", "doc_type",
