@@ -172,11 +172,13 @@ class HisobotController {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
         }
-        if(body.filial_id !== null){
+        if(body.filial_id != null && body.inspection_category == null){
+            query.filial_id = {[Op.eq]: body.filial_id}
+        }
+        else if(body.filial_id != null && body.inspection_category != null){
             query.inspection_category = {[Op.eq]: body.inspection_category},
             query.filial_id = {[Op.eq]: body.filial_id}
-            
-        };
+        }
           
         let result = await Register_inspectionModel.findAll({
             attributes: [
