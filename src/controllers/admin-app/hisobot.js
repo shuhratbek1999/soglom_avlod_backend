@@ -172,7 +172,7 @@ class HisobotController {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
         }
-        if(body.inspection_category !== null){
+        if(body.filial_id !== null){
             query.inspection_category = {[Op.eq]: body.inspection_category},
             query.filial_id = {[Op.eq]: body.filial_id}
             
