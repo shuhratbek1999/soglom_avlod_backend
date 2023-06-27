@@ -13,21 +13,13 @@ const Inspection_categoryModel = require('../../models/inspector_category.model'
 class InspectionController {
     filialIns = async(req,res,next) => {
         let body = req.body;
-        const model = await filialModel.findAll({
+        const model = await inspectionModel.findAll({
             where:{
-                id: body.filial_id
+                filial_id: body.filial_id
             },
             include:[
-                {model: Inspection_categoryModel, as: 'inspection_category',
-                   include:[
-                    {model: inspectionModel, as: 'inspection',
-                        include:[
-                        {model: inspectionChildModel, as: 'inspectionChild'},
-                        {model: filialModel, as: 'filial'},
-                        ]
-                   }
-                   ]    
-                }
+                {model: inspectionChildModel, as: 'inspectionChild'},
+                {model: filialModel, as: 'filial'},
             ]
         })
         res.status(200).send({
