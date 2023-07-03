@@ -4,7 +4,6 @@ const HttpException = require('../../utils/HttpException.utils');
 const Doctor_categoryModel = require('../../models/doctor_category.model')
 const { validationResult } = require('express-validator');
 const filialModel = require('../../models/filial.model');
-const doctor_categoryModel = require('../../models/doctor_category.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -47,7 +46,7 @@ class DoctorController {
 
     filialDoctorBolim = async(req,res,next) => {
         let body = req.body;
-        const model = await doctor_categoryModel.findAll({
+        const model = await Doctor_categoryModel.findAll({
             where:{filial_id: body.filial_id}
         })
         res.status(200).send({
