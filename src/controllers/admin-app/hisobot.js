@@ -262,7 +262,7 @@ class HisobotController {
             query.filial_id = {[Op.eq]: body.filial_id}
         }
         result = await Register_kassaModel.findAll({
-            attributes: [ 'doc_type','pay_type', 'id', 'date_time', "doctor_id","place", `price`,
+            attributes: [ 'doc_type','pay_type', 'id', 'date_time', "doctor_id","place", `price`, 
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` < " + datetime1 + " THEN `register_kassa`.`price` * power(-1, 'type') ELSE 0 END)"), 'begin_total'],
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Kirim' and `register_kassa`.`pay_type` = 'Naqt' THEN `register_kassa`.`price` ELSE 0 END)"), 'kirim_naqt'],
                 [sequelize.literal("SUM(CASE WHEN `register_kassa`.`date_time` >= " + datetime1 + " and `register_kassa`.`date_time` <= " + datetime2 + " AND `register_kassa`.`doc_type` = 'Kirim' and `register_kassa`.`pay_type` = 'Clik' THEN `register_kassa`.`price` ELSE 0 END)"), 'klik'],
@@ -275,8 +275,12 @@ class HisobotController {
               {model: RegistrationModel, as: 'registration', attributes: ['id'],
               include:[
                 {model: PatientModel, as: 'patient', attributes: ['fullname']}
-              ]
-          }
+              ],
+              
+            },
+            {
+                model: UserModel, as:'user', attributes:['id','user_name']
+            }
           ],
           where: query,
           order:[
