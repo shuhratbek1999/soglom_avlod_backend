@@ -437,6 +437,13 @@ class HisobotController {
             queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
             
         };
+        if(body.filial_id != null && body.pastavchik_id == null){
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
+        else if(body.filial_id != null && body.pastavchik_id != null){
+            queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id},
+            queryx.filial_id = {[Op.eq]: body.filial_id}
+        }
         queryx.date_time = {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
@@ -468,6 +475,14 @@ class HisobotController {
                 queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id}
                 
             };
+            if(body.filial_id != null && body.pastavchik_id == null){
+                queryx.filial_id = {[Op.eq]: body.filial_id}
+            }
+            else if(body.filial_id != null && body.pastavchik_id != null){
+                queryx.pastavchik_id = {[Op.eq]: body.pastavchik_id},
+                queryx.filial_id = {[Op.eq]: body.filial_id}
+            }
+            
         let model = await register_supplierModel.findAll({
             attributes : [ 
                 'id', 'doc_id', "type", "date_time", "doc_type", "summa", "pastavchik_id", "place",
@@ -586,6 +601,8 @@ class HisobotController {
       })
       res.send(result);
     }
+
+    
     BassenSverka = async (req, res, next) => {
         let result, results;
         let body = req.body; 

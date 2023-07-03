@@ -179,13 +179,9 @@ class soriController {
         [Op.gte]: body.datetime1,
         [Op.lte]: body.datetime2,
     }
-    if(body.sori_id != null){
+    if(body.sori_id){
         queryx.id = {[Op.eq]: body.sori_id},
-        query.doc_id = {[Op.eq]: body.sori_id},
-        query.filial_id = {[Op.eq]: body.filial_id}
-    }
-    else{
-        query.filial_id = {[Op.eq]: body.filial_id}
+        query.doc_id = {[Op.eq]: body.sori_id}
     }
     const model = await register_soriModel.findAll({
             attributes:[
@@ -205,6 +201,7 @@ class soriController {
     })
     res.send(model)
    }
+   
    update = async (req, res, next) => {
        this.checkValidation(req);
     const model = await soriModel.findOne({
