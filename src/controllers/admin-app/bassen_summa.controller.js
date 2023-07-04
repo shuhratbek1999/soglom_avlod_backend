@@ -30,6 +30,8 @@ class kirish_basseynController {
     });
     let main_sum = Number(summa.dataValues.price);
     let person_sum = Number(body.odam_soni);
+    console.log(main_sum)
+    console.log(person_sum)
     sum += main_sum * person_sum;
     let model = await kirish_basseyn.create({
       date_time: date,
