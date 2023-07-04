@@ -73,28 +73,33 @@ class palataController {
     for (let i = 0; i < model.length; i++) {
       if (model[i].dataValues.register_palata.length > 0) {
         for (let key of model[i].dataValues.register_palata) {
-          if (
-            key.dataValues.date_to >= bugun &&
-            key.dataValues.registration.backlog == 0
-          ) {
-            model[i].dataValues.text =
-              "pul tolagan vaqti tugagan lekin yotipdi";
-          } else if (
-            key.dataValues.date_do <= bugun &&
-            key.dataValues.registration.backlog == 0
-          ) {
-            model[i].dataValues.text = "pul tolagan, vaqti tugamagan yotipdi";
-          } else if (
-            key.dataValues.date_do <= bugun &&
-            key.dataValues.registration.backlog != 0
-          ) {
-            model[i].dataValues.text = "pul tolamagan va vaqti otib ketgan";
-          } else if (
-            key.dataValues.date_do >= bugun &&
-            key.dataValues.registration.backlog != 0
-          ) {
-            model[i].dataValues.text = "pul tolamagan va vaqti otib ketmagan";
-          }
+           if(key.dataValues.registration != null){
+             if (
+               key.dataValues.date_to >= bugun &&
+               key.dataValues.registration.backlog == 0
+             ) {
+               model[i].dataValues.text =
+                 "pul tolagan vaqti tugagan lekin yotipdi";
+             } else if (
+               key.dataValues.date_do <= bugun &&
+               key.dataValues.registration.backlog == 0
+             ) {
+               model[i].dataValues.text = "pul tolagan, vaqti tugamagan yotipdi";
+             } else if (
+               key.dataValues.date_do <= bugun &&
+               key.dataValues.registration.backlog != 0
+             ) {
+               model[i].dataValues.text = "pul tolamagan va vaqti otib ketgan";
+             } else if (
+               key.dataValues.date_do >= bugun &&
+               key.dataValues.registration.backlog != 0
+             ) {
+               model[i].dataValues.text = "pul tolamagan va vaqti otib ketmagan";
+             }
+
+           }else{
+            console.log(key.dataValues)
+           }  
         }
       } else {
         model[i].dataValues.text = "palata bo'sh";
