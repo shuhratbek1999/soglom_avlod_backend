@@ -305,13 +305,11 @@ class HisobotController {
         query_end.date_time = {
             [Op.lte]: body.date_do
         }
-
         let result = await palataModel.findAll({
                 include:[
-                    {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time', 'date_do', 'palata_id'],
-                }
+                    {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time', 'date_do', 'palata_id'],}
                 ],
-                // raw: true
+                raw: true
                })
         result.forEach(value => {
            if(value.dataValues.palatas.length > 0){
