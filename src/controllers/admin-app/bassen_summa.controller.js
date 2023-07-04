@@ -28,12 +28,14 @@ class kirish_basseynController {
     summa = await kirish_basseynModel.findOne({
       where: { id: 1 },
     });
-    sum += summa.dataValues.price * body.odam_soni;
+    let main_sum = Number(summa.dataValues.price);
+    let person_sum = Number(body.odam_soni);
+    sum += main_sum * person_sum;
     let model = await kirish_basseyn.create({
       date_time: date,
       type: "Нақт",
-      price: body.odam_soni > 0 ? summa.dataValues.price * body.odam_soni : 0,
-      odam_soni: body.odam_soni,
+      price: person_sum > 0 ? main_sum * person_sum : 0,
+      odam_soni: person_sum,
       doc_type: "Кирим",
     });
     let kassa = {
