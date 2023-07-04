@@ -35,10 +35,10 @@ class kirish_basseynController {
     sum += main_sum * person_sum;
     let model = await kirish_basseyn.create({
       date_time: date,
-      type: "Нақт",
+      type: "Naqt",
       price: person_sum > 0 ? main_sum * person_sum : 0,
       odam_soni: person_sum,
-      doc_type: "Кирим",
+      doc_type: "Kirim",
     });
     let kassa = {
       date_time: date,
@@ -47,7 +47,7 @@ class kirish_basseynController {
       pay_type: "Naqt",
       doc_type: "Kirim",
       doctor_id: model.id,
-      place: "Бассейн",
+      place: "Bassen",
       filial_id: filial_id,
     };
     await Register_kassaModel.create(kassa);
