@@ -195,6 +195,7 @@ class RegistrationController {
     }  
 
     getOne = async (req, res, next) => {
+        console.log('registration update')
         this.checkValidation(req);
         const Prixod = await ModelModel.findOne({
             where:{ id: req.params.id },

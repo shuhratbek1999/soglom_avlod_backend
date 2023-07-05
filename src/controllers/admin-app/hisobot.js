@@ -212,13 +212,15 @@ class HisobotController {
         let body = req.body;
         let datetime1 = body.datetime1;
         let datetime2 = body.datetime2;
-        if(body.filial_id != null && body.inspection_category == null){
-            queryx.filial_id = {[Op.eq]: body.filial_id}
+        
+        if(body.filial_id){
+            queryx.filial_id = body.filial_id;
         }
-        else if(body.filial_id != null && body.inspection_category != null){
-            queryx.inspection_category = {[Op.eq]: body.inspection_category},
-            queryx.filial_id = {[Op.eq]: body.filial_id}
+        
+        if(body.inspection_category){
+            queryx.inspection_category = body.inspection_category;
         }
+
         queryx.date_time = {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
@@ -230,7 +232,7 @@ class HisobotController {
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time >= " + datetime1 + " and register_inspection.date_time <= " + datetime2 + " AND register_inspection.doc_type = 'chiqim' THEN register_inspection.price ELSE 0 END)"), 'chiqim'],
                [sequelize.literal("SUM(CASE WHEN register_inspection.date_time <= " + datetime2 + " THEN price * power(-1, 'type') ELSE 0 END)"), 'end_total'],
         ],
-           group: ['id'],
+           group: ['inspection_category'],
            where: queryx,
            order: [
             ['id', 'DESC']
