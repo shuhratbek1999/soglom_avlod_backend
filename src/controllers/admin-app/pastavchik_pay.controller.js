@@ -72,7 +72,7 @@ class pastavchik_payController {
         "summa": model.price,
         "doc_type": "kirim",
         "type": model.type,
-        "place": "Pastavchik",
+        "place": "поставщик",
         "pastavchik_id": model.pastavchik_id,
         "filial_id": filial_id
       }
@@ -84,7 +84,7 @@ class pastavchik_payController {
         "doc_type": "Chiqim",
         "pay_type": model.type == 0 ? "Naqt" : "Plastik",
         "type": model.type,
-        "place": "supplier",
+        "place": "поставщик",
         "filial_id": filial_id
       }
          await register_kassaModel.create(kassa)
@@ -114,7 +114,7 @@ class pastavchik_payController {
     await register_supplierModel.destroy({
         where:{
             doc_id: model.id,
-            place: 'Pastavchik'
+            place: 'поставщик'
         }
     })
     var register = {
@@ -123,7 +123,7 @@ class pastavchik_payController {
         "summa": model.price,
         "doc_type": "kirim",
         "type": model.type,
-        "place": "Pastavchik",
+        "place": "поставщик",
         "pastavchik_id": model.pastavchik_id,
         "filial_id": filial_id,
       }
@@ -131,7 +131,7 @@ class pastavchik_payController {
       await register_kassaModel.destroy({
         where:{
             doctor_id: model.id,
-            place: 'supplier'
+            place: 'поставщик'
         }
       })
       var kassa = {
@@ -141,7 +141,7 @@ class pastavchik_payController {
         "doc_type": "Chiqim",
         "pay_type": model.type == 0 ? "Naqt" : "Plastik",
         "type": model.type,
-        "place": "supplier",
+        "place": "поставщик",
         "filial_id": filial_id
       }
          await register_kassaModel.create(kassa)

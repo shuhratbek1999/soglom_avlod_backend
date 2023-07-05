@@ -25,6 +25,25 @@ class palataController {
       data: model,
     });
   };
+  
+  getByFilialAll = async (req, res, next) => {
+    let { filial_id } = req.body;
+    let query = {};
+    if(filial_id){
+      query.filial_id = filial_id;
+    }
+    const model = await palataModel.findAll({
+      include: [{ model: filialModel, as: "filial" }],
+      where: query
+    });
+    res.status(200).send({
+      error: false,
+      error_code: 200,
+      message: "Malumotlar chiqdi",
+      data: model,
+    });
+  };
+
   palata = async (req, res, next) => {
     let query = {},
       queryx = {};

@@ -458,6 +458,7 @@ class RegistrationController {
     };
 
     #directAdd = async(model, insert = true) => {
+        console.log('direct running code')
         if(!insert){
           await this.#deleteDirect(model.id)
         }
@@ -481,32 +482,31 @@ class RegistrationController {
              }
            await registerDirectModel.create(directs);
         }
-
-     }
-    //  #medDirect = async(direc, model, direct, insert = true) =>{
-    //     if(!insert){
-    //         await this.#medDelete(model.id)
-    //     }
-    //     let meds;
-    //     if(direct != null){
-    //          meds = await med_directModel.findOne({
-    //             where:{
-    //                 id: direct.med_id
-    //             }
-    //         })
-    //     }
-    //     var med = {
-    //        "date_time": Math.floor(new Date().getTime() / 1000),
-    //        "type": 0,
-    //        "price": meds != undefined ? (model.summa * meds.bonus)/100 : 0,
-    //        "doc_id": direc.doc_id,
-    //        "doc_type": "kirim",
-    //        "comment": "",
-    //        "place": "Регистратион",
-    //        "direct_id": direct != null ? direct.med_id : 0
-    //     }
-    //     await registerMedDirectModel.create(med);
-    //  }
+    }
+    #medDirect = async(direc, model, direct, insert = true) =>{
+    if(!insert){
+        await this.#medDelete(model.id)
+    }
+    let meds;
+    if(direct != null){
+            meds = await med_directModel.findOne({
+            where:{
+                id: direct.med_id
+            }
+        })
+    }
+    var med = {
+        "date_time": Math.floor(new Date().getTime() / 1000),
+        "type": 0,
+        "price": meds != undefined ? (model.summa * meds.bonus)/100 : 0,
+        "doc_id": direc.doc_id,
+        "doc_type": "kirim",
+        "comment": "",
+        "place": "Регистратион",
+        "direct_id": direct != null ? direct.med_id : 0
+    }
+    await registerMedDirectModel.create(med);
+    }
     delete = async (req, res, next) => {
         const id = req.params.id;
         
@@ -932,12 +932,17 @@ class RegistrationController {
         query_end.date_time = {
             [Op.lte]: body.date_do
         }
-
+        if(body.filial_id){
+            query.filial_id = body.filial_id;
+        }
         let result = await palataModel.findAll({
                 include:[
                     {model: registration_palataModel, as: 'palatas', attributes: ['id','date_time', 'date_do', 'palata_id'],
                 }
                 ],
+                where: {
+                    filial_id: query.filial_id
+                }
                 // raw: true
                })
         result.forEach(value => {
@@ -966,7 +971,7 @@ class RegistrationController {
             
         })
        
-            res.send(result);
+        res.send(result);
     }
     search = async (req, res, next) => {
         let query = {};
