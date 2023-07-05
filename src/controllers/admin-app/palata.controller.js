@@ -80,7 +80,7 @@ class palataController {
             {
               model: PatientModel,
               as: "patient",
-              attributes: ["fullname"],
+              attributes: ["id","fullname"],
             },
           ],
         },

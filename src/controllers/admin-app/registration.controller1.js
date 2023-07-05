@@ -193,9 +193,23 @@ class RegistrationController {
             data: model
         });
     }  
-
+    getByBemor = async (req, res, next) => {
+        let { patient_id } = req.body;
+        let query = {};
+        if(patient_id){
+            query.patient_id = patient_id;
+        }
+        const model = await ModelModel.findOne({
+            where:query
+        });
+        res.status(200).send({  
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
+    } 
     getOne = async (req, res, next) => {
-        console.log('registration update')
         this.checkValidation(req);
         const Prixod = await ModelModel.findOne({
             where:{ id: req.params.id },

@@ -22,6 +22,7 @@ router.get('/arxive', auth(),  awaitHandlerFactory(registrationControl.setArchiv
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));
 router.post('/search', auth(),  awaitHandlerFactory(registrationControl.search));
+router.post('/bemor', auth(),  awaitHandlerFactory(registrationControl.getByBemor));
 router.post('/searchs', auth(),  awaitHandlerFactory(registrationControl.searchs));
 // router.post('/insSverka', auth(),  awaitHandlerFactory(registrationControl.insSverka));
 router.post('/inspectionSverka', auth(),  awaitHandlerFactory(registrationControl.InspectionSverka));
