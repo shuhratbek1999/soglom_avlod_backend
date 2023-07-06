@@ -567,7 +567,7 @@ class RegistrationController {
                 "filial_id": element.filial.id == null ? 0 : element.filial.id
             }
             await Registration_payModel.create(pay);
-            var date_time = Math.floor(new Date().getTime() / 1000);
+            // var date_time = Math.floor(new Date().getTime() / 1000);
             
             let type = 0, doc_type = '';
             if(element.pay_type == 'Plastik'){
@@ -587,7 +587,7 @@ class RegistrationController {
             }  
             if(model.backlog == 0){
                 Register_kassaModel.create({
-                    "date_time": date_time,
+                    "date_time": element.date_time,
                     "doctor_id": model.id,
                     "pay_type": element.pay_type,
                     "user_id": element.user_id,
