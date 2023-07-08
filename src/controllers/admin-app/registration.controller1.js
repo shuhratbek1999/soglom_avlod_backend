@@ -557,6 +557,7 @@ class RegistrationController {
         for(var element of registration_pay){
             var pay = {
                 "user_id": element.user_id,
+                "date_time": element.date_time,
                 "registration_id": model.id,
                 "pay_type": element.pay_type,
                 "summa": element.summa,
