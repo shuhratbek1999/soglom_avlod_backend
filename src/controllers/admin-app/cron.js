@@ -12,7 +12,7 @@ module.exports = function(){
         timezone: "Asia/Tashkent"
     }
     )
-    setArchive=async (req, res, next) => {
+    setArchive= async (req, res, next) => {
         let date = Math.floor(new Date().getTime())
         let vaqt1 =  moment(date).startOf('day').unix();
         var MyDatas  =  await ModelModel.findAll({
