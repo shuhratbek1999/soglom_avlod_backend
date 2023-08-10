@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 const kassa_orderModel = require('../../models/kassa_order.model');
 const Register_kassaModel = require('../../models/register_kassa.model')
 const expenseModel = require('../../models/expense.model');
+const filialModel = require('../../models/filial.model');
 
 /******************************************************************************
  *                              Employer Controller
@@ -12,7 +13,8 @@ class Kassa_orderController {
     getAll = async (req, res, next) => {
         const model = await kassa_orderModel.findAll({
             include:[
-                {model: expenseModel, as: 'expense'}
+                {model: expenseModel, as: 'expense'},
+                {model: filialModel, as: 'filial'}
                ]
         });
         res.status(200).send({
@@ -62,6 +64,8 @@ class Kassa_orderController {
         "pay_type": pay_type,
         "price": req.body.price,
         "comment": req.body.comment,
+        "filial_id": req.body.filial_id,
+        "kasser_id": req.body.kasser_id,
         "user_id": req.currentUser.dataValues.id
        });
        Register_kassaModel.create({
@@ -96,6 +100,7 @@ class Kassa_orderController {
     model.pay_type = req.body.pay_type;
     model.price = req.body.price;
     model.comment = req.body.comment;
+    model.kasser_id = req.body.kasser_id;
     model.user_id = req.currentUser.dataValues.id;
     model.filial_id = req.currentUser.dataValues.filial_id;
     model.save();
