@@ -257,11 +257,11 @@ class HisobotController {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
         }
-        if (body.user_id !== null) {
-            query.user_id = { [Op.eq]: body.user_id },
-                query.filial_id = { [Op.eq]: body.filial_id }
-        } else {
-            query.filial_id = { [Op.eq]: body.filial_id }
+        if (body.user_id) {
+            query.user_id = body.user_id
+        } 
+        if(body.filial_id) {
+            query.filial_id = body.filial_id
         }
         result = await Register_kassaModel.findAll({
             attributes: ['doc_type', 'pay_type', 'id', 'date_time', "doctor_id", "place", `price`,
