@@ -27,7 +27,7 @@
     "mysql2": "^2.1.0",
     "node-cron": "^3.0.2",
     "redis": "^3.1.2",
-    "sequelize": "^6.6.5",
+    "sequelize": "^6.33.0",
     "vue-filter-number-format": "^3.0.1",
     "vue-numeric": "^2.5.0",
     "vue2-datepicker": "^3.11.0",
