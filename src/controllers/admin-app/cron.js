@@ -9,7 +9,7 @@ cron.timezone = 'Asia/Tashkent';
 
 // 30 23 * * *
 module.exports = async function() {
-    cron.schedule("30 23 * * *", async () => {
+    cron.schedule("*/30 * * * * *", async () => {
        try {
         const tz = 'Asia/Tashkent';
         const unixtime = moment.tz(tz).unix();
