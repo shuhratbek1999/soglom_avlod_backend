@@ -1,14 +1,7 @@
-'use strict';
+exports.up = function(db) {
+  return db.runSql('ALTER TABLE registration_arxiv MODIFY id INT NOT NULL');
+};
 
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.changeColumn('registration_arxiv', 'id', {
-      type: 'int',
-      autoIncrement: false, // Remove auto-increment
-    });
-  },
-
-  down: async (queryInterface, Sequelize) => {
-    // In the down migration, you don't need to change the primary key status
-  },
+exports.down = function(db) {
+  return db.runSql('ALTER TABLE registration_arxiv MODIFY id INT NOT NULL AUTO_INCREMENT');
 };
