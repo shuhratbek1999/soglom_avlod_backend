@@ -2,45 +2,49 @@ const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const pillModel = require('./pill.model')
 class Registration_recipeModel extends Model {
-    toJSON () {//Api da ishladi
+  toJSON() {//Api da ishladi
     var values = Object.assign({}, this.get());
-        delete values.password_hash;
-        return values;
-    }
+    delete values.password_hash;
+    return values;
+  }
 }
 
 Registration_recipeModel.init({
-  id: { 
-      type: DataTypes.INTEGER, 
-      primaryKey: true, 
-      autoIncrement: true, 
-      allowNull: false
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
   },
-//registration_doctor id
-registration_doctor_id: {
-      type: DataTypes.INTEGER
-  },
-  registration_id: {
-      type: DataTypes.INTEGER
-  },
-  pill_id : {
-      type: DataTypes.INTEGER
-  },
-  time:{
-      type: DataTypes.INTEGER
-  },
-  day:{
-      type: DataTypes.INTEGER,
-      allowNull: false
-  },
-  comment:{
-      type: DataTypes.STRING,
-      allowNull: false
-  },
-  filial_id:{
+  //registration_doctor id
+  registration_doctor_id: {
     type: DataTypes.INTEGER
   },
-  name:{
+  registration_id: {
+    type: DataTypes.INTEGER
+  },
+  pill_id: {
+    type: DataTypes.INTEGER
+  },
+  time: {
+    type: DataTypes.INTEGER
+  },
+  day: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  doza: {
+    type:DataTypes.STRING(150),
+    allowNull: false
+  },
+  comment: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  filial_id: {
+    type: DataTypes.INTEGER
+  },
+  name: {
     type: DataTypes.STRING()
   }
 }, {
@@ -65,5 +69,5 @@ registration_doctor_id: {
     }
   }
 });
-Registration_recipeModel.hasMany(pillModel, {as: 'pill', foreignKey: 'id'})
+Registration_recipeModel.hasMany(pillModel, { as: 'pill', foreignKey: 'id' })
 module.exports = Registration_recipeModel;
