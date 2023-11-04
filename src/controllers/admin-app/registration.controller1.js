@@ -748,11 +748,14 @@ class RegistrationController {
                 "doctor_id": element.doctor_id,
                 "filial_id": element.filial_id == null ? 0 : element.filial_id,
                 "doc_type": 'kirim',
-                 "place": "Регистратион",
-                 "comment": ""
+                "place": "Регистратион",
+                "comment": ""
             }
-            var {Registration_recipe, register_mkb,...data} = element;
-            console.log(element, "doctorrrrrrrr");
+            var {Registration_recipe, register_mkb, ...data} = element;
+            console.log(element);
+            console.log('"doctorrrrrrrr"______________________________________________________-');
+            console.log(data);
+            console.log("data-------------------------------------------");
             var news={
                 "doctor_id":element.doctor_id,
                 "registration_id":model.id,
@@ -771,7 +774,7 @@ class RegistrationController {
                 return item.room_id == user.room_id&&item.patient_id == model.patient_id;
               }
             var have=await this.q.find(isHave);
-            if(have==undefined){
+            if(have == undefined){
                 this.q.push({
                     "room_id":user.room_id,
                     "patient_id":model.patient_id,
