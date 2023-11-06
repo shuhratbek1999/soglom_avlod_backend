@@ -468,6 +468,7 @@ class RegistrationController {
             model.type_service = data.type_service;
             model.complaint = data.complaint;
             model.summa = data.summa;
+            model.hospital_summa = data.hospital_summa;
             model.pay_summa = data.pay_summa;
             model.backlog = data.backlog;
             model.discount = data.discount;
