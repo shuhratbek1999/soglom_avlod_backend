@@ -35,14 +35,14 @@ Registration_doctorModel.init({
   text:{
       type:DataTypes.STRING,
       allowNull: false
-},
-filial_id:{
-  type: DataTypes.INTEGER
-},
-date_time:{
-  type: DataTypes.STRING(),
-  allowNull: false
-}
+  },
+  filial_id:{
+    type: DataTypes.INTEGER
+  },
+  date_time:{
+    type: DataTypes.STRING(),
+    allowNull: false
+  }
 }, {
   sequelize,
   modelName: 'registration_doctor',
