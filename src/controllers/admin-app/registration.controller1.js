@@ -65,14 +65,14 @@ class RegistrationController {
                 let sum = qarz.some(item => item.backlog <= 0);
                 if (sum) {
                     await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${req.params.id}`);
-                    await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${req.params.id}`);
+                    await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${req.params.id}`);        
                     await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${req.params.id}`);
                     await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${req.params.id}`);
                     await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${req.params.id}`);
-                    await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where  status = 'complate' and id = ${req.params.id}`);
+                    await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
                     await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
                     await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
-                    await db.query(`DELETE from registration where status = 'complate' and id = ${req.params.id}`);
+                    await db.query(`DELETE from registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
                     await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
                     await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
                     await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
@@ -609,18 +609,19 @@ class RegistrationController {
             else {
                 doc_type = 'Kirim'
             }
-            Register_kassaModel.create({
-                "date_time": element.date_time,
-                "doctor_id": model.id,
-                "pay_type": element.pay_type,
-                "user_id": element.user_id,
-                "filial_id": element.filial.id == null ? 0 : element.filial.id,
-                "price": element.summa,
-                "type": type,
-                "doc_type": 'Kirim',
-                "place": "регистратион"
-            })
-            
+            if(model.backlog == 0){
+                Register_kassaModel.create({
+                    "date_time": element.date_time,
+                    "doctor_id": model.id,
+                    "pay_type": element.pay_type,
+                    "user_id": element.user_id,
+                    "filial_id": element.filial.id == null ? 0 : element.filial.id,
+                    "price": element.summa,
+                    "type": type,
+                    "doc_type": 'Kirim',
+                    "place": "регистратион"
+                })
+            }
         }
     }
 
@@ -639,39 +640,41 @@ class RegistrationController {
                 raw: true
             })
             data.registration_id = model.id;
-            let date_time = Math.floor(new Date().getTime() / 1000);
-            let tekshiruv = {
-                "date_time": date_time,
-                "type": item.type,
-                "price": Math.floor((item.price * item.inspection.percent_bonus) / 100),
-                "doc_id": model.id,
-                "user_id": item.user_id,
-                "inspection_id": item.inspection_id,
-                "inspection_category": item.category_id,
-                "skidka": item.skidka,
-                "doc_type": 'kirim',
-                "place": "Регистратион",
-                "comment": "",
-                "filial_id": item.filial_id == null ? 0 : item.filial_id,
-            }
-            await Register_inspectionModel.create(tekshiruv)
-           
-            var date = Math.floor(new Date().getTime() / 1000);
-            dds = {
-                "inspection_id": item.inspection_id,
-                "user_id": item.user_id,
-                "registration_id": model.id,
-                "type": item.type,
-                "price": item.price,
-                "category_id": item.category_id,
-                'status': item.status,
-                "date_time": date,
-                "skidka": item.skidka,
-                "filial_id": item.filial_id == null ? 0 : item.filial_id
-            }
-            const models = await Registration_inspectionModel.create(dds);
-            function isHave(item) {
-                return item.room_id == user.room_id && item.patient_id == model.patient_id;
+            if(model.backlog == 0){
+                let date_time = Math.floor(new Date().getTime() / 1000);
+                let tekshiruv = {
+                    "date_time": date_time,
+                    "type": item.type,
+                    "price": Math.floor((item.price * item.inspection.percent_bonus) / 100),
+                    "doc_id": model.id,
+                    "user_id": item.user_id,
+                    "inspection_id": item.inspection_id,
+                    "inspection_category": item.category_id,
+                    "skidka": item.skidka,
+                    "doc_type": 'kirim',
+                    "place": "Регистратион",
+                    "comment": "",
+                    "filial_id": item.filial_id == null ? 0 : item.filial_id,
+                }
+                await Register_inspectionModel.create(tekshiruv)
+               
+                var date = Math.floor(new Date().getTime() / 1000);
+                dds = {
+                    "inspection_id": item.inspection_id,
+                    "user_id": item.user_id,
+                    "registration_id": model.id,
+                    "type": item.type,
+                    "price": item.price,
+                    "category_id": item.category_id,
+                    'status': item.status,
+                    "date_time": date,
+                    "skidka": item.skidka,
+                    "filial_id": item.filial_id == null ? 0 : item.filial_id
+                }
+                const models = await Registration_inspectionModel.create(dds);
+                function isHave(item) {
+                    return item.room_id == user.room_id && item.patient_id == model.patient_id;
+                }
             }
 
             var have = await this.q.find(isHave);
@@ -787,28 +790,28 @@ class RegistrationController {
                 "date_time": element.date_time
             };
             const models = await Registration_doctorModel.create(news);
-            await RegisterDoctorModel.create(doctor)
-            // if (model.backlog == 0) {
-            // }
-            function isHave(item) {
-                return item.room_id == user.room_id && item.patient_id == model.patient_id;
-            }
-            var have = await this.q.find(isHave);
-            if (have == undefined) {
-                this.q.push({
-                    "room_id": user.room_id,
-                    "patient_id": model.patient_id,
-                    "number": 0,
-                    "date_time": Math.floor(new Date().getTime() / 1000),
-                    "status": data.status
-                });
-            } else if (data.status != have.status) {
-                if (data.status != 'complate') {
-                    var index = this.q.findIndex(isHave);
-                    this.q[index].status = have.status;
-                } else if (have.status != 'complate') {
-                    var index = this.q.findIndex(isHave);
-                    this.q[index].status = have.status;
+            if (model.backlog == 0) {
+                await RegisterDoctorModel.create(doctor)
+                function isHave(item) {
+                    return item.room_id == user.room_id && item.patient_id == model.patient_id;
+                }
+                var have = await this.q.find(isHave);
+                if (have == undefined) {
+                    this.q.push({
+                        "room_id": user.room_id,
+                        "patient_id": model.patient_id,
+                        "number": 0,
+                        "date_time": Math.floor(new Date().getTime() / 1000),
+                        "status": data.status
+                    });
+                } else if (data.status != have.status) {
+                    if (data.status != 'complate') {
+                        var index = this.q.findIndex(isHave);
+                        this.q[index].status = have.status;
+                    } else if (have.status != 'complate') {
+                        var index = this.q.findIndex(isHave);
+                        this.q[index].status = have.status;
+                    }
                 }
             }
             await this.#recieptadd(models, element.registration_recipe, false);
