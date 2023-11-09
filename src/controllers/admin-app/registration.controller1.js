@@ -808,6 +808,7 @@ class RegistrationController {
                 "registration_id":model.registration_id,
                 'pill_id':element.pill_id,
                 "time":element.time,
+                "doza":element.doza,
                 "day":element.day,
                 "comment":element.comment,
                 "name": element.name
