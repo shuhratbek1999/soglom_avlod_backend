@@ -675,22 +675,22 @@ class RegistrationController {
                 function isHave(item) {
                     return item.room_id == user.room_id && item.patient_id == model.patient_id;
                 }
+                var have = await this.q.find(isHave);
+                if (have == undefined) {
+                    this.q.push({ "room_id": user.room_id, "patient_id": model.patient_id, "number": 0, "date_time": Math.floor(new Date().getTime() / 1000), "status": data.status });
+                }
+                else if (data.status != have.status) {
+                    if (data.status != 'complate') {
+                        var index = this.q.findIndex(isHave);
+                        this.q[index].status = have.status;
+                    } else if (have.status != 'complate') {
+                        var index = this.q.findIndex(isHave);
+                        this.q[index].status = have.status;
+                    }
+                }
+                await this.#inspectionchildadd(models, registration_inspection_child);
             }
 
-            var have = await this.q.find(isHave);
-            if (have == undefined) {
-                this.q.push({ "room_id": user.room_id, "patient_id": model.patient_id, "number": 0, "date_time": Math.floor(new Date().getTime() / 1000), "status": data.status });
-            }
-            else if (data.status != have.status) {
-                if (data.status != 'complate') {
-                    var index = this.q.findIndex(isHave);
-                    this.q[index].status = have.status;
-                } else if (have.status != 'complate') {
-                    var index = this.q.findIndex(isHave);
-                    this.q[index].status = have.status;
-                }
-            }
-            await this.#inspectionchildadd(models, registration_inspection_child);
 
         })
         for (var element of registration_inspection) {
