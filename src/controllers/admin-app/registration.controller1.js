@@ -49,7 +49,8 @@ const register_mkb_arxivModel = require('../../models/register_mkb_arxiv.model')
 const RegionModel = require('../../models/region.model');
 const districtModel = require('../../models/district.model');
 const filialModel = require('../../models/filial.model');
-
+const regsiterPatientModel  = require('../../models/register_patient.model');
+const registerPatientModel = require('../../models/register_patient.model');
 class RegistrationController {
     q=[];
     ArxivgaOlish = async (req, res, next) => {
@@ -547,10 +548,18 @@ class RegistrationController {
         }
     }
     #payAdd = async(model, registration_pay,  insert = true) =>{
+        let patientYes = await PatientModel.findOne({
+            where:{
+                id: model.patient_id,
+                balance: true
+            }
+        })
+   
         if(!insert){
-            await this.#deletepay(model.id);
+            await this.#deletepay(model.id,patientYes);
             await this.#deleteKassa(model.id);
         }
+       
         for(var element of registration_pay){
             var pay = {
                 "user_id": element.user_id,
@@ -563,6 +572,20 @@ class RegistrationController {
                 "backlog": element.backlog,
                 "comment": element.comment,
                 "filial_id": element.filial.id == null ? 0 : element.filial.id
+            }
+            
+            if(patientYes){
+                var patient_balance = {
+                    'patient_id': model.patient_id,
+                    'doc_id': model.id,
+                    'summa': element.summa,
+                    'registration_id': model.id,
+                    'datetime': element.date_time,
+                    'type': 0,
+                    'place': "Регистрация",
+                    'doc_type': "Чиқим"
+                }
+                await regsiterPatientModel.create(patient_balance)
             }
             await Registration_payModel.create(pay);
             // var date_time = Math.floor(new Date().getTime() / 1000);
@@ -892,9 +915,7 @@ class RegistrationController {
                 }else{
                     element.number = 1;
                 }
-                console.log(element)
-                console.log(element)
-                console.log(element)
+                
                 await QueueModel.create(element); 
             }
         } 
@@ -914,7 +935,7 @@ class RegistrationController {
         await RegisterDoctorModel.destroy({where: {doc_id: doc_id}})
     }
     #deleteIns = async(doc_id) =>
-     {
+    {
         await Register_inspectionModel.destroy({where: {doc_id: doc_id}})
     }
     #medDelete = async(id) => {
@@ -938,8 +959,11 @@ class RegistrationController {
         await registration_palataModel.destroy({where: {registration_id: doc_id}})
         await register_palataModel.destroy({where: {registration_id: doc_id}})
     }
-    #deletepay = async(doc_id) => {
-        await Registration_payModel.destroy({where: {registration_id: doc_id}})
+    #deletepay = async(doc_id, patient) => {
+        await Registration_payModel.destroy({where: {registration_id: doc_id}});
+        if(patient){
+            await regsiterPatientModel.destroy({where: {registration_id: doc_id}});
+        }
     }
     #deleteFiles = async(doc_id) => {
         await Registration_filesModel.destroy({where: {registration_id: doc_id}})
@@ -1312,6 +1336,12 @@ class RegistrationController {
                     doctor_id: req.params.id,
                     place: 'Регистрация'
                 }
+        })
+
+        await registerPatientModel.destroy({
+            where:{
+                registration_id: req.params.id
+            }
         })
 
         await registration_palataModel.destroy({where: {registration_id: req.params.id}})

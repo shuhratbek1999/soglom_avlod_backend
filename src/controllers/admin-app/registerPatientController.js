@@ -1,21 +1,29 @@
 
 const HttpException = require('../../utils/HttpException.utils');
+const BemorModel = require('../../models/patient.model')
 // const status = require('../../utils/status.utils')
-const PatientModel = require('../../models/patient.model')
+const RegisterPatientModel = require('../../models/register_patient.model')
 const { validationResult } = require('express-validator');
-const RegionModel = require('../../models/region.model');
-const districtModel = require('../../models/district.model');
+const sequelize = require("../../db/db-sequelize");
+
 
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
 class PatientController {
     getAll = async (req, res, next) => {
-        const model = await PatientModel.findAll({
-            include: [
-                { model: RegionModel, as: 'region', attributes: ['id', 'name'] },
-                { model: districtModel, as: 'district', attributes: ['id', 'name'] }
+        let query = {};
+        query.type = 1;
+        const model = await RegisterPatientModel.findAll({
+            include:[
+                {
+                    model:BemorModel,
+                    attributes:['id','fullname'],
+                    as:'patient',
+                    required:false
+                }
             ],
+            where: query,
             limit: 100
         });
         res.status(200).send({
@@ -25,21 +33,28 @@ class PatientController {
             data: model
         });
     }
-
+    getAllPatient = async (req, res, next) => {
+        const model = await BemorModel.findAll({
+            attributes:['id','fullname'],
+            where: {
+                balance:true
+            },
+        });
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
+    }
     getOne = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await PatientModel.findOne({
-            include: [
-                { model: RegionModel, as: 'region', attributes: ['id', 'name'] },
-                { model: districtModel, as: 'district', attributes: ['id', 'name'] }
-            ],
+        const model = await RegisterPatientModel.findOne({
             where: {
                 id: req.params.id
             }
         });
-        if (model.dataValues.birthday == '0') {
-            model.dataValues.birthday = 0
-        }
+
         if (!model) {
             throw new HttpException(404, 'berilgan id bo\'yicha malumot yo\'q')
         }
@@ -50,24 +65,42 @@ class PatientController {
             data: model
         });
     }
+
+    getPatientBalance = async (req, res, next) => {
+        let { patient_id } = req.body;
+        let query = {};
+        if(patient_id){
+            query.patient_id = patient_id
+        }
+
+        const model = await RegisterPatientModel.findAll({
+            attributes:[
+                'id','patient_id',
+				[sequelize.literal('SUM(summa * power(-1, type + 1) )'), 'total_balance'],
+            ],
+            where: query
+        });
+        
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'malumot chiqdi',
+            data: model
+        });
+    }
     create = async (req, res, next) => {
+        let body = req.body;
+        console.log(body)
         this.checkValidation(req);
-        const model = await PatientModel.create({
-            'fullname': req.body.fullname,
-            'name': req.body.name,
-            'lastname': req.body.lastname,
-            'patronymic': req.body.patronymic,
-            'region_id': req.body.region_id,
-            'district_id': req.body.district_id,
-            'phone': req.body.phone,
-            'passpord': req.body.passpord,
-            'addres': req.body.addres,
-            'gender': req.body.gender,
-            'birthday': req.body.birthday,
-            'imtiyoz_type': req.body.imtiyoz_type,
-            "citizen": req.body.citizen,
-            "percent": req.body.percent,
-            "balance": req.body.balance
+        const model = await RegisterPatientModel.create({
+            'patient_id': body.patient_id,
+            'doc_id': body.doc_id,
+            'summa': body.summa,
+            'registration_id': body.registration_id,
+            'datetime': parseInt(body.datetime),
+            'type': body.type,
+            'place': body.place,
+            'doc_type': body.doc_type
         });
         res.status(200).send({
             error: false,
@@ -78,26 +111,21 @@ class PatientController {
     }
     update = async (req, res, next) => {
         this.checkValidation(req);
-        const model = await PatientModel.findOne({
+        let body = req.body
+        const model = await RegisterPatientModel.findOne({
             where: {
                 id: req.params.id
             }
         });
-        model.name = req.body.name;
-        model.fullname = req.body.fullname;
-        model.lastname = req.body.lastname;
-        model.patronymic = req.body.patronymic;
-        model.region_id = req.body.region_id;
-        model.imtiyoz_type = req.body.imtiyoz_type;
-        model.district_id = req.body.district_id;
-        model.phone = req.body.phone;
-        model.passport = req.body.passport;
-        model.gender = req.body.gender;
-        model.addres = req.body.addres;
-        model.birthday = req.body.birthday;
-        model.percent = req.body.percent;
-        model.citizen = req.body.citizen;
-        model.balance = req.body.balance;
+        model.patient_id = body.patient_id;
+        model.doc_id = body.doc_id;
+        model.summa = body.summa;
+        model.registration_id = body.registration_id;
+        model.datetime = body.datetime;
+        model.type = body.type;
+        model.place = body.place;
+        model.doc_type = body.doc_type;
+
         model.save();
         res.status(200).send({
             error: false,
@@ -107,18 +135,19 @@ class PatientController {
         });
     }
     search = async (req, res, next) => {
-        let data = await PatientModel.find(
+        let data = await RegisterPatientModel.find(
             {
                 "$or": [
-                    { "name": { $regex: req.params.key } }
+                    { "patient_id": { $regex: req.params.key } }
                 ]
             }
         )
+        
         res.send(data)
     }
 
     delete = async (req, res, next) => {
-        const model = await PatientModel.destroy({
+        const model = await RegisterPatientModel.destroy({
             where: {
                 id: req.params.id
             }

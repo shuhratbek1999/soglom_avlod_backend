@@ -7,6 +7,7 @@ const roomRouter = require('../routes/admin-app/room.route');
 const districtRouter = require('../routes/admin-app/district.route')
 const doctorRouter = require('../routes/admin-app/doctor.route');
 const patientRouter = require('../routes/admin-app/patient.route');
+const regsiterPatientRouter = require('../routes/admin-app/regsiterPatient.route');
 const pillRouter = require('../routes/admin-app/pill.route');
 const queueRouter = require('../routes/admin-app/queue.route');
 const regionRouter = require('../routes/admin-app/region.route');
@@ -55,6 +56,7 @@ module.exports = function(app){
         app.use(`/api/v1/admin-app/inspection`, inspectionRouter);
         app.use(`/api/v1/admin-app/district`, districtRouter);
         app.use(`/api/v1/admin-app/patient`, patientRouter);
+        app.use(`/api/v1/admin-app/register-patient`, regsiterPatientRouter);
         app.use(`/api/v1/admin-app/pill`, pillRouter);
         app.use(`/api/v1/admin-app/queue`, queueRouter);
         app.use(`/api/v1/admin-app/region`, regionRouter);

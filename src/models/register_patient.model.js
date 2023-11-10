@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
+const BemorModel = require('../models/patient.model')
 class registerPatientModel extends Model {
   toJSON() {
     var values = Object.assign({}, this.get());
@@ -22,7 +23,7 @@ registerPatientModel.init({
     type: DataTypes.INTEGER(),
   },
   summa: {
-    type: DataTypes.DECIMAL(),
+    type: DataTypes.DECIMAL(17,2),
     allowNull: false
   },
   registration_id: {
@@ -59,4 +60,7 @@ registerPatientModel.init({
   ],
 
 });
+
+registerPatientModel.belongsTo(BemorModel, {as:'patient', foreignKey:'patient_id'})
+
 module.exports = registerPatientModel;
