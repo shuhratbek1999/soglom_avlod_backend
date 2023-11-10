@@ -1,46 +1,51 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
-const UserModel = require('./doctor_category.model');
-class uplataModel extends Model {
-  toJSON() {//Api da ishladi
+class registerPatientModel extends Model {
+  toJSON() {
     var values = Object.assign({}, this.get());
     delete values.password_hash;
     return values;
   }
 }
 
-uplataModel.init({
+registerPatientModel.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
   },
-  name: {
-    type: DataTypes.STRING(200)
+  patient_id: {
+    type: DataTypes.INTEGER(),
   },
-  price: {
-    type: DataTypes.DECIMAL,
+  doc_id: {
+    type: DataTypes.INTEGER(),
+  },
+  summa: {
+    type: DataTypes.DECIMAL(),
     allowNull: false
   },
-  user_id: {
+  registration_id: {
     type: DataTypes.INTEGER()
   },
-  doctor_id: {
-    type: DataTypes.INTEGER
+  datetime: {
+    type: DataTypes.INTEGER()
   },
   type: {
-    type: DataTypes.INTEGER
-  },
-  date_time: {
-    type: DataTypes.STRING(),
+    type: DataTypes.INTEGER(),
     allowNullL: true
+  },
+  place:{
+    type: DataTypes.STRING()
+  },
+  doc_type:{
+    type: DataTypes.STRING()
   }
 
 }, {
   sequelize,
-  modelName: 'uplata',
-  tableName: 'uplata',
+  modelName: 'registerPatientModel',
+  tableName: 'register_patient',
   timestamps: false,
   indexes: [
     {
@@ -52,7 +57,6 @@ uplataModel.init({
       ]
     },
   ],
-  //findOne da yoki findAll da chaqirish kerak
+
 });
-uplataModel.belongsTo(UserModel, { as: 'users', foreignKey: 'user_id' })
-module.exports = uplataModel;
+module.exports = registerPatientModel;

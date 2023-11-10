@@ -2,11 +2,11 @@ const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const filialModel = require('./filial.model')
 class RoomModel extends Model {
-    toJSON () {//Api da ishladi
+  toJSON() {//Api da ishladi
     var values = Object.assign({}, this.get());
-        delete values.password_hash;
-        return values;
-    }
+    delete values.password_hash;
+    return values;
+  }
 }
 
 RoomModel.init({
@@ -20,7 +20,7 @@ RoomModel.init({
     type: DataTypes.STRING(100),
     allowNull: false
   },
-  filial_id:{
+  filial_id: {
     type: DataTypes.INTEGER()
   }
 
@@ -47,5 +47,5 @@ RoomModel.init({
   }
 });
 // RoomModel.hasMany(UserModel, {as: 'users', foreignKey: 'room_id'});
-RoomModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+RoomModel.belongsTo(filialModel, { as: 'filial', foreignKey: 'filial_id' })
 module.exports = RoomModel;

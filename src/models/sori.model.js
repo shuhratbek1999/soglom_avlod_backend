@@ -1,11 +1,11 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 class soriModel extends Model {
-    toJSON () {//Api da ishladi
+  toJSON() {//Api da ishladi
     var values = Object.assign({}, this.get());
-        delete values.password_hash;
-        return values;
-    }
+    delete values.password_hash;
+    return values;
+  }
 }
 
 soriModel.init({
@@ -19,10 +19,10 @@ soriModel.init({
     type: DataTypes.STRING(500),
     allowNull: false
   },
-  price:{
+  price: {
     type: DataTypes.DECIMAL
   },
-  status:{
+  status: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   }

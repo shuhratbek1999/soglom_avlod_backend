@@ -26,12 +26,12 @@ exports.up = function(db) {
       type: 'int',
       notNull: true
     },
-    patient_id:{
+    doc_id:{
       type: 'int',
       notNull: true
     },
-    doc_id:{
-      type: 'int',
+    summa:{
+      type: 'decimal',
       notNull: true
     },
     registration_id:{

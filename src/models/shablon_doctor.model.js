@@ -1,31 +1,31 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 class shablon_doctorModel extends Model {
-    toJSON () {//Api da ishladi
+  toJSON() {//Api da ishladi
     var values = Object.assign({}, this.get());
-        delete values.password_hash;
-        return values;
-    }
-} 
+    delete values.password_hash;
+    return values;
+  }
+}
 
 shablon_doctorModel.init({
-  id: { 
-    type: DataTypes.INTEGER, 
-    primaryKey: true, 
-    autoIncrement: true, 
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
     allowNull: false
-},
-doctor_id : {
+  },
+  doctor_id: {
     type: DataTypes.INTEGER,
     allowNull: false
-},
-name: {
+  },
+  name: {
     type: DataTypes.STRING(200),
     allowNull: false
-},
-text:{
-  type: DataTypes.TEXT
-}
+  },
+  text: {
+    type: DataTypes.TEXT
+  }
 
 }, {
   sequelize,
