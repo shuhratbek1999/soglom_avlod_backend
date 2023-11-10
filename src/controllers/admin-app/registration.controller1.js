@@ -573,16 +573,17 @@ class RegistrationController {
                 "comment": element.comment,
                 "filial_id": element.filial.id == null ? 0 : element.filial.id
             }
-            
+            console.log(element)
+            console.log("element---------------------------")
             if(patientYes){
                 var patient_balance = {
                     'patient_id': model.patient_id,
                     'doc_id': model.id,
                     'summa': element.summa,
                     'registration_id': model.id,
-                    'datetime': element.date_time,
+                    'datetime': parseInt(element.date_time),
                     'type': 0,
-                    'place': "Регистрация",
+                    'place': "Registeratsiya",
                     'doc_type': "Чиқим"
                 }
                 await regsiterPatientModel.create(patient_balance)
