@@ -581,9 +581,9 @@ class RegistrationController {
                     'doc_id': model.id,
                     'summa': element.summa,
                     'registration_id': model.id,
-                    'datetime': parseInt(element.date_time),
+                    'datetime': parseInt(element.date_time / 1000),
                     'type': 0,
-                    'place': "Registeratsiya",
+                    'place': "Регистрация",
                     'doc_type': "Чиқим"
                 }
                 await regsiterPatientModel.create(patient_balance)
