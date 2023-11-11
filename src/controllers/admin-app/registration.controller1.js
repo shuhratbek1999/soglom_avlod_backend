@@ -586,6 +586,7 @@ class RegistrationController {
                     'place': "Регистрация",
                     'doc_type': "Чиқим"
                 }
+                
                 await regsiterPatientModel.create(patient_balance)
             }
             await Registration_payModel.create(pay);
