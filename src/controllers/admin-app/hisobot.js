@@ -634,33 +634,81 @@ class HisobotController {
     }
 
     PatientSverka = async(req, res, next)=>{
-        let result;
+        let result = {
+            begin_total:0,
+            data:[],
+            end_total:0,
+            total_kirim:0,
+            total_chiqim:0
+        };
         let { datetime1, datetime2, patient_id } = req.body;
         let query = {}, query_begin = {}, query_end = {};
+        //////////////
         if(patient_id){
             query.patient_id = patient_id;
+            query_begin.patient_id = patient_id;
+            query_end.patient_id = patient_id;
         }
+        //////////////
         query.datetime = {
             [Op.gte]: datetime1,
             [Op.lte]: datetime2
         };
-
+        //////////////
         query_begin.datetime = {
-            [Op.lt]: datetime1
+            [Op.lte]: datetime1
         }
-
+        //////////////
         query_end.datetime = {
             [Op.lte]: datetime2
         }
-
-        result = await registerPatientModel.findAll({
+        //////////////
+        result.data = await registerPatientModel.findAll({
+            attributes:[
+                'patient_id','doc_type','registration_id','datetime','place',
+                [sequelize.literal("CASE WHEN type = 1 THEN summa ELSE 0 END"), 'kirim'],
+                [sequelize.literal("CASE WHEN type = 0 THEN summa ELSE 0 END"), 'chiqim'],
+            ],
+            include:[
+                {
+                    model:PatientModel,
+                    as:'patient',
+                    attributes:['id','fullname'],
+                    required:false
+                }
+            ],
             where: query,
             order: [
                 ['id', 'DESC']
             ],
         });
 
-        res.send(result);
+       ////begin total
+		let begin_data = await registerPatientModel.findOne({
+			attributes: [
+				"id",
+				[sequelize.literal("sum(summa * power(-1, type + 1))"), "total"]
+			],
+			where: query_begin,
+		});
+		result.begin_total = begin_data.dataValues.total ? begin_data.dataValues.total : 0;
+       //// end total
+       let end_data = await registerPatientModel.findOne({
+            attributes:[
+                'id',
+                [sequelize.literal('sum(summa * power(-1, type + 1))'),'total']
+            ],
+            where: query_end
+       })
+       result.end_total = end_data.dataValues.total ? end_data.dataValues.total : 0;
+
+       for(let i  = 0; i < result.data.length; i++){
+            let el = result.data[i].toJSON();
+            result.total_kirim += el.kirim ? el.kirim : 0; 
+            result.total_chiqim += el.chiqim ? el.chiqim : 0; 
+       }
+
+       res.send(result);
 
     }
 
@@ -711,7 +759,7 @@ class HisobotController {
             ],
             where: query,
             order: [
-                ['id', 'DESC']
+                ['patient_id', 'DESC']
             ],
             group:['patient_id']
         });

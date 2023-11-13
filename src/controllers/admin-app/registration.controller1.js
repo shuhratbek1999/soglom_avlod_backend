@@ -573,8 +573,7 @@ class RegistrationController {
                 "comment": element.comment,
                 "filial_id": element.filial.id == null ? 0 : element.filial.id
             }
-            console.log(element)
-            console.log("element---------------------------")
+          
             if(patientYes){
                 var patient_balance = {
                     'patient_id': model.patient_id,
@@ -608,19 +607,19 @@ class RegistrationController {
             else{
                 doc_type = 'kirim'
             }  
-            if(model.backlog == 0){
-                Register_kassaModel.create({
-                    "date_time": element.date_time,
-                    "doctor_id": model.id,
-                    "pay_type": element.pay_type,
-                    "user_id": element.user_id,
-                    "filial_id": element.filial.id == null ? 0 : element.filial.id,
-                    "price": element.summa,    
-                    "type": type,
-                    "doc_type": 'kirim',
-                    "place": "Регистрация"
-                })
-               }
+            Register_kassaModel.create({
+                "date_time": element.date_time,
+                "doctor_id": model.id,
+                "pay_type": element.pay_type,
+                "user_id": element.user_id,
+                "filial_id": element.filial.id == null ? 0 : element.filial.id,
+                "price": element.summa,    
+                "type": type,
+                "doc_type": 'kirim',
+                "place": "Регистрация"
+            })
+            // if(model.backlog == 0){
+            //    }
         }
     }
     #inspectionadd = async(model, registration_inspection, filial_id, insert = true) => {
