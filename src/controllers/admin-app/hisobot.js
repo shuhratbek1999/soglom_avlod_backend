@@ -679,7 +679,7 @@ class HisobotController {
             ],
             where: query,
             order: [
-                ['id', 'DESC']
+                ['id', 'ASC']
             ],
         });
 
@@ -743,6 +743,7 @@ class HisobotController {
             [Op.lte]: datetime2
         }
         //////////////
+        console.log(query.datetime)
         result.data = await registerPatientModel.findAll({
             attributes:[
                 'patient_id',
