@@ -124,8 +124,9 @@ class PatientController {
                 id: req.params.id
             }
         });
+
         model.patient_id = body.patient_id;
-        model.doc_id = body.doc_id;
+        model.doc_id = req.params.id;
         model.summa = body.summa;
         model.registration_id = body.registration_id;
         model.datetime = body.datetime;
