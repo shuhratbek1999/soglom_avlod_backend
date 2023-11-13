@@ -90,7 +90,6 @@ class PatientController {
     }
     create = async (req, res, next) => {
         let body = req.body;
-        console.log(body)
         this.checkValidation(req);
         const model = await RegisterPatientModel.create({
             'patient_id': body.patient_id,
@@ -108,6 +107,14 @@ class PatientController {
             message: 'Malumotlar qo\'shildi',
             data: model
         });
+        
+        let modelx = await RegisterPatientModel.findOne({
+            where: {
+                id:model.id
+            }
+        })
+        model.doc_id = modelx.id;
+        model.save()
     }
     update = async (req, res, next) => {
         this.checkValidation(req);

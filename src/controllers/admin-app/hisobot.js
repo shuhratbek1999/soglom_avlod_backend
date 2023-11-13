@@ -665,7 +665,7 @@ class HisobotController {
         //////////////
         result.data = await registerPatientModel.findAll({
             attributes:[
-                'patient_id','doc_type','registration_id','datetime','place',
+                'patient_id','doc_type','registration_id','datetime','place','doc_id',
                 [sequelize.literal("CASE WHEN type = 1 THEN summa ELSE 0 END"), 'kirim'],
                 [sequelize.literal("CASE WHEN type = 0 THEN summa ELSE 0 END"), 'chiqim'],
             ],

@@ -50,7 +50,6 @@ const RegionModel = require('../../models/region.model');
 const districtModel = require('../../models/district.model');
 const filialModel = require('../../models/filial.model');
 const regsiterPatientModel  = require('../../models/register_patient.model');
-const registerPatientModel = require('../../models/register_patient.model');
 class RegistrationController {
     q=[];
     ArxivgaOlish = async (req, res, next) => {
@@ -580,7 +579,7 @@ class RegistrationController {
                     'doc_id': model.id,
                     'summa': element.summa,
                     'registration_id': model.id,
-                    'datetime': parseInt(element.date_time / 1000),
+                    'datetime': parseInt(element.date_time),
                     'type': 0,
                     'place': "Регистрация",
                     'doc_type': "Чиқим"
