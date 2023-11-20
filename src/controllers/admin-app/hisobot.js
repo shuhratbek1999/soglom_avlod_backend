@@ -317,9 +317,7 @@ class HisobotController {
         result.forEach(value => {
             if (value.dataValues.palatas.length > 0) {
                 value.dataValues.palatas.forEach(el => {
-                    if (el.dataValues.date_do >= data1 &&
-                        el.dataValues.date_do >= data2
-                    ) {
+                    if (el.dataValues.date_do >= data1 &&el.dataValues.date_do >= data2) {
                         value.dataValues.status = true;
                     }
                     else if (el.dataValues.date_do >= data1 && el.dataValues.date_time <= data2) {

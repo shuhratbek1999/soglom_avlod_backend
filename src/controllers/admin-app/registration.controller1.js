@@ -1338,7 +1338,7 @@ class RegistrationController {
                 }
         })
 
-        await registerPatientModel.destroy({
+        await regsiterPatientModel.destroy({
             where:{
                 registration_id: req.params.id
             }
