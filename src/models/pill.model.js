@@ -19,6 +19,10 @@ PillModel.init({
     type: DataTypes.STRING(300),
     allowNull: false
   },
+  comment: {
+    type: DataTypes.STRING(300),
+    allowNull: false
+  },
 
 }, {
   sequelize,
