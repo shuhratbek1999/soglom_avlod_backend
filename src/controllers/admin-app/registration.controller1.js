@@ -53,47 +53,107 @@ const regsiterPatientModel  = require('../../models/register_patient.model');
 class RegistrationController {
     q=[];
     ArxivgaOlish = async (req, res, next) => {
-    try{
-     let qarz  =  await ModelModel.findAll({
-        where:{
-            id: req.params.id,
-            backlog: 0, 
-            status: 'complete'
+        try{
+        let qarz  =  await ModelModel.findAll({
+            where:{
+                id: req.params.id,
+                backlog: 0, 
+                status: 'complate'
+            }
+        });
+        console.log("req.params.id__________________________")
+        console.log(req.params.id)
+        console.log(qarz)
+        if(qarz.length > 0){
+            let sum =  qarz.some(item => item.backlog <= 0);
+            if(sum){
+                await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${req.params.id}`);        
+                await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
+                await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_files where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_inspection where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_pay where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_palata where registration_id = ${req.params.id}`);
+            }
+            res.send({
+                error: false,
+                error_code: 201,
+                message: "Malumot arhivga olindi"
+            })
+        }else{
+            // console.log("pul tolamagan");
+            // throw new HttpException(401, "pul tolanmagan")
         }
-     });
-    if(qarz.length > 0){
-        let sum =  qarz.some(item => item.backlog <= 0);
-        if(sum){
-            await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${req.params.id}`);        
-            await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
-            await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
-            await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
-            await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration_files where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration_inspection where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration_pay where registration_id = ${req.params.id}`);
-            await db.query(`DELETE from registration_palata where registration_id = ${req.params.id}`);
         }
-        res.send({
-            error: false,
-            error_code: 201,
-            message: "Malumot arhivga olindi"
-        })
-    }else{
-        // console.log("pul tolamagan");
-        // throw new HttpException(401, "pul tolanmagan")
-    }
-    }
-    catch(err){
-       console.log(err);
-    }
+        catch(err){
+        console.log(err);
+        }
+    };
+    ArxivgaOlishBtn = async (req, res, next) => {
+        try{
+        let qarz  =  await ModelModel.findAll({
+            where:{
+                id: req.params.id,
+                backlog: 0, 
+                status: 'complate'
+            }
+        });
+        console.log("req.params.id__________________________")
+        console.log(req.params.id)
+        console.log(qarz)
+        if(qarz.length > 0){
+            let sum =  qarz.some(item => item.backlog <= 0);
+            console.log(sum)
+            
+            if(sum){
+                await db.query(`INSERT INTO registration_inspection_child_arxiv SELECT * FROM registration_inspection_child where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
+                
+                await db.query(`INSERT INTO registration_inspection_arxiv SELECT * FROM registration_inspection where registration_id = ${req.params.id}`);  
+                await db.query(`DELETE from registration_inspection where registration_id = ${req.params.id}`);
+
+
+                await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_files where registration_id = ${req.params.id}`);
+                
+                await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
+                
+                await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
+                
+                await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
+                await db.query(`DELETE from registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
+                
+                await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_pay where registration_id = ${req.params.id}`);
+                
+                await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
+                await db.query(`DELETE from registration_palata where registration_id = ${req.params.id}`);
+                
+            }
+            res.send({
+                error: false,
+                error_code: 201,
+                message: "Malumot arhivga olindi"
+            })
+        }else{
+            // console.log("pul tolamagan");
+            // throw new HttpException(401, "pul tolanmagan")
+        }
+        }
+        catch(err){
+        console.log(err);
+        }
     };
     statsionar = async(req, res, next) => {
     let query = {}
@@ -672,10 +732,10 @@ class RegistrationController {
                         });
                 }
                 else if(data.status!=have.status){
-                    if(data.status!='complete'){
+                    if(data.status!='complate'){
                         var index=this.q.findIndex(isHave);
                         this.q[index].status=have.status;
-                    }else if(have.status!='complete'){
+                    }else if(have.status!='complate'){
                         var index=this.q.findIndex(isHave);
                         this.q[index].status=have.status;
                     }
@@ -807,10 +867,10 @@ class RegistrationController {
                                 "filial_id": filial_id
                             });
                         }else if(data.status!=have.status){
-                            if(data.status!='complete'){
+                            if(data.status!='complate'){
                                 var index=this.q.findIndex(isHave);
                                 this.q[index].status=have.status;
-                            } else if(have.status!='complete'){
+                            } else if(have.status!='complate'){
                                 var index=this.q.findIndex(isHave);
                                 this.q[index].status=have.status;
                             }
@@ -872,7 +932,7 @@ class RegistrationController {
             if(!insert){
                 var has=await QueueModel.findOne({
                     where:{
-                        status:{[Op.not]:'complete'},
+                        status:{[Op.not]:'complate'},
                         room_id: element.room_id,
                         patient_id: element.patient_id
                     }
@@ -882,7 +942,7 @@ class RegistrationController {
                         has.status=element.status;
                         await has.save();
                     }
-                }else if(element.status != 'complete') {
+                }else if(element.status != 'complate') {
                     var que=await QueueModel.findOne({
                         where:{ 
                             room_id: element.room_id,
@@ -1521,7 +1581,7 @@ class RegistrationController {
 
         let query = {
             status: {
-              [Op.not]: 'complete'
+              [Op.not]: 'complate'
             },
             filial_id
         };

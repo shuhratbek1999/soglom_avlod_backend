@@ -18,7 +18,7 @@ router.get('/one_arxiv/:id', auth(), awaitHandlerFactory(registrationControl.get
 router.get('/palata/:id', auth(), awaitHandlerFactory(registrationControl.palataDel));
 router.post('/create', registrationValidate, auth(), awaitHandlerFactory(registrationControl.create));
 router.get('/pechat/:patient', auth(),  awaitHandlerFactory(registrationControl.getPechat));
-router.get('/arxive', auth(),  awaitHandlerFactory(registrationControl.setArchive));
+router.get('/arxive/:id', auth(),  awaitHandlerFactory(registrationControl.ArxivgaOlishBtn));
 router.post('/inspection', auth(),  awaitHandlerFactory(registrationControl.inspection));
 router.post('/imtiyoz', auth(),  awaitHandlerFactory(registrationControl.Imtiyozli));
 router.post('/search', auth(),  awaitHandlerFactory(registrationControl.search));
