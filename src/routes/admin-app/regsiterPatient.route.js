@@ -9,7 +9,7 @@ const { registerPatientValidate } = require('../../middleware/validators/admin-a
 router.get('/all', auth(), awaitHandlerFactory(RegisterPatientController.getAll));
 router.get('/patient-all', auth(), awaitHandlerFactory(RegisterPatientController.getAllPatient));
 router.get('/one/:id', auth(), awaitHandlerFactory(RegisterPatientController.getOne));
-router.get('/search/:key', auth(), awaitHandlerFactory(RegisterPatientController.search));
+router.post('/search', auth(), awaitHandlerFactory(RegisterPatientController.search));
 router.post('/balance', auth(), awaitHandlerFactory(RegisterPatientController.getPatientBalance));
 router.post('/create', auth(), registerPatientValidate, awaitHandlerFactory(RegisterPatientController.create));
 router.patch('/update/:id', auth(), registerPatientValidate, awaitHandlerFactory(RegisterPatientController.update));

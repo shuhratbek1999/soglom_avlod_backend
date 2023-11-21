@@ -5,6 +5,7 @@ const BemorModel = require('../../models/patient.model')
 const RegisterPatientModel = require('../../models/register_patient.model')
 const { validationResult } = require('express-validator');
 const sequelize = require("../../db/db-sequelize");
+// const { Op } = require("sequelize");
 
 
 /******************************************************************************
@@ -15,12 +16,12 @@ class PatientController {
         let query = {};
         query.type = 1;
         const model = await RegisterPatientModel.findAll({
-            include:[
+            include: [
                 {
-                    model:BemorModel,
-                    attributes:['id','fullname'],
-                    as:'patient',
-                    required:false
+                    model: BemorModel,
+                    attributes: ['id', 'fullname'],
+                    as: 'patient',
+                    required: false
                 }
             ],
             where: query,
@@ -35,9 +36,9 @@ class PatientController {
     }
     getAllPatient = async (req, res, next) => {
         const model = await BemorModel.findAll({
-            attributes:['id','fullname'],
+            attributes: ['id', 'fullname'],
             where: {
-                balance:true
+                balance: true
             },
         });
         res.status(200).send({
@@ -69,18 +70,18 @@ class PatientController {
     getPatientBalance = async (req, res, next) => {
         let { patient_id } = req.body;
         let query = {};
-        if(patient_id){
+        if (patient_id) {
             query.patient_id = patient_id
         }
 
         const model = await RegisterPatientModel.findAll({
-            attributes:[
-                'id','patient_id',
-				[sequelize.literal('SUM(summa * power(-1, type + 1) )'), 'total_balance'],
+            attributes: [
+                'id', 'patient_id',
+                [sequelize.literal('SUM(summa * power(-1, type + 1) )'), 'total_balance'],
             ],
             where: query
         });
-        
+
         res.status(200).send({
             error: false,
             error_code: 200,
@@ -107,10 +108,10 @@ class PatientController {
             message: 'Malumotlar qo\'shildi',
             data: model
         });
-        
+
         let modelx = await RegisterPatientModel.findOne({
             where: {
-                id:model.id
+                id: model.id
             }
         })
         model.doc_id = modelx.id;
@@ -143,15 +144,44 @@ class PatientController {
         });
     }
     search = async (req, res, next) => {
-        let data = await RegisterPatientModel.find(
-            {
-                "$or": [
-                    { "patient_id": { $regex: req.params.key } }
-                ]
-            }
-        )
-        
-        res.send(data)
+        const { Op } = require('sequelize'); // Make sure to import Sequelize operators
+
+        let body = req.body;
+        let query = {};
+
+        if (body.fullname) {
+            // Use Sequelize's Op.like for partial matching
+            query.fullname = { [Op.like]: `%${body.fullname}%` };
+        }
+
+        try {
+            let data = await RegisterPatientModel.findAll({
+                include: [
+                    {
+                        model: BemorModel,
+                        attributes: ['id', 'fullname'],
+                        as: 'patient',
+                        where: query, // Ensure that the query object is not empty
+                        required: true,
+                    },
+                ],
+                where: {
+                    type: 1,
+                },
+                limit: 100,
+            });
+
+            res.status(200).send({
+                error: false,
+                error_code: 200,
+                message: 'Malumotlar chiqdi',
+                data: data
+            });
+        } catch (error) {
+            console.error('Error retrieving data:', error);
+            res.status(500).send('Internal Server Error');
+        }
+
     }
 
     delete = async (req, res, next) => {
