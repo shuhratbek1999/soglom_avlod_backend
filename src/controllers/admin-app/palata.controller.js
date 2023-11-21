@@ -97,8 +97,7 @@ class palataController {
                key.dataValues.date_to >= bugun &&
                key.dataValues.registration.backlog == 0
              ) {
-               model[i].dataValues.text =
-                 "pul tolagan vaqti tugagan lekin yotipdi";
+               model[i].dataValues.text = "pul tolagan vaqti tugagan lekin yotipdi";
              } else if (
                key.dataValues.date_do <= bugun &&
                key.dataValues.registration.backlog == 0
