@@ -62,8 +62,7 @@ class RegistrationController {
             }
         });
         console.log("req.params.id__________________________")
-        console.log(req.params.id)
-        console.log(qarz)
+   
         if(qarz.length > 0){
             let sum =  qarz.some(item => item.backlog <= 0);
             if(sum){
@@ -72,10 +71,10 @@ class RegistrationController {
                 await db.query(`INSERT INTO registration_files_arxiv SELECT * FROM registration_files where registration_id = ${req.params.id}`);
                 await db.query(`INSERT INTO registration_recipe_arxiv SELECT * FROM registration_recipe where registration_id = ${req.params.id}`);
                 await db.query(`INSERT INTO registration_doctor_arxiv SELECT * FROM registration_doctor where registration_id = ${req.params.id}`);
-                await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
+                await db.query(`INSERT INTO registration_arxiv SELECT * FROM registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
                 await db.query(`INSERT INTO registration_pay_arxiv SELECT * FROM registration_pay where registration_id = ${req.params.id}`);
                 await db.query(`INSERT INTO registration_palata_arxiv SELECT * FROM registration_palata where registration_id = ${req.params.id}`);
-                await db.query(`DELETE from registration where backlog = 0 and status = 'complete' and id = ${req.params.id}`);
+                await db.query(`DELETE from registration where backlog = 0 and status = 'complate' and id = ${req.params.id}`);
                 await db.query(`DELETE from registration_recipe where registration_id = ${req.params.id}`);
                 await db.query(`DELETE from registration_doctor where registration_id = ${req.params.id}`);
                 await db.query(`DELETE from registration_inspection_child where registration_id = ${req.params.id}`);
