@@ -22,6 +22,8 @@ class directController {
       data: model,
     });
   };
+
+
   getAll = async (req, res, next) => {
     const model = await directModel.findAll({
       include: [{ model: filialModel, as: "filial" }],
@@ -33,6 +35,38 @@ class directController {
       data: model,
     });
   };
+
+  search = async (req, res, next) => {
+    const { Op } = require('sequelize'); // Make sure to import Sequelize operators
+
+    let body = req.body;
+    let query = {};
+
+    if (body.name) {
+        query.name = { [Op.like]: `%${body.name}%` };
+    }
+    if(body.filial_id){
+        query.filial_id = body.filial_id;
+    }
+    try {
+        let data = await directModel.findAll({
+            include: [{ model: filialModel, as: "filial" }],
+            where: query,
+            limit: 100,
+        });
+
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: data
+        });
+    } catch (error) {
+        console.error('Error retrieving data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+
+}
 
   getOne = async (req, res, next) => {
     this.checkValidation(req);
@@ -52,6 +86,9 @@ class directController {
       data: model,
     });
   };
+
+
+
   create = async (req, res, next) => {
     this.checkValidation(req);
     const model = await directModel.create({
@@ -66,6 +103,8 @@ class directController {
       data: model,
     });
   };
+
+
   update = async (req, res, next) => {
     this.checkValidation(req);
     const model = await directModel.findOne({
@@ -84,6 +123,8 @@ class directController {
       data: model,
     });
   };
+
+
   delete = async (req, res, next) => {
     const model = await directModel.destroy({
       where: {
@@ -100,6 +141,8 @@ class directController {
       data: model,
     });
   };
+
+
   checkValidation = (req) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

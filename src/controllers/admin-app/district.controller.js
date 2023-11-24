@@ -39,6 +39,7 @@ class DistrictController {
             data: model
         });
     }
+    
    create = async (req, res, next) => {
        this.checkValidation(req);
        const model = await DistrictModel.create(req.body);
