@@ -3,30 +3,30 @@ const sequelize = require('../db/db-sequelize');
 const Registration_doctorModel = require('./registration_doctor.model');
 const filialModel = require('./filial.model');
 class Registration_filesModel extends Model {
-    toJSON () {//Api da ishladi
+  toJSON() {//Api da ishladi
     var values = Object.assign({}, this.get());
-        delete values.password_hash;
-        return values;
-    }
+    delete values.password_hash;
+    return values;
+  }
 }
 
 Registration_filesModel.init({
-  id: { 
-    type: DataTypes.INTEGER, 
-    primaryKey: true, 
-    autoIncrement: true, 
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
     allowNull: false
-},
-registration_id: {
+  },
+  registration_id: {
     type: DataTypes.INTEGER
-},
-filial_id:{
-  type: DataTypes.INTEGER
-},
-href : {
+  },
+  filial_id: {
+    type: DataTypes.INTEGER
+  },
+  href: {
     type: DataTypes.STRING(300),
     allowNull: false
-}
+  }
 
 }, {
   sequelize,
@@ -50,5 +50,5 @@ href : {
     }
   }
 });
-Registration_doctorModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+Registration_doctorModel.belongsTo(filialModel, { as: 'filial', foreignKey: 'filial_id' })
 module.exports = Registration_filesModel;

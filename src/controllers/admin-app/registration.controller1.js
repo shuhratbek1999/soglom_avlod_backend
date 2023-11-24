@@ -1330,7 +1330,8 @@ class RegistrationController {
                 id: req.params.id
             }
         })
-
+        console.log('Test__delete');
+        console.log(req.params.id)
         if(user == null){
             throw new HttpException(401, "registratsiya mavjud emas")
         }
@@ -1346,13 +1347,24 @@ class RegistrationController {
             }
         })
         const doctor = await Registration_doctorModel.destroy({
-        where:{
-            registration_id: req.params.id
-        }
+            where:{
+                registration_id: req.params.id
+            }
+        })
+    
+        await registerMedDirectModel.destroy({
+            where:{
+                doc_id: req.params.id
+            }
+        });
+        await regsiterPatientModel.destroy({
+            where:{
+                registration_id: req.params.id
+            }
         })
         await Registration_filesModel.destroy({
             where:{
-            registration_id: req.params.id
+                registration_id: req.params.id
             }
         })
         const inspection = await Registration_inspectionModel.destroy({
@@ -1426,6 +1438,7 @@ class RegistrationController {
     deleted = async (req, res, next) => {
         let models = await ModelModel.findAll();
         let arxiv = await Registration_arxivModel.findAll();
+      
         if(models.length > 0 || arxiv.length > 0) {
             for(let i = 0; i <= models.length; i++){
                 if(models[i] != undefined){
@@ -1454,6 +1467,12 @@ class RegistrationController {
                          registration_id: models[i].dataValues.id
                         }
                        })
+                       await registerMedDirectModel.destroy({
+                        doc_id: models[i].dataValues.id
+                        })
+                        await regsiterPatientModel.destroy({
+                            registration_id: models[i].dataValues.id
+                        })
                        await Registration_inspectionModel.destroy({
                         where:{
                          registration_id: models[i].dataValues.id
