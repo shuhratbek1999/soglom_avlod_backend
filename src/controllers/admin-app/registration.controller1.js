@@ -955,9 +955,7 @@ class RegistrationController {
                     }else{
                         element.number=1;
                     }
-                    console.log(element)
-                    console.log(element)
-                    console.log(element)
+                   
                     await QueueModel.create(element);
                 }
             }else{
@@ -1600,8 +1598,7 @@ class RegistrationController {
         let query = {
             status: {
               [Op.not]: 'complate'
-            },
-            filial_id
+            }
         };
 
         const model = await QueueModel.findAll({

@@ -2,33 +2,33 @@ const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../db/db-sequelize');
 const filialModel = require('./filial.model');
 class directModel extends Model {
-    toJSON () {//Api da ishladi
+  toJSON() {//Api da ishladi
     var values = Object.assign({}, this.get());
-        delete values.password_hash;
-        return values;
-    }
-} 
+    delete values.password_hash;
+    return values;
+  }
+}
 
 directModel.init({
-  id: { 
-    type: DataTypes.INTEGER, 
-    primaryKey: true, 
-    autoIncrement: true, 
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
     allowNull: false
-},
-bonus : {
+  },
+  bonus: {
     type: DataTypes.DECIMAL,
-},
-name: {
+  },
+  name: {
     type: DataTypes.STRING(600),
     allowNull: false
-},
-med_id: {
-  type: DataTypes.INTEGER
-},
-filial_id:{
-  type: DataTypes.INTEGER
-}
+  },
+  med_id: {
+    type: DataTypes.INTEGER
+  },
+  filial_id: {
+    type: DataTypes.INTEGER
+  }
 
 }, {
   sequelize,
@@ -47,5 +47,5 @@ filial_id:{
   ],
   //findOne da yoki findAll da chaqirish kerak
 });
-directModel.belongsTo(filialModel, {as: 'filial', foreignKey: 'filial_id'})
+directModel.belongsTo(filialModel, { as: 'filial', foreignKey: 'filial_id' })
 module.exports = directModel;
