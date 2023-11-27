@@ -91,9 +91,11 @@ class directController {
 
   create = async (req, res, next) => {
     this.checkValidation(req);
+
     const model = await directModel.create({
       name: req.body.name,
       bonus: req.body.bonus,
+      med_id:0,
       filial_id: req.body.filial_id,
     });
     res.status(200).send({
