@@ -39,16 +39,17 @@ class PillController {
         });
     }
     search = async (req, res, next) => {
+        let query = {};
+        if(req.body.name){
+            query.name = {[Op.like]: req.body.name}
+        }
         let ModelList = await PillModel.findAll({
             attributes: ['id', 'name',
             ],
-            where: {
-                name: { [Op.like]: '%' + req.body.name + '%' }
-            },
+            where:query,
             order: [
                 ['name', 'ASC']
             ],
-            limit: 100,
         });
         if (req.body.name == null) {
             let model = await PillModel.findAll({
