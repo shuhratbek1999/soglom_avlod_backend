@@ -41,7 +41,7 @@ class PillController {
     search = async (req, res, next) => {
         let query = {};
         if(req.body.name){
-            query.name = {[Op.like]: req.body.name}
+            query.name = {[Op.like]: `%${req.body.name}%`}
         }
         let ModelList = await PillModel.findAll({
             attributes: ['id', 'name',
