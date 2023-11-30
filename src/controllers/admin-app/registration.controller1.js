@@ -244,7 +244,6 @@ class RegistrationController {
              order: [
                 ['created_at', 'desc']
              ],
-             limit: 50
         });
 
         res.status(200).send({  
