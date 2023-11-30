@@ -10,7 +10,7 @@ const { Op } = require("sequelize")
  ******************************************************************************/
 class PillController {
     getAll = async (req, res, next) => {
-        const model = await PillModel.findAll({ limit: 100 });
+        const model = await PillModel.findAll({});
 
         res.status(200).send({
             error: false,
@@ -54,7 +54,6 @@ class PillController {
         if (req.body.name == null) {
             let model = await PillModel.findAll({
                 raw: true,
-                limit: 50,
             })
             res.send({
                 "error": false,
