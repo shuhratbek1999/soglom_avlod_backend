@@ -210,9 +210,6 @@ class RegistrationController {
     } 
     getAll = async (req, res, next) => {
         let query = {}
-
-       
-
         const model = await ModelModel.findAll({
             where: query,
             include:[ 
@@ -246,7 +243,8 @@ class RegistrationController {
              ],
              order: [
                 ['created_at', 'desc']
-             ]
+             ],
+             limit: 50
         });
 
         res.status(200).send({  
@@ -1098,7 +1096,7 @@ class RegistrationController {
                         ['name', 'ASC'],
                         ['id', 'ASC']
                     ],
-                    limit:1000    
+                    limit:50 
                 });
                 res.send({
                     "error": false,
@@ -1119,7 +1117,7 @@ class RegistrationController {
                     ['name', 'ASC'],
                     ['id', 'ASC']
                 ],
-                limit:1000    
+                limit:50    
             });
             res.send({
                 "error": false,
@@ -1138,7 +1136,7 @@ class RegistrationController {
                     ['name', 'ASC'],
                     ['id', 'ASC']
                 ],
-                limit:1000    
+                limit:50   
             });
             res.send({
                 "error": false,
@@ -1203,7 +1201,7 @@ class RegistrationController {
                 ]
             } 
             ],
-            limit:100
+            limit:50
         });
         
         if(req.body.name.length == 0){
