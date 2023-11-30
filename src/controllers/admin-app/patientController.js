@@ -1,11 +1,10 @@
 
 const HttpException = require('../../utils/HttpException.utils');
-// const status = require('../../utils/status.utils')
 const PatientModel = require('../../models/patient.model')
 const { validationResult } = require('express-validator');
 const RegionModel = require('../../models/region.model');
 const districtModel = require('../../models/district.model');
-
+const { Op } = require('sequelize')
 /******************************************************************************
  *                              Employer Controller
  ******************************************************************************/
@@ -107,14 +106,21 @@ class PatientController {
         });
     }
     search = async (req, res, next) => {
-        let data = await PatientModel.find(
-            {
-                "$or": [
-                    { "name": { $regex: req.params.key } }
-                ]
-            }
-        )
-        res.send(data)
+        let body = req.body;
+        let query = {}
+       if(body.name){
+        query.fullname = { [Op.like]: `%${body.name}%`};
+       }
+        let model = await PatientModel.findAll({
+            where: query
+        })
+        
+        res.status(200).send({
+            error: false,
+            error_code: 200,
+            message: 'Malumotlar chiqdi',
+            data: model
+        });
     }
 
     delete = async (req, res, next) => {
