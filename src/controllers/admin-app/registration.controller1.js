@@ -882,16 +882,18 @@ class RegistrationController {
         }
         var adds;
         for(var element of registration_recipe){
-            adds={
+            adds = {
                 "registration_doctor_id":model.id,
                 "registration_id":model.registration_id,
                 'pill_id':element.pill_id,
                 "time":element.time,
                 "doza":element.doza,
                 "day":element.day,
-                "comment":element.comment,
+                "comment":element.comment ? element.comment : "",
                 "name": element.name
             };
+            console.log("element______________________________pill")
+            console.log(element)
             await Registration_recipeModel.create(adds);
         }
     }
