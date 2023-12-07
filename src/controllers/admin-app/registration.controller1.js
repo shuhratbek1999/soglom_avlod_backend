@@ -61,7 +61,6 @@ class RegistrationController {
                 status: 'complate'
             }
         });
-        console.log("req.params.id__________________________")
    
         if(qarz.length > 0){
             let sum =  qarz.some(item => item.backlog <= 0);
@@ -106,9 +105,6 @@ class RegistrationController {
                 status: 'complate'
             }
         });
-        console.log("req.params.id__________________________")
-        console.log(req.params.id)
-        console.log(qarz)
         if(qarz.length > 0){
             let sum =  qarz.some(item => item.backlog <= 0);
             console.log(sum)
