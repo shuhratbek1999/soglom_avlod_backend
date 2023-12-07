@@ -214,32 +214,33 @@ class RegistrationController {
                 },
                 {
                     model: PatientModel, as: 'patient',
-                    include:[
-                        {model: RegionModel, as: 'region'},
-                        {model: districtModel, as: 'district'}
-                    ],
+                    // include:[
+                    //     {model: RegionModel, as: 'region'},
+                    //     {model: districtModel, as: 'district'}
+                    // ],
                 },
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
-                    include:[
-                        {
-                            model: Registration_recipeModel, as: 'registration_recipe'
-                        },
-                        {model: register_mkb, as: 'register_mkb'}
-                    ]
+                    // include:[
+                    //     {
+                    //         model: Registration_recipeModel, as: 'registration_recipe'
+                    //     },
+                    //     {model: register_mkb, as: 'register_mkb'}
+                    // ]
                 },
                 {
                     model: Registration_inspectionModel, as: 'registration_inspection',
-                    include:[
-                        {
-                            model: Registration_inspection_childModel, as: 'registration_inspection_child'
-                        }
-                    ]
+                    // include:[
+                    //     {
+                    //         model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                    //     }
+                    // ]
                 },
              ],
              order: [
                 ['created_at', 'desc']
              ],
+             limit: 600
         });
 
         res.status(200).send({  
@@ -1152,19 +1153,19 @@ class RegistrationController {
 
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
-                    include:[
-                        {
-                            model: Registration_recipeModel, as: 'registration_recipe'
-                        }
-                    ]
+                    // include:[
+                    //     {
+                    //         model: Registration_recipeModel, as: 'registration_recipe'
+                    //     }
+                    // ]
                 },
                 {
                     model: Registration_inspectionModel, as: 'registration_inspection',
-                    include:[
-                        {
-                            model: Registration_inspection_childModel, as: 'registration_inspection_child'
-                        }
-                    ]
+                    // include:[
+                    //     {
+                    //         model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                    //     }
+                    // ]
                 },
                 {model: PatientModel, as: 'patient', 
                 where:{ 
@@ -1173,29 +1174,29 @@ class RegistrationController {
                         {birthday: {[Op.eq]: String(req.body.name)}}
                     ]
                 },
-                include:[
-                    {model: RegionModel, as: 'region'},
-                    {model: districtModel, as: 'district'}
-                ],
+                // include:[
+                //     {model: RegionModel, as: 'region'},
+                //     {model: districtModel, as: 'district'}
+                // ],
             },
             {
                 model: UserModel, as: 'user', attributes: ['user_name']
             },
             {
                 model: Registration_doctorModel, as: 'registration_doctor',
-                include:[
-                    {
-                        model: Registration_recipeModel, as: 'registration_recipe'
-                    }
-                ]
+                // include:[
+                //     {
+                //         model: Registration_recipeModel, as: 'registration_recipe'
+                //     }
+                // ]
             },
             {
                 model: Registration_inspectionModel, as: 'registration_inspection',
-                include:[
-                    {
-                        model: Registration_inspection_childModel, as: 'registration_inspection_child'
-                    }
-                ]
+                // include:[
+                //     {
+                //         model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                //     }
+                // ]
             } 
             ],
             limit:50
