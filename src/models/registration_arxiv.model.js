@@ -73,9 +73,9 @@ Registration_arxivModel.init({
   direct_id: {
     type: DataTypes.INTEGER
   },
-  imtiyoz_type: {
-    type: DataTypes.STRING()
-  }
+  tramma_type: {
+    type: DataTypes.STRING(),
+  },
 
 }, {
   sequelize,
