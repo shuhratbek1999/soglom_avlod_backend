@@ -282,6 +282,9 @@ class HisobotController {
 
                 },
                 {
+                    model: DoctorModel, as:'doctor', attributes:['id','name'],
+                },
+                {
                     model: UserModel, as: 'user', attributes: ['id', 'user_name']
                 }
             ],
