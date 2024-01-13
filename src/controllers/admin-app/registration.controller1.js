@@ -212,6 +212,7 @@ class RegistrationController {
                 {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
+                { model: Registration_filesModel,as: 'registration_files'},
                 {
                     model: PatientModel, as: 'patient',
                     // include:[
