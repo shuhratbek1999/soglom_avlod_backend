@@ -1152,7 +1152,6 @@ class RegistrationController {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
                 { model: Registration_filesModel,as: 'registration_files'},
-
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
                     // include:[
@@ -1170,19 +1169,17 @@ class RegistrationController {
                     // ]
                 },
                 {model: PatientModel, as: 'patient', 
-                where:{ 
-                    [Op.or]:[
-                        {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
-                    ]
+                    where:{ 
+                        [Op.or]:[
+                            {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
+                        ]
                 },
                 // include:[
                 //     {model: RegionModel, as: 'region'},
                 //     {model: districtModel, as: 'district'}
                 // ],
             },
-            {
-                model: UserModel, as: 'user', attributes: ['user_name']
-            },
+           
             {
                 model: Registration_doctorModel, as: 'registration_doctor',
                 // include:[
@@ -1199,6 +1196,9 @@ class RegistrationController {
                 //     }
                 // ]
             } 
+            ],
+            order: [
+                ['created_at', 'desc']
             ],
             limit:200
         });
