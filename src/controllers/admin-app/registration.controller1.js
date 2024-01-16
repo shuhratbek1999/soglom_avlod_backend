@@ -1151,6 +1151,7 @@ class RegistrationController {
                 {
                     model: UserModel, as: 'user', attributes: ['user_name']
                 },
+                { model: Registration_filesModel,as: 'registration_files'},
 
                 {
                     model: Registration_doctorModel, as: 'registration_doctor',
@@ -1172,7 +1173,6 @@ class RegistrationController {
                 where:{ 
                     [Op.or]:[
                         {fullname:{  [Op.like]: '%'+req.body.name+'%'}},
-                        {birthday: {[Op.eq]: String(req.body.name)}}
                     ]
                 },
                 // include:[
@@ -1200,40 +1200,44 @@ class RegistrationController {
                 // ]
             } 
             ],
-            limit:50
+            limit:200
         });
         
         if(req.body.name.length == 0){
             let model = await ModelModel.findAll({
-                limit: 50,
                 include:[
                     {
                         model: UserModel, as: 'user', attributes: ['user_name']
                     },
-    
+                    { model: Registration_filesModel,as: 'registration_files'},
+                    
                     {
                         model: Registration_doctorModel, as: 'registration_doctor',
-                        include:[
-                            {
-                                model: Registration_recipeModel, as: 'registration_recipe'
-                            }
-                        ]
+                        // include:[
+                        //     {
+                        //         model: Registration_recipeModel, as: 'registration_recipe'
+                        //     }
+                        // ]
                     },
                     {
                         model: Registration_inspectionModel, as: 'registration_inspection',
-                        include:[
-                            {
-                                model: Registration_inspection_childModel, as: 'registration_inspection_child'
-                            }
-                        ]
+                        // include:[
+                        //     {
+                        //         model: Registration_inspection_childModel, as: 'registration_inspection_child'
+                        //     }
+                        // ]
                     },
                     {model: PatientModel, as:'patient',
-                    include:[
-                        {model: RegionModel, as: 'region'},
-                        {model: districtModel, as: 'district'}
-                    ],
+                    // include:[
+                    //     {model: RegionModel, as: 'region'},
+                    //     {model: districtModel, as: 'district'}
+                    // ],
                    }
-                ]
+                ],
+                order: [
+                    ['created_at', 'desc']
+                ],
+                limit: 600,
             })
             res.send({
                 "error": false,
