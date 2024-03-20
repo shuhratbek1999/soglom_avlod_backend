@@ -241,7 +241,7 @@ class RegistrationController {
              order: [
                 ['created_at', 'desc']
              ],
-             limit: 600
+             limit: 200
         });
 
         res.status(200).send({  
@@ -1237,7 +1237,7 @@ class RegistrationController {
                 order: [
                     ['created_at', 'desc']
                 ],
-                limit: 600,
+                limit: 200,
             })
             res.send({
                 "error": false,
